@@ -5,6 +5,7 @@ import ciir.jfoley.chai.collections.chained.ChaiIterable;
 import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.io.LinesIterable;
 import org.lemurproject.galago.core.btree.simple.DiskMapBuilder;
+import org.lemurproject.galago.core.btree.simple.DiskMapReader;
 import org.lemurproject.galago.utility.ByteUtil;
 import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.compression.VByte;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class LoadVocabulary {
+public class BuildVocabulary {
 
   public static void main(String[] args) throws IOException {
 
@@ -29,28 +30,29 @@ public class LoadVocabulary {
 
     System.out.println(ListFns.take(vocabByDF, 20));
 
-    String idSuffix = "/i";
-    String termSuffix = "/t";
-    String statsSuffix = "/s";
     try (
         DiskMapBuilder vocab = new DiskMapBuilder("vocab.mapping.btree");
     ) {
       for (int i = 0; i < vocabByDF.size(); i++) {
-        byte[] id = ArrayFns.concat(VByte.compressInt(i), ByteUtil.fromString(idSuffix));
-        byte[] str = ByteUtil.fromString(vocabByDF.get(i).term+termSuffix);
-        byte[] statsKey = ArrayFns.concat(VByte.compressInt(i), ByteUtil.fromString(statsSuffix));
+        byte[] raw_str = ByteUtil.fromString(vocabByDF.get(i).term);
+        byte[] raw_id = VByte.compressInt(i);
 
-        vocab.put(id, str);
-        vocab.put(str, id);
+        // keyed-ids
+        byte[] id = ArrayFns.concat(raw_id, Vocabulary.IdSuffix);
+        byte[] str = ArrayFns.concat(raw_str, Vocabulary.TermSuffix);
+        byte[] statsKey = ArrayFns.concat(raw_id, Vocabulary.StatsSuffix);
+
+        vocab.put(id, raw_str);
+        vocab.put(str, raw_id);
         vocab.put(statsKey, Statistics.getCodec().toBytes(vocabByDF.get(i).stats()));
       }
     }
 
-    try (DiskMapBuilder dmb = new DiskMapBuilder("vocab.btree")) {
-      for (String line : LinesIterable.fromFile("vocab.gz")) {
-        TermStat stat = TermStat.ofTSV(line);
-        dmb.put(ByteUtil.fromString(stat.term), Statistics.getCodec().toBytes(stat.stats()));
-      }
+    Vocabulary vocab = new Vocabulary(new DiskMapReader("vocab.mapping.btree"));
+
+    for (int i = 0; i < 30; i++) {
+      System.out.println(vocab.lookupTermString(i)+" "+vocab.lookupTermStats(i));
     }
+
   }
 }
