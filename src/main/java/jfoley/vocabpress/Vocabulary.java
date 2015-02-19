@@ -1,13 +1,10 @@
 package jfoley.vocabpress;
 
 import ciir.jfoley.chai.collections.util.ArrayFns;
-import ciir.jfoley.chai.errors.FatalError;
 import ciir.jfoley.chai.io.IO;
 import org.lemurproject.galago.core.btree.simple.DiskMapReader;
 import org.lemurproject.galago.core.btree.simple.DiskMapWrapper;
-import org.lemurproject.galago.core.eval.stat.Stat;
 import org.lemurproject.galago.utility.ByteUtil;
-import org.lemurproject.galago.utility.compression.VByte;
 
 import java.io.Closeable;
 import java.io.IOException;
