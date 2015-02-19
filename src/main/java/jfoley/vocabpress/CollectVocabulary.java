@@ -2,11 +2,9 @@ package jfoley.vocabpress;
 
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.io.LinesIterable;
-import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.Parameters;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -15,31 +13,6 @@ import java.util.*;
  * @author jfoley
  */
 public class CollectVocabulary {
-  public static class TermStat implements Comparable<TermStat> {
-    public String term;
-    public int tf;
-    public int df;
-
-    public TermStat(String term, int tf, int df) {
-      this.term = term;
-      this.tf = tf;
-      this.df = df;
-    }
-
-    public String toTSV() {
-      return term +"\t"+tf+"\t"+df;
-    }
-    public static TermStat ofTSV(String input) {
-      String[] col = input.split("\t");
-      assert(col.length == 3);
-      return new TermStat(col[0], Integer.parseInt(col[1]), Integer.parseInt(col[2]));
-    }
-
-    @Override
-    public int compareTo(TermStat o) {
-      return this.term.compareTo(o.term);
-    }
-  }
 
   public static void reduce(List<TermStat> input) {
     List<TermStat> newOutput = new ArrayList<>(input.size() / 2);
