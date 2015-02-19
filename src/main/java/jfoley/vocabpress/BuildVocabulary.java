@@ -54,5 +54,8 @@ public class BuildVocabulary {
       System.out.println(vocab.lookupTermString(i)+" "+vocab.lookupTermStats(i));
     }
 
+    int presidentId = vocab.getTermId("president");
+    System.out.println(presidentId+" "+vocab.lookupTermString(presidentId)+" "+vocab.lookupTermStats(presidentId));
+
   }
 }
