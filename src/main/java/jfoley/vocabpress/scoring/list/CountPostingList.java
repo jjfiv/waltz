@@ -1,10 +1,10 @@
 package jfoley.vocabpress.scoring.list;
 
-import jfoley.vocabpress.scoring.CountPosting;
+import jfoley.vocabpress.scoring.iter.CountIterator;
 
 /**
  * @author jfoley
  */
 public interface CountPostingList extends PostingList {
-  Iterable<CountPosting> getCountPostings();
+  CountIterator getCountIterator();
 }

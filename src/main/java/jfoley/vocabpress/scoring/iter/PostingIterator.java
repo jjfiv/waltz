@@ -1,4 +1,6 @@
-package jfoley.vocabpress.scoring;
+package jfoley.vocabpress.scoring.iter;
+
+import jfoley.vocabpress.scoring.Posting;
 
 /**
  * @author jfoley
