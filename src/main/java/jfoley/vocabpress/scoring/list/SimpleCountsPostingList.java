@@ -19,7 +19,6 @@ public class SimpleCountsPostingList implements CountPostingList {
     public CountPosting getCount(int id) {
       return getPosting(id);
     }
-
   }
 
   private final List<CountPosting> postings;

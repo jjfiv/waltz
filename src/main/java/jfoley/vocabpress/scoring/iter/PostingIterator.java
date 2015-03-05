@@ -5,7 +5,7 @@ import jfoley.vocabpress.scoring.Posting;
 /**
  * @author jfoley
  */
-public interface PostingIterator {
+public interface PostingIterator extends Comparable<PostingIterator> {
   public static final int NO_MORE_POSTINGS = Integer.MAX_VALUE;
 
   public boolean hasCurrent();
@@ -18,13 +18,6 @@ public interface PostingIterator {
   public int currentKey();
 
   /**
-   * What is the key of the next posting? i.e. what is the next document number for which this list has a posting?
-   *
-   * @return NO_MORE_POSTINGS if no next posting, or the id if one is available.
-   */
-  public int nextKey();
-
-  /**
    * Get the posting for the given document if possible.
    * @return Posting for document id = 0, or null if already past, or null if not present.
    */
@@ -35,4 +28,10 @@ public interface PostingIterator {
    * @param key the document id or other integer key on which the posting list is sorted.
    */
   public void movePast(int key);
+
+  /**
+   * Move to the given key in the list, if it's present.
+   * @param key the document id or other integer key on which the posting list is sorted.
+   */
+  public void moveTo(int key);
 }

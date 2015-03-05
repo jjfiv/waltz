@@ -32,13 +32,13 @@ public class ListPostingIterator<P extends Posting> implements PostingIterator {
   }
 
   @Override
-  public int nextKey() {
-    return hasNext() ? postings.get(currentIndex+1).getKey() : NO_MORE_POSTINGS;
+  public void movePast(int key) {
+    moveTo(key+1);
   }
 
   @Override
-  public void movePast(int key) {
-    while(hasCurrent() && currentKey() <= key) {
+  public void moveTo(int key) {
+    while(hasCurrent() && currentKey() < key) {
       currentIndex++;
     }
   }
@@ -52,5 +52,10 @@ public class ListPostingIterator<P extends Posting> implements PostingIterator {
       return postings.get(currentIndex);
     }
     return null;
+  }
+
+  @Override
+  public int compareTo(PostingIterator o) {
+    return Integer.compare(currentKey(), o.currentKey());
   }
 }
