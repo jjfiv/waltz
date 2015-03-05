@@ -8,6 +8,9 @@ import jfoley.vocabpress.scoring.Posting;
 public interface PostingIterator {
   public static final int NO_MORE_POSTINGS = Integer.MAX_VALUE;
 
+  public boolean hasCurrent();
+  public boolean hasNext();
+
   /**
    * What is the key of the current posting?
    * @return NO_MORE_POSTINGS if done, or the id if pointing at the last document.
@@ -26,4 +29,10 @@ public interface PostingIterator {
    * @return Posting for document id = 0, or null if already past, or null if not present.
    */
   public Posting getPosting(int id);
+
+  /**
+   * Move past the given key in the list.
+   * @param key the document id or other integer key on which the posting list is sorted.
+   */
+  public void movePast(int key);
 }
