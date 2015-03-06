@@ -5,8 +5,6 @@ import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.IValueBlock;
 
-import java.util.Iterator;
-
 /**
  * This mover keeps a pointer to a given BlockPostingsIterator, and allows document-at-a-time (DAAT) access to it with
  * lazy movement policies sufficient for AnyOf and AllOf.
