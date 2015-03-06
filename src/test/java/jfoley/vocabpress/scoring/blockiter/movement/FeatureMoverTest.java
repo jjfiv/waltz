@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class SingleMoverTest {
+public class FeatureMoverTest {
 
   @Test
   public void testByHand() throws Exception {
@@ -21,14 +21,14 @@ public class SingleMoverTest {
 
     ListBlockPostingsIterator<CountPosting> countBlocks = new ListBlockPostingsIterator<>(exampleData, 16);
 
-    SingleMover<CountPosting> singleMover = new SingleMover<>(countBlocks);
+    FeatureMover<CountPosting> featureMover = new FeatureMover<>(countBlocks);
     int total = 0;
-    for(; !singleMover.isDone(); singleMover.next()) {
-      int doc = singleMover.currentKey();
+    for(; !featureMover.isDone(); featureMover.next()) {
+      int doc = featureMover.currentKey();
       total++;
 
-      assertTrue(singleMover.hasFeature(doc));
-      CountPosting count = singleMover.getFeature(doc);
+      assertTrue(featureMover.hasFeature(doc));
+      CountPosting count = featureMover.getFeature(doc);
       assertEquals(doc, count.getKey());
       assertEquals(doc * 2, count.getCount());
     }

@@ -30,8 +30,8 @@ public class AllOfMoverTest {
         new SimpleCountPosting(8,16)
     ), 3);
 
-    SingleMover<CountPosting> lhs = new SingleMover<>(lhsData);
-    SingleMover<CountPosting> rhs = new SingleMover<>(rhsData);
+    FeatureMover<CountPosting> lhs = new FeatureMover<>(lhsData);
+    FeatureMover<CountPosting> rhs = new FeatureMover<>(rhsData);
     AllOfMover mover = new AllOfMover(Arrays.asList(lhs, rhs));
 
     int total = 0;

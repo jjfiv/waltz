@@ -7,7 +7,6 @@ import jfoley.vocabpress.scoring.impl.SimpleCountPosting;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -28,8 +27,8 @@ public class AnyOfMoverTest {
         new SimpleCountPosting(8,16)
     ), 3);
 
-    SingleMover<CountPosting> lhs = new SingleMover<>(lhsData);
-    SingleMover<CountPosting> rhs = new SingleMover<>(rhsData);
+    FeatureMover<CountPosting> lhs = new FeatureMover<>(lhsData);
+    FeatureMover<CountPosting> rhs = new FeatureMover<>(rhsData);
     AnyOfMover mover = new AnyOfMover(Arrays.asList(lhs, rhs));
 
     int total = 0;

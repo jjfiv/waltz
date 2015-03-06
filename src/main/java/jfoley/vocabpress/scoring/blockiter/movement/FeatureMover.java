@@ -14,13 +14,13 @@ import jfoley.vocabpress.scoring.blockiter.IValueBlock;
  *
  * @author jfoley
  */
-public class SingleMover<X extends Posting> implements Mover, Feature<X> {
+public class FeatureMover<X extends Posting> implements Mover, Feature<X> {
   private final BlockPostingsIterator<X> iter;
   public IKeyBlock currentKeyBlock;
   public IValueBlock<X> currentValueBlock;
   public int index;
 
-  public SingleMover(BlockPostingsIterator<X> iter) {
+  public FeatureMover(BlockPostingsIterator<X> iter) {
     this.iter = iter;
     moveToNextBlock();
   }
