@@ -34,6 +34,7 @@ public class ListBlockPostingsIterator<X extends Posting> implements BlockPostin
     valueReadPtr = keyReadPtr;
     keyReadPtr += bufferedKeys.size();
 
+    if(bufferedKeys.isEmpty()) return null;
     return new KeyBlock(bufferedKeys);
   }
 

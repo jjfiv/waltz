@@ -6,7 +6,7 @@ import jfoley.vocabpress.scoring.Posting;
 /**
  * @author jfoley
  */
-public class SimpleCountPosting extends SimplePosting implements CountPosting {
+public class SimpleCountPosting extends SimplePosting implements CountPosting{
   public final int count;
 
   public SimpleCountPosting(int document, int count) {
