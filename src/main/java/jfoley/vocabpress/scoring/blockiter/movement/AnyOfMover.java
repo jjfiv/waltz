@@ -5,6 +5,7 @@ import ciir.jfoley.chai.collections.util.ListFns;
 import java.util.List;
 
 /**
+ * This implements "OR" style movement, where any child that has any document involves that document being scored.
  * @author jfoley
  */
 public class AnyOfMover implements Mover {

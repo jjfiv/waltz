@@ -25,7 +25,7 @@ public class ListBlockPostingsIterator<X extends Posting> implements BlockPostin
   }
 
   @Override
-  public IKeyBlock nextKeyBlock() {
+  public KeyBlock nextKeyBlock() {
     List<Integer> bufferedKeys = new ArrayList<>();
     for (int i = 0; i < blockSize && (keyReadPtr+i) < postings.size(); i++) {
       bufferedKeys.add(postings.get(keyReadPtr+i).getKey());
