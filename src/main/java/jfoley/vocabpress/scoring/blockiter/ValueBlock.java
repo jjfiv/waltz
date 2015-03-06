@@ -8,16 +8,18 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class ValueBlock<X extends Posting> extends AbstractList<X> {
+public class ValueBlock<X extends Posting> implements IValueBlock {
   private final List<X> vals;
 
   public ValueBlock(List<X> vals) {
     this.vals = vals;
   }
-  public int min() {
+  @Override
+  public int minKey() {
     return vals.get(0).getKey();
   }
-  public int max() {
+  @Override
+  public int maxKey() {
     return vals.get(vals.size()-1).getKey();
   }
 
@@ -26,7 +28,7 @@ public class ValueBlock<X extends Posting> extends AbstractList<X> {
     return vals.size();
   }
   @Override
-  public X get(int index) {
+  public X getValue(int index) {
     return vals.get(index);
   }
 }
