@@ -1,7 +1,5 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
-import jfoley.vocabpress.scoring.Posting;
-
 /**
  * @author jfoley
  */
@@ -13,6 +11,12 @@ public interface Mover extends Comparable<Mover> {
   public int maxKey();
   /** The current key it has access to. */
   public int currentKey();
+
+  /**
+   * An estimated, minimum key it might have access to, or might not match.
+   * Unlike currentKey(), this function should not change any internal state!
+   */
+  public int estimateKeyLowerBound();
 
   /** returns true if it is done */
   public boolean isDone();

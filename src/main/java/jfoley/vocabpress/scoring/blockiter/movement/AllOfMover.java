@@ -1,5 +1,8 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import ciir.jfoley.chai.collections.util.ListFns;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,8 +13,12 @@ public class AllOfMover implements Mover {
   private final List<Mover> children;
 
   public AllOfMover(List<Mover> children) {
-    this.children = children;
+    this.children = ListFns.ensureRandomAccess(children);
     findMatch();
+  }
+
+  public static AllOfMover of(Mover... children) {
+    return new AllOfMover(Arrays.asList(children));
   }
 
   private int findNextPossibleMatch() {
@@ -54,6 +61,19 @@ public class AllOfMover implements Mover {
   @Override
   public int currentKey() {
     return findMatch();
+  }
+
+  /**
+   * Estimate where the next hit might be based on what children can tell us without moving themselves.
+   * This gives us lazy-evaluation of OR(AND(x,y), AND(x,z)) stuff.
+   */
+  @Override
+  public int estimateKeyLowerBound() {
+    int maxCandidate = 0;
+    for (Mover child : children) {
+      maxCandidate = Math.max(maxCandidate, child.estimateKeyLowerBound());
+    }
+    return maxCandidate;
   }
 
   @Override

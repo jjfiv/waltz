@@ -2,6 +2,7 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.collections.util.ListFns;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,6 +16,10 @@ public class AnyOfMover implements Mover {
     this.children = ListFns.ensureRandomAccess(movers);
   }
 
+  public static AnyOfMover of(Mover... children) {
+    return new AnyOfMover(Arrays.asList(children));
+  }
+
   @Override
   public int maxKey() {
     int max = Integer.MIN_VALUE;
@@ -26,9 +31,25 @@ public class AnyOfMover implements Mover {
 
   @Override
   public int currentKey() {
-    int min = Integer.MAX_VALUE;
+    // In case one of our children is an AnyOf, we ask it to estimate a hit:
+    // This gives us the "short-circuit" evaluation of currentKey that we expect from languages.
+    int minEstimated = estimateKeyLowerBound();
+
+    // We know that this is a lower-bound on the key to expect.
+    int min = minEstimated;
     for (Mover child : children) {
       min = Math.min(min, child.currentKey());
+      // if we found a key that is our estimate, short-circuit the evaluation of currentKey();
+      if(min == minEstimated) return min;
+    }
+    return min;
+  }
+
+  @Override
+  public int estimateKeyLowerBound() {
+    int min = Integer.MAX_VALUE;
+    for (Mover child : children) {
+      min = Math.min(min, child.estimateKeyLowerBound());
     }
     return min;
   }

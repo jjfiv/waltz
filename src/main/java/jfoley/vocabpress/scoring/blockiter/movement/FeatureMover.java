@@ -57,6 +57,15 @@ public class FeatureMover<X extends Posting> implements Mover, Feature<X> {
     return currentKeyBlock.getKey(index);
   }
 
+  /**
+   * Features shouldn't need to estimate, they are always exact.
+   */
+  @Override
+  public int estimateKeyLowerBound() {
+    return currentKey();
+  }
+
+
   @Override
   public boolean isDone() {
     //System.out.println("isDone("+(currentKeyBlock == null)+")");
