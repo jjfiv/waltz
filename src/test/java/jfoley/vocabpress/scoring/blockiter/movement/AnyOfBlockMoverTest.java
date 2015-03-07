@@ -1,5 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import ciir.jfoley.chai.fn.TransformFn;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class AnyOfBlockMoverTest {
 
 	@Test
-	public void testIsDone() throws Exception {
+	public void testSimple() throws Exception {
 		BlockPostingsIterator<CountPosting> lhsData = new ListBlockPostingsIterator<>(Arrays.asList(
 			new SimpleCountPosting(1, 1),
 			new SimpleCountPosting(3, 3),
@@ -36,13 +37,9 @@ public class AnyOfBlockMoverTest {
 		AnyOfBlockMover mover = new AnyOfBlockMover(Arrays.asList(lhs, rhs));
 
 		List<Integer> hits = new ArrayList<>();
-		int total = 0;
 		for(; !mover.isDone(); mover.nextBlock()) {
 			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
 				int doc = mover.currentKey();
-				//System.out.println(doc);
-
-				total++;
 				hits.add(doc);
 
 				if(lhs.hasFeature(doc)) {
@@ -61,11 +58,56 @@ public class AnyOfBlockMoverTest {
 			}
 		}
 
-		assertEquals(Arrays.asList(0,1,2,3,5,7,8,9), hits);
+		assertEquals(Arrays.asList(0, 1, 2, 3, 5, 7, 8, 9), hits);
 		assertTrue(lhs.isDoneWithBlock());
 		assertTrue(rhs.isDoneWithBlock());
 		assertTrue(rhs.isDone());
 		assertTrue(lhs.isDone());
-		assertEquals(8, total);
+	}
+
+	public static FeatureBlockMover<CountPosting> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
+		List<CountPosting> output = new ArrayList<>();
+		for (int docid : docids) {
+			output.add(new SimpleCountPosting(docid, mapper.transform(docid)));
+		}
+		return new FeatureBlockMover<>(new ListBlockPostingsIterator<>(output, 3));
+	}
+
+	@Test
+	public void testNested() throws Exception {
+
+		FeatureBlockMover<CountPosting> twos = forDocuments((x) -> x*2, 1,2,3,4,15);
+		FeatureBlockMover<CountPosting> threes = forDocuments((x) -> x*3, 3,4,5,6,20);
+		FeatureBlockMover<CountPosting> fours = forDocuments((x) -> x*4, 7,8,9,10,30);
+
+		AnyOfBlockMover twothree = AnyOfBlockMover.of(twos, threes);
+		AnyOfBlockMover mover = AnyOfBlockMover.of(twothree, twos, threes, fours);
+
+		List<Integer> hits = new ArrayList<>();
+		for(; !mover.isDone(); mover.nextBlock()) {
+			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
+				int doc = mover.currentKey();
+
+				hits.add(doc);
+
+				if(twos.hasFeature(doc)) {
+					CountPosting p = twos.getFeature(doc);
+					assertEquals(doc, p.getKey());
+					assertEquals(doc*2, p.getCount());
+				}
+				if(threes.hasFeature(doc)) {
+					CountPosting p = threes.getFeature(doc);
+					assertEquals(doc, p.getKey());
+					assertEquals(doc*3, p.getCount());
+				}
+				if(fours.hasFeature(doc)) {
+					CountPosting p = fours.getFeature(doc);
+					assertEquals(doc, p.getKey());
+					assertEquals(doc*4, p.getCount());
+				}
+			}
+		}
+
+		assertEquals(Arrays.asList(1,2,3,4,5,6,7,8,9,10,15,20,30), hits);
 	}
 }

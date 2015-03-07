@@ -28,4 +28,7 @@ public interface BlockMover {
 
 	/** Move past the given posting-key */
 	public void movePast(int key);
+
+	/** rewind the current block */
+	public void rewind();
 }

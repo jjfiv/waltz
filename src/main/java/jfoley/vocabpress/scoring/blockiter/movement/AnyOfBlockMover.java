@@ -3,6 +3,8 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 import ciir.jfoley.chai.collections.util.ListFns;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public class AnyOfBlockMover implements BlockMover {
 
 	public AnyOfBlockMover(List<BlockMover> children) {
 		this.children = ListFns.ensureRandomAccess(children);
+		assert(children.size() == new HashSet<>(children).size());
 		loadNewCurrentBlock();
 	}
 
@@ -43,10 +46,14 @@ public class AnyOfBlockMover implements BlockMover {
 	private void loadNewCurrentBlock() {
 		this.currentBlock = null;
 		this.index = 0;
+		this.lastKey = Mover.DONE_ID;
 
 		// find the first of the children's last keys ; the others need new blocks to be sure.
 		// find the first of any child's keys.
 		int lastKey = findLastKey();
+		if(lastKey == Mover.DONE_ID) {
+			return;
+		}
 
 		List<Integer> ids = new ArrayList<>();
 		while(true) {
@@ -59,11 +66,13 @@ public class AnyOfBlockMover implements BlockMover {
 			ids.add(minimumChildKey);
 			for (BlockMover child : children) {
 				child.movePast(minimumChildKey);
+				assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
 			}
 
 			if(minimumChildKey == lastKey) {
 				for (BlockMover child : children) {
 					assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
+					child.rewind(); // reset this child so it can be used in another subtree!
 				}
 				break;
 			}
@@ -81,6 +90,7 @@ public class AnyOfBlockMover implements BlockMover {
 	@Override
 	public int currentKey() {
 		if(isDone()) return Mover.DONE_ID;
+		if(isDoneWithBlock()) return maxKey()+1;
 		return currentBlock.get(index);
 	}
 
@@ -97,20 +107,12 @@ public class AnyOfBlockMover implements BlockMover {
 	@Override
 	public void nextBlock() {
 		for (BlockMover child : children) {
-			assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
-		}
-
-		for (int i = 0; i < children.size(); i++) {
-			BlockMover child = children.get(i);
-			//System.out.printf("nextBlock.%d.isDoneWithBlock=%s\n",i,child.isDoneWithBlock());
-
-
 			child.movePast(lastKey);
+			assert (child.isDoneWithBlock() || child.currentKey() > lastKey);
+
 			if (child.isDoneWithBlock()) {
-				//System.out.println("isDoneWithBlock->nextBlock!");
 				child.nextBlock();
 			}
-			assert (child.maxKey() > lastKey);
 		}
 
 		loadNewCurrentBlock();
@@ -135,5 +137,14 @@ public class AnyOfBlockMover implements BlockMover {
 	@Override
 	public void movePast(int key) {
 		moveTo(key+1);
+	}
+
+	@Override
+	public void rewind() {
+		index = 0;
+	}
+
+	public static AnyOfBlockMover of(BlockMover... childs) {
+		return new AnyOfBlockMover(Arrays.asList(childs));
 	}
 }

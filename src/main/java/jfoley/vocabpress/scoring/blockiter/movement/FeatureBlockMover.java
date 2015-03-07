@@ -28,7 +28,7 @@ public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature
 	@Override
 	public int currentKey() {
 		if(isDone()) return Mover.DONE_ID;
-		if(isDoneWithBlock()) return maxKey();
+		if(isDoneWithBlock()) return maxKey()+1;
 		return currentBlock.getKey(index);
 	}
 
@@ -56,15 +56,32 @@ public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature
 
 	@Override
 	public void moveTo(int key) {
-		if(isDone()) return;
+		if(isDoneWithBlock()) return;
 		for(; index < currentBlock.size(); index++) {
 			if(currentBlock.getKey(index) >= key) break;
 		}
+		if(currentKey() < key) {
+			System.out.println("currentKey:"+currentKey());
+			System.out.println("key:"+key);
+			System.out.println("index:"+index);
+			System.out.println("currentBlock:"+currentBlock);
+			System.out.println("currentBlock.size:"+currentBlock.size());
+		}
+		assert(currentKey() >= key);
 	}
 
 	@Override
 	public void movePast(int key) {
+		if(isDoneWithBlock()) return;
 		moveTo(key+1);
+		assert(currentKey() > key);
+	}
+
+	@Override
+	public void rewind() {
+		if(isDone()) return;
+		index = 0;
+		assert(currentKey() == currentBlock.getKey(0));
 	}
 
 	@Override
