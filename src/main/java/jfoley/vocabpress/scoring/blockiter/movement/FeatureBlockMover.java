@@ -54,23 +54,6 @@ public class FeatureBlockMover<X extends Posting> extends ABlockMover implements
 	}
 
 	@Override
-	public void moveTo(int key) {
-		if(isDoneWithBlock()) return;
-		for(; index < currentBlock.size(); index++) {
-			if(currentBlock.getKey(index) >= key) break;
-		}
-		if(currentKey() < key) {
-			System.out.println("currentKey:"+currentKey());
-			System.out.println("key:"+key);
-			System.out.println("index:"+index);
-			System.out.println("currentBlock:"+currentBlock);
-			System.out.println("currentBlock.size:"+currentBlock.size());
-		}
-		assert(currentKey() >= key);
-	}
-
-
-	@Override
 	public boolean hasFeature(int key) {
 		return !isDoneWithBlock() && currentKey() == key;
 	}

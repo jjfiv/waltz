@@ -25,6 +25,19 @@ public abstract class ABlockMover implements BlockMover {
 	}
 
 	@Override
+	public void moveTo(int key) {
+		if(isDoneWithBlock()) return;
+		if(key > maxKey()) {
+			index = blockSize();
+			return;
+		}
+		for(; index < blockSize(); index++) {
+			if(currentKey() >= key) break;
+		}
+		assert(currentKey() >= key);
+	}
+
+	@Override
 	public void movePast(int key) {
 		if(isDoneWithBlock()) return;
 		moveTo(key+1);
