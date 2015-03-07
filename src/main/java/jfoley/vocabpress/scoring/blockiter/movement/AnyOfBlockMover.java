@@ -1,5 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;
 
 import java.util.ArrayList;
@@ -18,12 +19,12 @@ public class AnyOfBlockMover extends AChildrenBlockMover {
 		return new AnyOfBlockMover(Arrays.asList(childs));
 	}
 
-	protected void loadKeysFromChildren(int minKey, int lastKey) {
+	protected IKeyBlock loadKeysFromChildren() {
 		List<Integer> ids = new ArrayList<>();
 		while(true) {
 			int minimumChildKey = findMinimumKey();
 			if(minimumChildKey == DONE_ID) {
-				return;
+				return null;
 			}
 
 			// Add and move past the current key.
@@ -34,33 +35,10 @@ public class AnyOfBlockMover extends AChildrenBlockMover {
 			}
 
 			if(minimumChildKey == lastKey) {
-				for (BlockMover child : children) {
-					assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
-					child.rewind(minKey); // reset this child so it can be used in another subtree!
-				}
 				break;
 			}
 		}
 
-		this.lastKey = lastKey;
-		this.currentBlock = new KeyBlock(ids);
+		return new KeyBlock(ids);
 	}
-
-	protected void loadNewCurrentBlock() {
-		this.currentBlock = null;
-		this.index = 0;
-		this.lastKey = DONE_ID;
-
-		// find the first of any child's keys.
-		int lastKey = findLastKey();
-		if(lastKey == DONE_ID) {
-			return;
-		}
-
-		int originalMinimum = findMinimumKey();
-		loadKeysFromChildren(originalMinimum, lastKey);
-		assert(this.lastKey == lastKey);
-		assert(this.currentBlock != null);
-	}
-
 }

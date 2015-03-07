@@ -1,6 +1,7 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.collections.util.ListFns;
+import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,27 @@ public abstract class AChildrenBlockMover extends ABlockMover {
 		loadNewCurrentBlock();
 	}
 
-	protected abstract void loadNewCurrentBlock();
+	protected void loadNewCurrentBlock() {
+		this.currentBlock = null;
+		this.index = 0;
+		this.lastKey = DONE_ID;
+
+		// find the first of any child's keys.
+		int lastKey = findLastKey();
+		if(lastKey == DONE_ID) {
+			return;
+		}
+
+		int originalMinimum = findMinimumKey();
+		this.lastKey = lastKey;
+		this.currentBlock = loadKeysFromChildren();
+
+		for (BlockMover child : children) {
+			assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
+			child.rewind(originalMinimum); // reset this child so it can be used in another subtree!
+		}
+	}
+
+	protected abstract IKeyBlock loadKeysFromChildren();
 
 }

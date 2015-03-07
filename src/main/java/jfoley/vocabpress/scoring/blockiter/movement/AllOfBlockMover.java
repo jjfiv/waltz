@@ -1,5 +1,9 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
+import jfoley.vocabpress.scoring.blockiter.KeyBlock;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,17 +19,50 @@ public class AllOfBlockMover extends AChildrenBlockMover {
 		super(children);
 	}
 
-	protected void loadNewCurrentBlock() {
-		this.currentBlock = null;
-		this.index = 0;
-		this.lastKey = DONE_ID;
-
-		// find the first of the children's last keys ; the others need new blocks to be sure.
-		// find the first of any child's keys.
-		int lastKey = findLastKey();
-		if(lastKey == DONE_ID) {
-			return;
+	private int findMaxCurrentKey() {
+		int maxCurrent = children.get(0).currentKey();
+		for (int i = 1; i < children.size(); i++) {
+			BlockMover child = children.get(i);
+			maxCurrent = Math.max(child.currentKey(), maxCurrent);
 		}
+		return maxCurrent;
+	}
+
+	@Override
+	protected IKeyBlock loadKeysFromChildren() {
+		List<Integer> ids = new ArrayList<>();
+		while(true) {
+			int targetKey = findMaxCurrentKey();
+			if(targetKey == DONE_ID) {
+				return null;
+			}
+
+			// See if everyone has that key:
+			boolean isHit = true;
+			for (BlockMover child : children) {
+				child.moveTo(targetKey);
+				if(child.currentKey() != targetKey) {
+					isHit = false;
+					break;
+				}
+			}
+
+			if(isHit) {
+				ids.add(targetKey);
+			}
+
+			// Add and move past the current key.
+			for (BlockMover child : children) {
+				child.movePast(targetKey);
+				assert(child.isDoneWithBlock() || child.currentKey() > targetKey);
+			}
+
+			if(targetKey >= lastKey) {
+				break;
+			}
+		}
+
+		return new KeyBlock(ids);
 	}
 
 }
