@@ -6,6 +6,6 @@ import jfoley.vocabpress.scoring.Posting;
  * @author jfoley
  */
 public interface Feature<X extends Posting> {
-  public boolean hasFeature(int id);
-  public X getFeature(int id);
+  public boolean hasFeature(int key);
+  public X getFeature(int key);
 }
