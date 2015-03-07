@@ -5,6 +5,9 @@ package jfoley.vocabpress.scoring.blockiter.movement;
  */
 public interface BlockMover {
 
+	/** We use Integer.MAX_VALUE here so that we can determine the next in AnyOf and AllOf by using min() */
+	public static final int DONE_ID = Integer.MAX_VALUE;
+
 	/** The max key in the current block. */
 	public int maxKey();
 

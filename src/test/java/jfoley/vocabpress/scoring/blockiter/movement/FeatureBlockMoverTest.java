@@ -25,7 +25,6 @@ public class FeatureBlockMoverTest {
 		for(; !mover.isDone(); mover.nextBlock()) {
 			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
 				int doc = mover.currentKey();
-				System.out.println(doc);
 
 				total++;
 				assertTrue(mover.hasFeature(doc));

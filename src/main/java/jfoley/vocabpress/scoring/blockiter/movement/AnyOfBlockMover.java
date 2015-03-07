@@ -44,12 +44,12 @@ public class AnyOfBlockMover extends ABlockMover {
 	private void loadNewCurrentBlock() {
 		this.currentBlock = null;
 		this.index = 0;
-		this.lastKey = Mover.DONE_ID;
+		this.lastKey = DONE_ID;
 
 		// find the first of the children's last keys ; the others need new blocks to be sure.
 		// find the first of any child's keys.
 		int lastKey = findLastKey();
-		if(lastKey == Mover.DONE_ID) {
+		if(lastKey == DONE_ID) {
 			return;
 		}
 
@@ -58,7 +58,7 @@ public class AnyOfBlockMover extends ABlockMover {
 		List<Integer> ids = new ArrayList<>();
 		while(true) {
 			int minimumChildKey = findMinimumKey();
-			if(minimumChildKey == Mover.DONE_ID) {
+			if(minimumChildKey == DONE_ID) {
 				return;
 			}
 

@@ -11,7 +11,7 @@ public abstract class ABlockMover implements BlockMover {
 
 	@Override
 	public int maxKey() {
-		if(isDone()) return Mover.DONE_ID;
+		if(isDone()) return DONE_ID;
 		return currentBlock.maxKey();
 	}
 
@@ -27,7 +27,7 @@ public abstract class ABlockMover implements BlockMover {
 
 	@Override
 	public int currentKey() {
-		if(isDone()) return Mover.DONE_ID;
+		if(isDone()) return DONE_ID;
 		if(isDoneWithBlock()) return maxKey()+1;
 		return currentBlock.getKey(index);
 	}
