@@ -2,7 +2,6 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 
 import jfoley.vocabpress.scoring.Posting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
-import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.IValueBlock;
 
 /**
@@ -10,40 +9,11 @@ import jfoley.vocabpress.scoring.blockiter.IValueBlock;
  */
 public class FeatureBlockMover<X extends Posting> extends ABlockMover implements Feature<X> {
 	private final BlockPostingsIterator<X> iter;
-	private IKeyBlock currentBlock;
 	private IValueBlock<X> valueBlock;
 
 	public FeatureBlockMover(BlockPostingsIterator<X> iter) {
 		this.iter = iter;
 		nextBlock();
-	}
-
-	@Override
-	public int blockSize() {
-		return currentBlock.size();
-	}
-
-	@Override
-	public int maxKey() {
-		if(isDone()) return Mover.DONE_ID;
-		return currentBlock.maxKey();
-	}
-
-	@Override
-	public int currentKey() {
-		if(isDone()) return Mover.DONE_ID;
-		if(isDoneWithBlock()) return maxKey()+1;
-		return currentBlock.getKey(index);
-	}
-
-	@Override
-	public boolean isDone() {
-		return currentBlock == null;
-	}
-
-	@Override
-	public boolean isDoneWithBlock() {
-		return isDone() || index >= currentBlock.size();
 	}
 
 	@Override

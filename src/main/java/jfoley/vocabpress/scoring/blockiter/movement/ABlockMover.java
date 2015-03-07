@@ -1,16 +1,35 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
+
 /**
  * @author jfoley.
  */
 public abstract class ABlockMover implements BlockMover {
+	protected IKeyBlock currentBlock;
 	protected int index;
 
-	public abstract int blockSize();
+	@Override
+	public int maxKey() {
+		if(isDone()) return Mover.DONE_ID;
+		return currentBlock.maxKey();
+	}
 
 	@Override
 	public boolean isDoneWithBlock() {
-		return isDone() || index >= blockSize();
+		return isDone() || index >= currentBlock.size();
+	}
+
+	@Override
+	public boolean isDone() {
+		return currentBlock == null;
+	}
+
+	@Override
+	public int currentKey() {
+		if(isDone()) return Mover.DONE_ID;
+		if(isDoneWithBlock()) return maxKey()+1;
+		return currentBlock.getKey(index);
 	}
 
 	@Override
@@ -28,10 +47,10 @@ public abstract class ABlockMover implements BlockMover {
 	public void moveTo(int key) {
 		if(isDoneWithBlock()) return;
 		if(key > maxKey()) {
-			index = blockSize();
+			index = currentBlock.size();
 			return;
 		}
-		for(; index < blockSize(); index++) {
+		for(; index < currentBlock.size(); index++) {
 			if(currentKey() >= key) break;
 		}
 		assert(currentKey() >= key);

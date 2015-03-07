@@ -1,7 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.collections.util.ListFns;
-import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;
 
 import java.util.ArrayList;
@@ -16,8 +15,6 @@ public class AnyOfBlockMover extends ABlockMover {
 
 	private final List<BlockMover> children;
 	protected int lastKey;
-	protected IKeyBlock currentBlock;
-
 
 	public AnyOfBlockMover(List<BlockMover> children) {
 		this.children = ListFns.ensureRandomAccess(children);
@@ -81,33 +78,6 @@ public class AnyOfBlockMover extends ABlockMover {
 
 		this.lastKey = lastKey;
 		this.currentBlock = new KeyBlock(ids);
-	}
-
-	@Override
-	public int maxKey() {
-		return lastKey;
-	}
-
-	@Override
-	public int currentKey() {
-		if(isDone()) return Mover.DONE_ID;
-		if(isDoneWithBlock()) return maxKey()+1;
-		return currentBlock.getKey(index);
-	}
-
-	@Override
-	public boolean isDone() {
-		return currentBlock == null;
-	}
-
-	@Override
-	public int blockSize() {
-		return currentBlock.size();
-	}
-
-	@Override
-	public boolean isDoneWithBlock() {
-		return isDone() || index >= currentBlock.size();
 	}
 
 	@Override
