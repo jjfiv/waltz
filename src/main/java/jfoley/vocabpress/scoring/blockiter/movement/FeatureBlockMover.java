@@ -45,11 +45,6 @@ public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature
 	@Override
 	public void nextBlock() {
 		this.currentBlock = iter.nextKeyBlock();
-		if(currentBlock != null) {
-			System.out.println("FeatureBlockMover::nextBlock " + currentBlock.minKey() + ", " + currentBlock.maxKey());
-		} else {
-			System.out.println("FeatureBlockMover::nextBlock now done!");
-		}
 		this.valueBlock = null;
 		this.index = 0;
 	}

@@ -25,8 +25,9 @@ public class AnyOfBlockMover implements BlockMover {
 		int minimumChildKey = children.get(0).currentKey();
 		for (int i = 1; i < children.size(); i++) {
 			BlockMover child = children.get(i);
-			minimumChildKey = Math.min(minimumChildKey, child.maxKey());
+			minimumChildKey = Math.min(minimumChildKey, child.currentKey());
 		}
+		//System.out.println("Found Minimum Key: "+minimumChildKey);
 		return minimumChildKey;
 	}
 
@@ -101,12 +102,12 @@ public class AnyOfBlockMover implements BlockMover {
 
 		for (int i = 0; i < children.size(); i++) {
 			BlockMover child = children.get(i);
-			System.out.printf("nextBlock.%d.isDoneWithBlock=%s\n",i,child.isDoneWithBlock());
+			//System.out.printf("nextBlock.%d.isDoneWithBlock=%s\n",i,child.isDoneWithBlock());
 
 
 			child.movePast(lastKey);
 			if (child.isDoneWithBlock()) {
-				System.out.println("isDoneWithBlock->nextBlock!");
+				//System.out.println("isDoneWithBlock->nextBlock!");
 				child.nextBlock();
 			}
 			assert (child.maxKey() > lastKey);

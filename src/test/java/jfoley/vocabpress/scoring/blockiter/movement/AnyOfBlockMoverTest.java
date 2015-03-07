@@ -35,12 +35,12 @@ public class AnyOfBlockMoverTest {
 		FeatureBlockMover<CountPosting> rhs = new FeatureBlockMover<>(rhsData);
 		AnyOfBlockMover mover = new AnyOfBlockMover(Arrays.asList(lhs, rhs));
 
-		List<Integer> hits = new ArrayList<Integer>();
+		List<Integer> hits = new ArrayList<>();
 		int total = 0;
 		for(; !mover.isDone(); mover.nextBlock()) {
 			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
 				int doc = mover.currentKey();
-				System.out.println(doc);
+				//System.out.println(doc);
 
 				total++;
 				hits.add(doc);
