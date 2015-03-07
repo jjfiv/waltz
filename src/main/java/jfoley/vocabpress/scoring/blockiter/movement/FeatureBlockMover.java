@@ -8,15 +8,19 @@ import jfoley.vocabpress.scoring.blockiter.IValueBlock;
 /**
  * @author jfoley.
  */
-public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature<X> {
+public class FeatureBlockMover<X extends Posting> extends ABlockMover implements Feature<X> {
 	private final BlockPostingsIterator<X> iter;
 	private IKeyBlock currentBlock;
 	private IValueBlock<X> valueBlock;
-	private int index;
 
 	public FeatureBlockMover(BlockPostingsIterator<X> iter) {
 		this.iter = iter;
 		nextBlock();
+	}
+
+	@Override
+	public int blockSize() {
+		return currentBlock.size();
 	}
 
 	@Override
@@ -50,11 +54,6 @@ public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature
 	}
 
 	@Override
-	public void nextKey() {
-		this.index++;
-	}
-
-	@Override
 	public void moveTo(int key) {
 		if(isDoneWithBlock()) return;
 		for(; index < currentBlock.size(); index++) {
@@ -70,23 +69,10 @@ public class FeatureBlockMover<X extends Posting> implements BlockMover, Feature
 		assert(currentKey() >= key);
 	}
 
-	@Override
-	public void movePast(int key) {
-		if(isDoneWithBlock()) return;
-		moveTo(key+1);
-		assert(currentKey() > key);
-	}
-
-	@Override
-	public void rewind() {
-		if(isDone()) return;
-		index = 0;
-		assert(currentKey() == currentBlock.getKey(0));
-	}
 
 	@Override
 	public boolean hasFeature(int key) {
-		return !isDone() && !isDoneWithBlock() && currentKey() == key;
+		return !isDoneWithBlock() && currentKey() == key;
 	}
 
 	@Override

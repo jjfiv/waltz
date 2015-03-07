@@ -10,12 +10,11 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public class AnyOfBlockMover implements BlockMover {
+public class AnyOfBlockMover extends ABlockMover {
 
 	private final List<BlockMover> children;
 	protected int lastKey;
 	protected List<Integer> currentBlock;
-	protected int index;
 
 
 	public AnyOfBlockMover(List<BlockMover> children) {
@@ -100,6 +99,11 @@ public class AnyOfBlockMover implements BlockMover {
 	}
 
 	@Override
+	public int blockSize() {
+		return currentBlock.size();
+	}
+
+	@Override
 	public boolean isDoneWithBlock() {
 		return isDone() || index >= currentBlock.size();
 	}
@@ -119,11 +123,6 @@ public class AnyOfBlockMover implements BlockMover {
 	}
 
 	@Override
-	public void nextKey() {
-		index++;
-	}
-
-	@Override
 	public void moveTo(int key) {
 		if(isDone()) return;
 		if(key > lastKey) {
@@ -132,11 +131,6 @@ public class AnyOfBlockMover implements BlockMover {
 		for(; index < currentBlock.size(); index++) {
 			if(currentBlock.get(index) >= key) break;
 		}
-	}
-
-	@Override
-	public void movePast(int key) {
-		moveTo(key+1);
 	}
 
 	@Override
