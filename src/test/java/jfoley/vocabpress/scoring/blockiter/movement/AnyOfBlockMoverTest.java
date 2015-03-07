@@ -37,24 +37,22 @@ public class AnyOfBlockMoverTest {
 		AnyOfBlockMover mover = new AnyOfBlockMover(Arrays.asList(lhs, rhs));
 
 		List<Integer> hits = new ArrayList<>();
-		for(; !mover.isDone(); mover.nextBlock()) {
-			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
-				int doc = mover.currentKey();
-				hits.add(doc);
+		for(; !mover.isDone(); mover.next()) {
+			int doc = mover.currentKey();
+			hits.add(doc);
 
-				if(lhs.hasFeature(doc)) {
-					CountPosting lcount = lhs.getFeature(doc);
-					assertEquals(doc, lcount.getKey());
-					assertEquals(doc, lcount.getCount());
-				}
-				if(rhs.hasFeature(doc)) {
-					CountPosting rcount = rhs.getFeature(doc);
-					assertEquals(doc, rcount.getKey());
-					assertEquals(doc*2, rcount.getCount());
-				}
-				if(lhs.hasFeature(doc) && rhs.hasFeature(doc)) {
-					assertEquals(5, doc);
-				}
+			if(lhs.hasFeature(doc)) {
+				CountPosting lcount = lhs.getFeature(doc);
+				assertEquals(doc, lcount.getKey());
+				assertEquals(doc, lcount.getCount());
+			}
+			if(rhs.hasFeature(doc)) {
+				CountPosting rcount = rhs.getFeature(doc);
+				assertEquals(doc, rcount.getKey());
+				assertEquals(doc*2, rcount.getCount());
+			}
+			if(lhs.hasFeature(doc) && rhs.hasFeature(doc)) {
+				assertEquals(5, doc);
 			}
 		}
 
@@ -84,27 +82,25 @@ public class AnyOfBlockMoverTest {
 		AnyOfBlockMover mover = AnyOfBlockMover.of(twothree, twos, threes, fours);
 
 		List<Integer> hits = new ArrayList<>();
-		for(; !mover.isDone(); mover.nextBlock()) {
-			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
-				int doc = mover.currentKey();
+		for(; !mover.isDone(); mover.next()) {
+			int doc = mover.currentKey();
 
-				hits.add(doc);
+			hits.add(doc);
 
-				if(twos.hasFeature(doc)) {
-					CountPosting p = twos.getFeature(doc);
-					assertEquals(doc, p.getKey());
-					assertEquals(doc*2, p.getCount());
-				}
-				if(threes.hasFeature(doc)) {
-					CountPosting p = threes.getFeature(doc);
-					assertEquals(doc, p.getKey());
-					assertEquals(doc*3, p.getCount());
-				}
-				if(fours.hasFeature(doc)) {
-					CountPosting p = fours.getFeature(doc);
-					assertEquals(doc, p.getKey());
-					assertEquals(doc*4, p.getCount());
-				}
+			if(twos.hasFeature(doc)) {
+				CountPosting p = twos.getFeature(doc);
+				assertEquals(doc, p.getKey());
+				assertEquals(doc*2, p.getCount());
+			}
+			if(threes.hasFeature(doc)) {
+				CountPosting p = threes.getFeature(doc);
+				assertEquals(doc, p.getKey());
+				assertEquals(doc*3, p.getCount());
+			}
+			if(fours.hasFeature(doc)) {
+				CountPosting p = fours.getFeature(doc);
+				assertEquals(doc, p.getKey());
+				assertEquals(doc*4, p.getCount());
 			}
 		}
 

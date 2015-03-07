@@ -22,17 +22,14 @@ public class FeatureBlockMoverTest {
 		FeatureBlockMover<CountPosting> mover = new FeatureBlockMover<>(new ListBlockPostingsIterator<>(data, 3));
 
 		int total = 0;
-		for(; !mover.isDone(); mover.nextBlock()) {
-			for(; !mover.isDoneWithBlock(); mover.nextKey()) {
-				int doc = mover.currentKey();
+		for(; !mover.isDone(); mover.next()) {
+			int doc = mover.currentKey();
 
-				total++;
-				assertTrue(mover.hasFeature(doc));
-				CountPosting count = mover.getFeature(doc);
-				assertEquals(doc, count.getKey());
-				assertEquals(doc*2, count.getCount());
-			}
-			assertTrue(mover.isDoneWithBlock());
+			total++;
+			assertTrue(mover.hasFeature(doc));
+			CountPosting count = mover.getFeature(doc);
+			assertEquals(doc, count.getKey());
+			assertEquals(doc*2, count.getCount());
 		}
 
 		assertEquals(100, total);

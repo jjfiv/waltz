@@ -26,6 +26,19 @@ public abstract class ABlockMover implements BlockMover {
 	}
 
 	@Override
+	public void next() {
+		if(!isDoneWithBlock()) {
+			nextKey();
+		}
+		if(isDoneWithBlock()) {
+			if (!isDone()) {
+				nextBlock();
+				return;
+			}
+		}
+	}
+
+	@Override
 	public int currentKey() {
 		if(isDone()) return DONE_ID;
 		if(isDoneWithBlock()) return maxKey()+1;

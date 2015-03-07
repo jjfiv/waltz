@@ -17,6 +17,9 @@ public interface BlockMover {
 	/** returns true if it is done */
 	public boolean isDone();
 
+	/** Abstracts the block movement away from a user perspective */
+	public void next();
+
 	/** returns true if we've consumed all of the current block */
 	public boolean isDoneWithBlock();
 
