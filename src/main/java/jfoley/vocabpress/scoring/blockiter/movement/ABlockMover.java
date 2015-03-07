@@ -38,9 +38,10 @@ public abstract class ABlockMover implements BlockMover {
 	}
 
 	@Override
-	public void rewind() {
+	public void rewind(int value) {
 		if(isDone()) return;
 		index = 0;
+		moveTo(value);
 	}
 
 	@Override

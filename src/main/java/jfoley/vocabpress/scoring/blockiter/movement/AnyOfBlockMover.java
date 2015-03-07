@@ -53,6 +53,8 @@ public class AnyOfBlockMover extends ABlockMover {
 			return;
 		}
 
+		int originalMinimum = findMinimumKey();
+
 		List<Integer> ids = new ArrayList<>();
 		while(true) {
 			int minimumChildKey = findMinimumKey();
@@ -70,7 +72,7 @@ public class AnyOfBlockMover extends ABlockMover {
 			if(minimumChildKey == lastKey) {
 				for (BlockMover child : children) {
 					assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
-					child.rewind(); // reset this child so it can be used in another subtree!
+					child.rewind(originalMinimum); // reset this child so it can be used in another subtree!
 				}
 				break;
 			}
