@@ -1,7 +1,7 @@
 package jfoley.vocabpress.feature;
 
-import jfoley.vocabpress.movement.ABlockMover;
-import jfoley.vocabpress.movement.BlockMover;
+import jfoley.vocabpress.movement.AMover;
+import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.scoring.Posting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.IValueBlock;
@@ -9,11 +9,11 @@ import jfoley.vocabpress.scoring.blockiter.IValueBlock;
 /**
  * @author jfoley.
  */
-public class FeatureBlockMover<X extends Posting> extends ABlockMover implements Feature<X> {
+public class FeatureMover<X extends Posting> extends AMover implements Feature<X> {
 	private final BlockPostingsIterator<X> iter;
 	private IValueBlock<X> valueBlock;
 
-	public FeatureBlockMover(BlockPostingsIterator<X> iter) {
+	public FeatureMover(BlockPostingsIterator<X> iter) {
 		this.iter = iter;
 		nextBlock();
 	}
@@ -42,7 +42,7 @@ public class FeatureBlockMover<X extends Posting> extends ABlockMover implements
 	}
 
   @Override
-  public BlockMover getMover() {
+  public Mover getMover() {
     return this;
   }
 }

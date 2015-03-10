@@ -10,19 +10,19 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public class AllOfBlockMover extends AChildrenBlockMover {
+public class AllOfMover extends AChildrenMover {
 
-	public static AllOfBlockMover of(BlockMover... childs) {
-		return new AllOfBlockMover(Arrays.asList(childs));
+	public static AllOfMover of(Mover... childs) {
+		return new AllOfMover(Arrays.asList(childs));
 	}
-	public AllOfBlockMover(List<BlockMover> children) {
+	public AllOfMover(List<Mover> children) {
 		super(children);
 	}
 
 	private int findMaxCurrentKey() {
 		int maxCurrent = children.get(0).currentKey();
 		for (int i = 1; i < children.size(); i++) {
-			BlockMover child = children.get(i);
+			Mover child = children.get(i);
 			maxCurrent = Math.max(child.currentKey(), maxCurrent);
 		}
 		return maxCurrent;
@@ -39,7 +39,7 @@ public class AllOfBlockMover extends AChildrenBlockMover {
 
 			// See if everyone has that key:
 			boolean isHit = true;
-			for (BlockMover child : children) {
+			for (Mover child : children) {
 				child.moveTo(targetKey);
 				if(child.currentKey() != targetKey) {
 					isHit = false;
@@ -52,7 +52,7 @@ public class AllOfBlockMover extends AChildrenBlockMover {
 			}
 
 			// Add and move past the current key.
-			for (BlockMover child : children) {
+			for (Mover child : children) {
 				child.movePast(targetKey);
 				assert(child.isDoneWithBlock() || child.currentKey() > targetKey);
 			}

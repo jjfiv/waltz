@@ -1,8 +1,8 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.fn.TransformFn;
-import jfoley.vocabpress.movement.AnyOfBlockMover;
-import jfoley.vocabpress.feature.FeatureBlockMover;
+import jfoley.vocabpress.movement.AnyOfMover;
+import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AnyOfBlockMoverTest {
+public class AnyOfMoverTest {
 
 	@Test
 	public void testSimple() throws Exception {
@@ -34,9 +34,9 @@ public class AnyOfBlockMoverTest {
 			new SimpleCountPosting(8,16)
 		), 3);
 
-		FeatureBlockMover<CountPosting> lhs = new FeatureBlockMover<>(lhsData);
-		FeatureBlockMover<CountPosting> rhs = new FeatureBlockMover<>(rhsData);
-		AnyOfBlockMover mover = new AnyOfBlockMover(Arrays.asList(lhs, rhs));
+		FeatureMover<CountPosting> lhs = new FeatureMover<>(lhsData);
+		FeatureMover<CountPosting> rhs = new FeatureMover<>(rhsData);
+		AnyOfMover mover = new AnyOfMover(Arrays.asList(lhs, rhs));
 
 		List<Integer> hits = new ArrayList<>();
 		for(; !mover.isDone(); mover.next()) {
@@ -65,23 +65,23 @@ public class AnyOfBlockMoverTest {
 		assertTrue(lhs.isDone());
 	}
 
-	public static FeatureBlockMover<CountPosting> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
+	public static FeatureMover<CountPosting> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
 		List<CountPosting> output = new ArrayList<>();
 		for (int docid : docids) {
 			output.add(new SimpleCountPosting(docid, mapper.transform(docid)));
 		}
-		return new FeatureBlockMover<>(new ListBlockPostingsIterator<>(output, 3));
+		return new FeatureMover<>(new ListBlockPostingsIterator<>(output, 3));
 	}
 
 	@Test
 	public void testNested() throws Exception {
 
-		FeatureBlockMover<CountPosting> twos = forDocuments((x) -> x*2, 1,2,3,4,15);
-		FeatureBlockMover<CountPosting> threes = forDocuments((x) -> x*3, 3,4,5,6,20);
-		FeatureBlockMover<CountPosting> fours = forDocuments((x) -> x*4, 7,8,9,10,30);
+		FeatureMover<CountPosting> twos = forDocuments((x) -> x*2, 1,2,3,4,15);
+		FeatureMover<CountPosting> threes = forDocuments((x) -> x*3, 3,4,5,6,20);
+		FeatureMover<CountPosting> fours = forDocuments((x) -> x*4, 7,8,9,10,30);
 
-		AnyOfBlockMover twothree = AnyOfBlockMover.of(twos, threes);
-		AnyOfBlockMover mover = AnyOfBlockMover.of(twothree, twos, threes, fours);
+		AnyOfMover twothree = AnyOfMover.of(twos, threes);
+		AnyOfMover mover = AnyOfMover.of(twothree, twos, threes, fours);
 
 		List<Integer> hits = new ArrayList<>();
 		for(; !mover.isDone(); mover.next()) {

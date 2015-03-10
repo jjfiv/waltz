@@ -3,7 +3,7 @@ package jfoley.vocabpress.movement;
 /**
  * @author jfoley.
  */
-public interface BlockMover {
+public interface Mover {
 
 	/** We use Integer.MAX_VALUE here so that we can determine the next in AnyOf and AllOf by using min() */
 	public static final int DONE_ID = Integer.MAX_VALUE;

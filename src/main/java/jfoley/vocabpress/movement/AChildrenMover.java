@@ -9,11 +9,11 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public abstract class AChildrenBlockMover extends ABlockMover {
-	protected final List<BlockMover> children;
+public abstract class AChildrenMover extends AMover {
+	protected final List<Mover> children;
 	protected int lastKey;
 
-	public AChildrenBlockMover(List<BlockMover> children) {
+	public AChildrenMover(List<Mover> children) {
 		this.children = ListFns.ensureRandomAccess(children);
 		assert(children.size() == new HashSet<>(children).size());
 		loadNewCurrentBlock();
@@ -22,7 +22,7 @@ public abstract class AChildrenBlockMover extends ABlockMover {
 	protected int findLastKey() {
 		int lastKey = children.get(0).maxKey();
 		for (int i = 1; i < children.size(); i++) {
-			BlockMover child = children.get(i);
+			Mover child = children.get(i);
 			lastKey = Math.min(lastKey, child.maxKey());
 		}
 		return lastKey;
@@ -31,7 +31,7 @@ public abstract class AChildrenBlockMover extends ABlockMover {
 	protected int findMinimumKey() {
 		int minimumChildKey = children.get(0).currentKey();
 		for (int i = 1; i < children.size(); i++) {
-			BlockMover child = children.get(i);
+			Mover child = children.get(i);
 			minimumChildKey = Math.min(minimumChildKey, child.currentKey());
 		}
 		return minimumChildKey;
@@ -39,7 +39,7 @@ public abstract class AChildrenBlockMover extends ABlockMover {
 
 	@Override
 	public void nextBlock() {
-		for (BlockMover child : children) {
+		for (Mover child : children) {
 			child.movePast(lastKey);
 			assert (child.isDoneWithBlock() || child.currentKey() > lastKey);
 
@@ -65,7 +65,7 @@ public abstract class AChildrenBlockMover extends ABlockMover {
 		this.lastKey = lastKey;
 		this.currentBlock = loadKeysFromChildren();
 
-		for (BlockMover child : children) {
+		for (Mover child : children) {
 			assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
 			child.rewind(originalMinimum); // reset this child so it can be used in another subtree!
 		}

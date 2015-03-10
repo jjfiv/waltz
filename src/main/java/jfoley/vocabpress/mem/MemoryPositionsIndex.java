@@ -2,7 +2,7 @@ package jfoley.vocabpress.mem;
 
 import ciir.jfoley.chai.collections.util.MapFns;
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.feature.FeatureBlockMover;
+import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.PositionsPosting;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
@@ -51,7 +51,7 @@ public class MemoryPositionsIndex {
 	public Feature<? extends PositionsPosting> getPositions(String term) {
 		int termId = terms.getId(term);
 		if(termId < 0) return null;
-		return new FeatureBlockMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
+		return new FeatureMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
 	}
 
 	public Feature<? extends CountPosting> getCounts(String term) {

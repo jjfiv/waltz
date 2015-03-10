@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public class AnyOfBlockMover extends AChildrenBlockMover {
-	public AnyOfBlockMover(List<BlockMover> children) {
+public class AnyOfMover extends AChildrenMover {
+	public AnyOfMover(List<Mover> children) {
 		super(children);
 	}
 
-	public static AnyOfBlockMover of(BlockMover... childs) {
-		return new AnyOfBlockMover(Arrays.asList(childs));
+	public static AnyOfMover of(Mover... childs) {
+		return new AnyOfMover(Arrays.asList(childs));
 	}
 
 	protected IKeyBlock loadKeysFromChildren() {
@@ -29,7 +29,7 @@ public class AnyOfBlockMover extends AChildrenBlockMover {
 
 			// Add and move past the current key.
 			ids.add(minimumChildKey);
-			for (BlockMover child : children) {
+			for (Mover child : children) {
 				child.movePast(minimumChildKey);
 				assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
 			}

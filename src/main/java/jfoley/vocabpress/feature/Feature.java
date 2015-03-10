@@ -1,7 +1,7 @@
 package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.scoring.Posting;
-import jfoley.vocabpress.movement.BlockMover;
+import jfoley.vocabpress.movement.Mover;
 
 /**
  * This interface could be wrapped around Map&lt;int, X&gt;
@@ -16,5 +16,5 @@ public interface Feature<X extends Posting> {
    */
   public X getFeature(int key);
   /** This possibly returns null, if you don't want to implement movement. */
-  public BlockMover getMover();
+  public Mover getMover();
 }

@@ -5,7 +5,7 @@ import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 /**
  * @author jfoley.
  */
-public abstract class ABlockMover implements BlockMover {
+public abstract class AMover implements Mover {
 	protected IKeyBlock currentBlock;
 	protected int index;
 

@@ -1,7 +1,7 @@
 package jfoley.vocabpress.mem;
 
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.movement.BlockMover;
+import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.scoring.CountPosting;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class MemoryPositionsIndexTest {
 
     Feature<? extends CountPosting> foxCounts = index.getCounts("fox");
 
-    for(BlockMover mover = foxCounts.getMover(); !mover.isDone(); mover.next()) {
+    for(Mover mover = foxCounts.getMover(); !mover.isDone(); mover.next()) {
       int doc = mover.currentKey();
       assertTrue(foxCounts.hasFeature(doc));
       CountPosting p = foxCounts.getFeature(doc);

@@ -1,6 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
-import jfoley.vocabpress.feature.FeatureBlockMover;
+import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
 import jfoley.vocabpress.scoring.impl.SimpleCountPosting;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FeatureBlockMoverTest {
+public class FeatureMoverTest {
 	@Test
 	public void testBlock() {
 		List<CountPosting> data = new ArrayList<>();
@@ -20,7 +20,7 @@ public class FeatureBlockMoverTest {
 			data.add(new SimpleCountPosting(i, i*2));
 		}
 
-		FeatureBlockMover<CountPosting> mover = new FeatureBlockMover<>(new ListBlockPostingsIterator<>(data, 3));
+		FeatureMover<CountPosting> mover = new FeatureMover<>(new ListBlockPostingsIterator<>(data, 3));
 
 		int total = 0;
 		for(; !mover.isDone(); mover.next()) {
