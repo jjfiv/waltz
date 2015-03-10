@@ -1,19 +1,19 @@
 package jfoley.vocabpress.scoring.impl;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.scoring.PositionsPosting;
 
-import java.util.AbstractList;
 import java.util.List;
 
 /**
  * @author jfoley
  */
 public class SimplePositionsPosting extends SimplePosting implements PositionsPosting {
-  public final List<Integer> positions;
+  public final IntList positions;
 
   public SimplePositionsPosting(int document, List<Integer> positions) {
     super(document);
-    this.positions = positions;
+    this.positions = new IntList(positions);
   }
 
   @Override

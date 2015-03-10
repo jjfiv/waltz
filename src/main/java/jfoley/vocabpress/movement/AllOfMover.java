@@ -1,9 +1,9 @@
 package jfoley.vocabpress.movement;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class AllOfMover extends AChildrenMover {
 
 	@Override
 	protected IKeyBlock loadKeysFromChildren() {
-		List<Integer> ids = new ArrayList<>();
+		List<Integer> ids = new IntList();
 		while(true) {
 			int targetKey = findMaxCurrentKey();
 			if(targetKey == DONE_ID) {

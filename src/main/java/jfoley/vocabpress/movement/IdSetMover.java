@@ -1,5 +1,6 @@
 package jfoley.vocabpress.movement;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class IdSetMover extends AMover {
   public IdSetMover(Set<Integer> keys, int blockSize) {
     List<Integer> skeys = new ArrayList<>(keys);
     Collections.sort(skeys);
-    this.keys = skeys;
+    this.keys = new IntList(skeys);
     this.blockSize = blockSize;
     this.readPtr = 0;
 
