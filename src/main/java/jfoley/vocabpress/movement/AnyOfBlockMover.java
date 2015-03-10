@@ -1,4 +1,4 @@
-package jfoley.vocabpress.scoring.blockiter.movement;
+package jfoley.vocabpress.movement;
 
 import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;

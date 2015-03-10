@@ -1,5 +1,7 @@
-package jfoley.vocabpress.scoring.blockiter.movement;
+package jfoley.vocabpress.feature;
 
+import jfoley.vocabpress.movement.ABlockMover;
+import jfoley.vocabpress.movement.BlockMover;
 import jfoley.vocabpress.scoring.Posting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.IValueBlock;
@@ -38,4 +40,9 @@ public class FeatureBlockMover<X extends Posting> extends ABlockMover implements
 		}
 		return null;
 	}
+
+  @Override
+  public BlockMover getMover() {
+    return this;
+  }
 }

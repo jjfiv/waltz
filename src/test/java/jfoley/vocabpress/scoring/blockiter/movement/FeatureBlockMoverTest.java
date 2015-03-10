@@ -1,5 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
+import jfoley.vocabpress.feature.FeatureBlockMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
 import jfoley.vocabpress.scoring.impl.SimpleCountPosting;

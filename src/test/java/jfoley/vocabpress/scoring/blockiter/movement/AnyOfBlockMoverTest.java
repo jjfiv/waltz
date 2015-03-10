@@ -1,6 +1,8 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.fn.TransformFn;
+import jfoley.vocabpress.movement.AnyOfBlockMover;
+import jfoley.vocabpress.feature.FeatureBlockMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;

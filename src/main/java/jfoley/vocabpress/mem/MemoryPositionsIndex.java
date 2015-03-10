@@ -1,10 +1,10 @@
 package jfoley.vocabpress.mem;
 
-import ciir.jfoley.chai.Checked;
 import ciir.jfoley.chai.collections.util.MapFns;
+import jfoley.vocabpress.feature.Feature;
+import jfoley.vocabpress.feature.FeatureBlockMover;
 import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.PositionsPosting;
-import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
 import jfoley.vocabpress.scoring.impl.SimplePositionsPosting;
 
@@ -19,10 +19,17 @@ public class MemoryPositionsIndex {
 	public Map<Integer, List<PositionsPosting>> positions;
 	public Map<Integer, String> corpus;
 
-	public InternSpace<Integer, String> terms;
-	public InternSpace<Integer, String> docNames;
+	public InternSpace<String> terms;
+	public InternSpace<String> docNames;
 
 	public int nextDocumentId = 0;
+
+  public MemoryPositionsIndex() {
+    this.positions = new HashMap<>();
+    this.corpus = new HashMap<>();
+    this.terms = new DoubleMapInternSpace<>();
+    this.docNames = new DoubleMapInternSpace<>();
+  }
 
 	public void addDocument(String documentName, List<String> termVector) {
 		int documentId = nextDocumentId++;
@@ -31,7 +38,7 @@ public class MemoryPositionsIndex {
 		Map<Integer, List<Integer>> postings = new HashMap<>();
 		for (int pos = 0; pos < termVector.size(); pos++) {
 			String k = termVector.get(pos);
-			int idk = terms.getId(k);
+      int idk = terms.insertOrGet(k);
 			MapFns.extendListInMap(postings, idk, pos);
 		}
 
@@ -41,15 +48,17 @@ public class MemoryPositionsIndex {
 		}
 	}
 
-	public BlockPostingsIterator<? extends PositionsPosting> getPositions(String term) {
-		Integer termId = terms.getId(term);
-		if(termId == null) {
-			return Checked.cast(BlockPostingsIterator.EMPTY);
-		}
-		return new ListBlockPostingsIterator<>(positions.get(termId));
+	public Feature<? extends PositionsPosting> getPositions(String term) {
+		int termId = terms.getId(term);
+		if(termId < 0) return null;
+		return new FeatureBlockMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
 	}
 
-	public BlockPostingsIterator<? extends CountPosting> getCounts(String term) {
+	public Feature<? extends CountPosting> getCounts(String term) {
 		return getPositions(term);
 	}
+
+  public String getDocumentName(int id) {
+    return docNames.getValue(id);
+  }
 }
