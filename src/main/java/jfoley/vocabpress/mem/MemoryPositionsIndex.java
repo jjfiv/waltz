@@ -1,6 +1,8 @@
 package jfoley.vocabpress.mem;
 
+import ciir.jfoley.chai.Checked;
 import ciir.jfoley.chai.collections.util.MapFns;
+import jfoley.vocabpress.scoring.CountPosting;
 import jfoley.vocabpress.scoring.PositionsPosting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
@@ -39,11 +41,15 @@ public class MemoryPositionsIndex {
 		}
 	}
 
-	public BlockPostingsIterator<PositionsPosting> getPositions(String term) {
+	public BlockPostingsIterator<? extends PositionsPosting> getPositions(String term) {
 		Integer termId = terms.getId(term);
 		if(termId == null) {
-			return BlockPostingsIterator.EMPTY;
+			return Checked.cast(BlockPostingsIterator.EMPTY);
 		}
-		return new ListBlockPostingsIterator<PositionsPosting>(positions.get(termId));
+		return new ListBlockPostingsIterator<>(positions.get(termId));
+	}
+
+	public BlockPostingsIterator<? extends CountPosting> getCounts(String term) {
+		return getPositions(term);
 	}
 }
