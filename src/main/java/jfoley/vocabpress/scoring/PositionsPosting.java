@@ -1,6 +1,6 @@
 package jfoley.vocabpress.scoring;
 
-import jfoley.vocabpress.phrase.ExtentsIterator;
+import jfoley.vocabpress.extents.ExtentsIterator;
 
 import java.util.List;
 

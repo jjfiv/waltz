@@ -1,8 +1,8 @@
 package jfoley.vocabpress.scoring.impl;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.phrase.ExtentsIterator;
-import jfoley.vocabpress.phrase.IntArrayPosIter;
+import jfoley.vocabpress.extents.ExtentsIterator;
+import jfoley.vocabpress.extents.IntArrayPosIter;
 import jfoley.vocabpress.scoring.PositionsPosting;
 
 import java.util.List;

@@ -1,5 +1,8 @@
 package jfoley.vocabpress.phrase;
 
+import jfoley.vocabpress.extents.ExtentsIterator;
+import jfoley.vocabpress.extents.IntArrayPosIter;
+
 import java.util.ArrayList;
 import java.util.List;
 

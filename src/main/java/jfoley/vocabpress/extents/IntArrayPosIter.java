@@ -1,4 +1,4 @@
-package jfoley.vocabpress.phrase;
+package jfoley.vocabpress.extents;
 
 /**
 * @author jfoley
@@ -26,6 +26,11 @@ public class IntArrayPosIter implements ExtentsIterator {
   public boolean next() {
     pos++;
     return !isDone();
+  }
+
+  @Override
+  public void reset() {
+    pos = 0;
   }
 
   @Override
