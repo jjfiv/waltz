@@ -1,5 +1,6 @@
 package jfoley.vocabpress.mem;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.scoring.CountPosting;
@@ -25,12 +26,14 @@ public class MemoryPositionsIndexTest {
 
     Feature<? extends CountPosting> foxCounts = index.getCounts("fox");
 
+		List<Integer> foxHits = new IntList();
     for(Mover mover = foxCounts.getMover(); !mover.isDone(); mover.next()) {
       int doc = mover.currentKey();
       assertTrue(foxCounts.hasFeature(doc));
       CountPosting p = foxCounts.getFeature(doc);
+			foxHits.add(p.getCount());
       assertEquals(doc, p.getKey());
-      assertEquals(1, p.getCount());
     }
+		assertEquals(Arrays.asList(1,1), foxHits);
   }
 }
