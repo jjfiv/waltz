@@ -1,12 +1,10 @@
 package jfoley.vocabpress.movement;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import ciir.jfoley.chai.collections.util.ArrayFns;
 import jfoley.vocabpress.scoring.blockiter.KeyBlock;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author jfoley
@@ -16,7 +14,7 @@ public class IdSetMover extends AMover {
   private int readPtr;
   private int blockSize;
 
-  public IdSetMover(Set<Integer> keys, int blockSize) {
+  public IdSetMover(Collection<Integer> keys, int blockSize) {
     List<Integer> skeys = new ArrayList<>(keys);
     Collections.sort(skeys);
     this.keys = new IntList(skeys);
@@ -26,7 +24,7 @@ public class IdSetMover extends AMover {
     nextBlock();
   }
 
-  public IdSetMover(Set<Integer> keys) {
+  public IdSetMover(Collection<Integer> keys) {
     this(keys, 16);
   }
 
@@ -43,5 +41,9 @@ public class IdSetMover extends AMover {
     this.currentBlock = new KeyBlock(relevantKeys);
     readPtr += blockSize;
   }
+
+	public static IdSetMover of(int... i) {
+		return new IdSetMover(new HashSet<>(ArrayFns.toList(i)));
+	}
 }
 
