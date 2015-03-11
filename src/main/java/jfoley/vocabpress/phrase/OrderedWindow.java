@@ -8,50 +8,6 @@ import java.util.List;
  */
 public class OrderedWindow {
 
-  public static interface ExtentsIterator {
-    /** returns true if there are no more elements to step over */
-    public boolean isDone();
-    /** returns !isDone() after moving once */
-    public boolean next();
-    /** return the beginning of this extent */
-    public int currentBegin();
-    /** return the end of this extent -- if it's a position, this is always currentBegin()+1 */
-    public int currentEnd();
-  }
-
-  public static class IntArrayPosIter implements ExtentsIterator {
-    private final int[] data;
-    private int pos;
-    private final int size;
-
-    public IntArrayPosIter(int[] data) {
-      this.data = data;
-      this.pos = 0;
-      this.size = data.length;
-    }
-
-    @Override
-    public boolean isDone() {
-      return pos >= size;
-    }
-
-    @Override
-    public boolean next() {
-      pos++;
-      return !isDone();
-    }
-
-    @Override
-    public int currentBegin() {
-      return data[pos];
-    }
-
-    @Override
-    public int currentEnd() {
-      return data[pos]+1;
-    }
-  }
-
   /** This is the equivalent of Galago and Indri's od:x(a, b, ...) operator */
   public static int countPositions(List<int[]> positions, int spacingBetween) {
     assert(positions.size() >= 2);
