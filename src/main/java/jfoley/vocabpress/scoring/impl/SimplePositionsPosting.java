@@ -25,4 +25,9 @@ public class SimplePositionsPosting extends SimplePosting implements PositionsPo
   public int getCount() {
     return positions.size();
   }
+
+  @Override
+  public String toString() {
+    return "Doc: "+this.getKey()+". Pos: "+positions.toString();
+  }
 }

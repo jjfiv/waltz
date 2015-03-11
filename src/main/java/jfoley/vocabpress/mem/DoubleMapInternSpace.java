@@ -40,6 +40,9 @@ public class DoubleMapInternSpace<Val> implements InternSpace<Val> {
 
   @Override
   public int insertOrGet(Val k) {
+    int found = getId(k);
+    if(found != -1) return found;
+
     int id = nextId++;
     put(id, k);
     return id;

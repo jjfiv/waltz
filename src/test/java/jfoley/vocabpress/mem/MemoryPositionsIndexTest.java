@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.scoring.CountPosting;
+import jfoley.vocabpress.scoring.PositionsPosting;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,5 +36,28 @@ public class MemoryPositionsIndexTest {
       assertEquals(doc, p.getKey());
     }
 		assertEquals(Arrays.asList(1,1), foxHits);
+  }
+
+  @Test
+  public void testPositions() {
+    MemoryPositionsIndex index = new MemoryPositionsIndex();
+    index.addDocument("fox", tokens("a fox is a mammal"));
+    index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
+
+    Feature<? extends PositionsPosting> foxIter = index.getPositions("fox");
+
+    IntList foxPos = new IntList();
+    List<Integer> foxHits = new IntList();
+    for(Mover mover = foxIter.getMover(); !mover.isDone(); mover.next()) {
+      int doc = mover.currentKey();
+      assertTrue(foxIter.hasFeature(doc));
+      PositionsPosting p = foxIter.getFeature(doc);
+      //System.err.println(p);
+      foxPos.addAll(p.getPositions());
+      foxHits.add(p.getCount());
+      assertEquals(doc, p.getKey());
+    }
+    assertEquals(Arrays.asList(1,1), foxHits);
+    assertEquals(Arrays.asList(1,3), foxPos);
   }
 }

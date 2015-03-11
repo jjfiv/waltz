@@ -1,7 +1,7 @@
 package jfoley.vocabpress.mem;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.MapFns;
-import ciir.jfoley.chai.string.StrUtil;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.scoring.CountPosting;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class MemoryPositionsIndex {
 	public Map<Integer, List<PositionsPosting>> positions;
-	public Map<Integer, String> corpus;
+	public Map<Integer, int[]> corpus;
 
 	public InternSpace<String> terms;
 	public InternSpace<String> docNames;
@@ -35,14 +35,16 @@ public class MemoryPositionsIndex {
 	public void addDocument(String documentName, List<String> termVector) {
 		int documentId = nextDocumentId++;
 		docNames.put(documentId, documentName);
-    corpus.put(documentId, StrUtil.join(termVector, " "));
 
+    IntList id_terms = new IntList();
 		Map<Integer, List<Integer>> postings = new HashMap<>();
 		for (int pos = 0; pos < termVector.size(); pos++) {
 			String k = termVector.get(pos);
       int idk = terms.insertOrGet(k);
+      id_terms.add(idk);
 			MapFns.extendListInMap(postings, idk, pos);
 		}
+    corpus.put(documentId, id_terms.asArray());
 
 		for (Map.Entry<Integer, List<Integer>> kv : postings.entrySet()) {
 			SimplePositionsPosting posting = new SimplePositionsPosting(nextDocumentId, kv.getValue());
