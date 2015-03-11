@@ -35,6 +35,8 @@ public class AllOfMover extends AChildrenMover {
 			int targetKey = findMaxCurrentKey();
 			if(targetKey == DONE_ID) {
 				return null;
+			} else if(targetKey > lastKey) {
+				break;
 			}
 
 			// See if everyone has that key:
@@ -62,6 +64,7 @@ public class AllOfMover extends AChildrenMover {
 			}
 		}
 
+		//System.out.println(ids+"\t"+lastKey);
 		return new KeyBlock(ids);
 	}
 

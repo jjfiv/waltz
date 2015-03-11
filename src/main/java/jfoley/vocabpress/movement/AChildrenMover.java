@@ -66,7 +66,7 @@ public abstract class AChildrenMover extends AMover {
 		this.currentBlock = loadKeysFromChildren();
 
 		for (Mover child : children) {
-			assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
+			//assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
 			child.rewind(originalMinimum); // reset this child so it can be used in another subtree!
 		}
 	}

@@ -30,10 +30,10 @@ public abstract class AMover implements Mover {
 		if(!isDoneWithBlock()) {
 			nextKey();
 		}
-		if(isDoneWithBlock()) {
+		while(isDoneWithBlock()) {
+			if (isDone()) break;
 			if (!isDone()) {
 				nextBlock();
-				return;
 			}
 		}
 	}
