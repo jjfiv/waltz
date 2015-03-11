@@ -10,6 +10,8 @@ public class OrderedWindow {
 
   /** This is the equivalent of Galago and Indri's od:x(a, b, ...) operator */
   public static int countPositions(List<int[]> positions, int spacingBetween) {
+    // TODO, check for and call faster Bigram if applicable :)
+
     assert(positions.size() >= 2);
     List<ExtentsIterator> arr = new ArrayList<>(positions.size());
     for (int[] position : positions) {

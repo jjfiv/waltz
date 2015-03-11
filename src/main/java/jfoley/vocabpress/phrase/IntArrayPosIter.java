@@ -8,10 +8,13 @@ public class IntArrayPosIter implements ExtentsIterator {
   private int pos;
   private final int size;
 
-  public IntArrayPosIter(int[] data) {
+  public IntArrayPosIter(int[] data, int size) {
     this.data = data;
     this.pos = 0;
-    this.size = data.length;
+    this.size = size;
+  }
+  public IntArrayPosIter(int[] data) {
+    this(data, data.length);
   }
 
   @Override

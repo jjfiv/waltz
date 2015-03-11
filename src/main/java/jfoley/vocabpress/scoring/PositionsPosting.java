@@ -1,5 +1,7 @@
 package jfoley.vocabpress.scoring;
 
+import jfoley.vocabpress.phrase.ExtentsIterator;
+
 import java.util.List;
 
 /**
@@ -9,4 +11,6 @@ import java.util.List;
 public interface PositionsPosting extends CountPosting {
   /** return a reference to the positions array */
   public List<Integer> getPositions();
+  /** return an ExtentsIterator of the positions array */
+  public ExtentsIterator getExtentsIterator();
 }
