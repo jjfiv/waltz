@@ -2,13 +2,16 @@ package jfoley.vocabpress.mem;
 
 import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.list.IntList;
+import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.collections.util.MapFns;
-import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.feature.FeatureMover;
-import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
 import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
+import jfoley.vocabpress.dociter.movement.BlockPostingsMover;
+import jfoley.vocabpress.dociter.movement.PostingMover;
+import jfoley.vocabpress.feature.Feature;
+import jfoley.vocabpress.feature.MoverFeature;
+import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsPosting;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,15 +60,24 @@ public class MemoryPositionsIndex {
     return IntRange.exclusive(0, nextDocumentId);
   }
 
-	public Feature<? extends PositionsPosting> getPositions(String term) {
-		int termId = terms.getId(term);
-		if(termId < 0) return null;
-		return new FeatureMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
-	}
+  public PostingMover<CountPosting> getCountsMover(String term) {
+    int termId = terms.getId(term);
+    if(termId < 0) return null;
+    return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(ListFns.castView(positions.get(termId))));
+  }
+  public PostingMover<PositionsPosting> getPositionsMover(String term) {
+    int termId = terms.getId(term);
+    if(termId < 0) return null;
+    return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
+  }
 
-	public Feature<? extends CountPosting> getCounts(String term) {
-		return getPositions(term);
-	}
+  public Feature<CountPosting> getCounts(String term) {
+    return new MoverFeature<>(getCountsMover(term));
+  }
+
+  public Feature<PositionsPosting> getPositions(String term) {
+    return new MoverFeature<>(getPositionsMover(term));
+  }
 
   public String getDocumentName(int id) {
     return docNames.getValue(id);

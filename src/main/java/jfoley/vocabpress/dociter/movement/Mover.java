@@ -36,5 +36,14 @@ public interface Mover {
 	public void movePast(int key);
 
 	/** rewind the current block to a specific key */
-	public void rewind(int key);
+	public void rewindBlock(int key);
+
+  /** reset the current iterator to the lowest available document id. */
+  public void reset();
+
+  /** returns true iff the mover currently matches a given key */
+  public boolean matches(int key);
+
+  /** Move the iterator to before a given key, resetting if need be. */
+  public void moveToAbsolute(int key);
 }

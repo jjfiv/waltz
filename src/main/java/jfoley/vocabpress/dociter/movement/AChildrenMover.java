@@ -19,6 +19,14 @@ public abstract class AChildrenMover extends AMover {
 		loadNewCurrentBlock();
 	}
 
+  @Override
+  public void reset() {
+    for (Mover child : children) {
+      child.reset();
+    }
+    loadNewCurrentBlock();
+  }
+
 	protected int findLastKey() {
 		int lastKey = children.get(0).maxKey();
 		for (int i = 1; i < children.size(); i++) {
@@ -67,7 +75,7 @@ public abstract class AChildrenMover extends AMover {
 
 		for (Mover child : children) {
 			//assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
-			child.rewind(originalMinimum); // reset this child so it can be used in another subtree!
+			child.rewindBlock(originalMinimum); // reset this child so it can be used in another subtree!
 		}
 	}
 

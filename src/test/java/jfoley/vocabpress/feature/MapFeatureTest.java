@@ -40,7 +40,7 @@ public class MapFeatureTest {
 		MapFeature<CountPosting> fpriors = new MapFeature<>(priors);
 
 		int count = 0;
-		for(Mover m = fpriors.getMover(); !m.isDone(); m.next()) {
+		for(Mover m = fpriors.getAsMover(); !m.isDone(); m.next()) {
 			int doc = m.currentKey();
 			count++;
 			assertEquals(priors.get(doc).getCount(), fpriors.getFeature(doc).getCount());

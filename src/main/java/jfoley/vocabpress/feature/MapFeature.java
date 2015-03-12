@@ -25,8 +25,7 @@ public class MapFeature<T extends Posting> implements Feature<T> {
     return data.get(key);
   }
 
-  @Override
-  public Mover getMover() {
+  public Mover getAsMover() {
     return new IdSetMover(data.keySet());
   }
 }

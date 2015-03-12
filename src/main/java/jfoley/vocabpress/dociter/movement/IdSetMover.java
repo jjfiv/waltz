@@ -42,7 +42,13 @@ public class IdSetMover extends AMover {
     readPtr += blockSize;
   }
 
-	public static IdSetMover of(int... i) {
+  @Override
+  public void reset() {
+    readPtr = 0;
+    nextBlock();
+  }
+
+  public static IdSetMover of(int... i) {
 		return new IdSetMover(new HashSet<>(ArrayFns.toList(i)));
 	}
 }

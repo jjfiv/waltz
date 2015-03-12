@@ -11,9 +11,7 @@ public interface BlockPostingsIterator<X extends Posting> {
   /** return a set of values; call nextKeyBlock first! */
   public IValueBlock<X> nextValueBlock();
 
-	public static BlockPostingsIterator EMPTY = new BlockPostingsIterator() {
-		@Override public IKeyBlock nextKeyBlock() { return null; }
-    @Override public IValueBlock nextValueBlock() { return null; }
-	};
+  /** return to the beginning of the list. */
+  public void reset();
 }
 

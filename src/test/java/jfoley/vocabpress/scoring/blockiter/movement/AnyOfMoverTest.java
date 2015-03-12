@@ -2,7 +2,7 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.fn.TransformFn;
 import jfoley.vocabpress.dociter.movement.AnyOfMover;
-import jfoley.vocabpress.feature.FeatureMover;
+import jfoley.vocabpress.dociter.movement.BlockPostingsMover;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.dociter.BlockPostingsIterator;
 import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
@@ -34,8 +34,8 @@ public class AnyOfMoverTest {
 			new SimpleCountPosting(8,16)
 		), 3);
 
-		FeatureMover<CountPosting> lhs = new FeatureMover<>(lhsData);
-		FeatureMover<CountPosting> rhs = new FeatureMover<>(rhsData);
+		BlockPostingsMover<CountPosting> lhs = new BlockPostingsMover<>(lhsData);
+		BlockPostingsMover<CountPosting> rhs = new BlockPostingsMover<>(rhsData);
 		AnyOfMover mover = new AnyOfMover(Arrays.asList(lhs, rhs));
 
 		List<Integer> hits = new ArrayList<>();
@@ -43,17 +43,17 @@ public class AnyOfMoverTest {
 			int doc = mover.currentKey();
 			hits.add(doc);
 
-			if(lhs.hasFeature(doc)) {
-				CountPosting lcount = lhs.getFeature(doc);
+			if(lhs.matches(doc)) {
+				CountPosting lcount = lhs.getCurrentPosting();
 				assertEquals(doc, lcount.getKey());
 				assertEquals(doc, lcount.getCount());
 			}
-			if(rhs.hasFeature(doc)) {
-				CountPosting rcount = rhs.getFeature(doc);
+			if(rhs.matches(doc)) {
+				CountPosting rcount = rhs.getCurrentPosting();
 				assertEquals(doc, rcount.getKey());
 				assertEquals(doc*2, rcount.getCount());
 			}
-			if(lhs.hasFeature(doc) && rhs.hasFeature(doc)) {
+			if(lhs.matches(doc) && rhs.matches(doc)) {
 				assertEquals(5, doc);
 			}
 		}
@@ -65,20 +65,20 @@ public class AnyOfMoverTest {
 		assertTrue(lhs.isDone());
 	}
 
-	public static FeatureMover<CountPosting> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
+	public static BlockPostingsMover<CountPosting> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
 		List<CountPosting> output = new ArrayList<>();
 		for (int docid : docids) {
 			output.add(new SimpleCountPosting(docid, mapper.transform(docid)));
 		}
-		return new FeatureMover<>(new ListBlockPostingsIterator<>(output, 3));
+		return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(output, 3));
 	}
 
 	@Test
 	public void testNested() throws Exception {
 
-		FeatureMover<CountPosting> twos = forDocuments((x) -> x*2, 1,2,3,4,15);
-		FeatureMover<CountPosting> threes = forDocuments((x) -> x*3, 3,4,5,6,20);
-		FeatureMover<CountPosting> fours = forDocuments((x) -> x*4, 7,8,9,10,30);
+		BlockPostingsMover<CountPosting> twos = forDocuments((x) -> x*2, 1,2,3,4,15);
+		BlockPostingsMover<CountPosting> threes = forDocuments((x) -> x*3, 3,4,5,6,20);
+		BlockPostingsMover<CountPosting> fours = forDocuments((x) -> x*4, 7,8,9,10,30);
 
 		AnyOfMover twothree = AnyOfMover.of(twos, threes);
 		AnyOfMover mover = AnyOfMover.of(twothree, twos, threes, fours);
@@ -86,21 +86,23 @@ public class AnyOfMoverTest {
 		List<Integer> hits = new ArrayList<>();
 		for(; !mover.isDone(); mover.next()) {
 			int doc = mover.currentKey();
+      System.out.println(doc);
 
+      if(hits.size() > 1000) throw new RuntimeException();
 			hits.add(doc);
 
-			if(twos.hasFeature(doc)) {
-				CountPosting p = twos.getFeature(doc);
+			if(twos.matches(doc)) {
+				CountPosting p = twos.getCurrentPosting();
 				assertEquals(doc, p.getKey());
 				assertEquals(doc*2, p.getCount());
 			}
-			if(threes.hasFeature(doc)) {
-				CountPosting p = threes.getFeature(doc);
+			if(threes.matches(doc)) {
+				CountPosting p = threes.getCurrentPosting();
 				assertEquals(doc, p.getKey());
 				assertEquals(doc*3, p.getCount());
 			}
-			if(fours.hasFeature(doc)) {
-				CountPosting p = fours.getFeature(doc);
+			if(fours.matches(doc)) {
+				CountPosting p = fours.getCurrentPosting();
 				assertEquals(doc, p.getKey());
 				assertEquals(doc*4, p.getCount());
 			}

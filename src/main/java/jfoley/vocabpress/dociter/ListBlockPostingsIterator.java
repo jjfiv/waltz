@@ -47,4 +47,9 @@ public class ListBlockPostingsIterator<X extends Posting> implements BlockPostin
     valueReadPtr += bufferedVals.size();
     return new ValueBlock<>(bufferedVals);
   }
+
+  @Override
+  public void reset() {
+    keyReadPtr = valueReadPtr = 0;
+  }
 }

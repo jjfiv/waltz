@@ -1,7 +1,6 @@
 package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.dociter.movement.Mover;
 
 /**
  * This interface could be wrapped around Map&lt;int, X&gt;
@@ -15,6 +14,4 @@ public interface Feature<X extends Posting> {
    * If you're using null semantically, hasFeature will help with that.
    */
   public X getFeature(int key);
-  /** This possibly returns null, if you don't want to implement movement. */
-  public Mover getMover();
 }

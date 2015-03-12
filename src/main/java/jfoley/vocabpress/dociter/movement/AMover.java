@@ -51,7 +51,7 @@ public abstract class AMover implements Mover {
 	}
 
 	@Override
-	public void rewind(int value) {
+	public void rewindBlock(int value) {
 		if(isDone()) return;
 		index = 0;
 		moveTo(value);
@@ -76,4 +76,28 @@ public abstract class AMover implements Mover {
 		moveTo(key+1);
 		assert(currentKey() > key);
 	}
+
+  @Override
+  public boolean matches(int key) {
+    return currentKey() == key;
+  }
+
+  /** Stay within block if possible, otherwise reset()! */
+  @Override
+  public void moveToAbsolute(int key) {
+    int currentKey = currentKey();
+    if(key == currentKey) return;
+    if(key >= currentKey) {
+      System.out.println("Skip ahead toward "+key+" from "+currentKey);
+      moveTo(key);
+      return;
+    }
+    rewindBlock(key);
+    System.out.println("rewindBlock for " + key + " from " + currentKey);
+    if(key < currentKey()) {
+      // TODO log a warning about slow resets needed.
+      reset();
+      moveTo(key);
+    }
+  }
 }
