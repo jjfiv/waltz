@@ -1,4 +1,4 @@
-package jfoley.vocabpress.mem;
+package jfoley.vocabpress.index.mem;
 
 /**
  * @author jfoley.

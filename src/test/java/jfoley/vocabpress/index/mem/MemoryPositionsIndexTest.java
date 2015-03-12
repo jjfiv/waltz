@@ -1,4 +1,4 @@
-package jfoley.vocabpress.mem;
+package jfoley.vocabpress.index.mem;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.dociter.movement.PostingMover;

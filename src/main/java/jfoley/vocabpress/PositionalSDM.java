@@ -4,7 +4,7 @@ import jfoley.vocabpress.dociter.movement.AnyOfMover;
 import jfoley.vocabpress.dociter.movement.Mover;
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.mem.MemoryPositionsIndex;
+import jfoley.vocabpress.index.mem.MemoryPositionsIndex;
 import jfoley.vocabpress.phrase.Bigram;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.positions.EmptyPositionsList;

@@ -1,4 +1,4 @@
-package jfoley.vocabpress.mem;
+package jfoley.vocabpress.index.mem;
 
 import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.list.IntList;
@@ -10,6 +10,7 @@ import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.CompactLengthsFeature;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
+import jfoley.vocabpress.index.MutableIndex;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  * @author jfoley.
  */
-public class MemoryPositionsIndex implements Index {
+public class MemoryPositionsIndex implements MutableIndex {
 	public Map<Integer, List<PositionsPosting>> positions;
 	public Map<Integer, int[]> corpus;
   public IntList lengths;
@@ -51,6 +52,7 @@ public class MemoryPositionsIndex implements Index {
     return lengths.size();
   }
 
+  @Override
 	public void addDocument(String documentName, List<String> termVector) {
 		int documentId = lengths.size();
 		docNames.put(documentId, documentName);

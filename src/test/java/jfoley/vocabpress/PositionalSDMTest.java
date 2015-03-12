@@ -1,6 +1,6 @@
 package jfoley.vocabpress;
 
-import jfoley.vocabpress.mem.MemoryPositionsIndex;
+import jfoley.vocabpress.index.mem.MemoryPositionsIndex;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 

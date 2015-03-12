@@ -1,4 +1,4 @@
-package jfoley.vocabpress.mem;
+package jfoley.vocabpress.index.mem;
 
 import java.util.HashMap;
 import java.util.Map;

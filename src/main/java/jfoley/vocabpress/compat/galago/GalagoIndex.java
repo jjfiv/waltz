@@ -7,7 +7,7 @@ import jfoley.vocabpress.compat.galago.impl.GalagoPositionsMover;
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
-import jfoley.vocabpress.mem.Index;
+import jfoley.vocabpress.index.Index;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
 import org.lemurproject.galago.core.index.disk.DiskIndex;

@@ -1,4 +1,4 @@
-package jfoley.vocabpress.mem;
+package jfoley.vocabpress.index;
 
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
