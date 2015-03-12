@@ -26,7 +26,6 @@ public class PositionalSDMTest {
     double scoreQuick = sdm.score(1);
 
     assertTrue(scoreQuick > scoreFox);
-
-    System.out.println(Arrays.asList(scoreFox, scoreQuick));
+    //System.out.println(Arrays.asList(scoreFox, scoreQuick));
   }
 }

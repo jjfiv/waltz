@@ -13,7 +13,6 @@ import jfoley.vocabpress.postings.positions.PositionsPosting;
 import org.lemurproject.galago.utility.Parameters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,11 +50,11 @@ public class PositionalSDM {
     bigramWeight = cfg.get("bigramWeight", 0.15);
     ubigramWeight = cfg.get("unordredWeight", 0.05);
 
-    long startStats = System.currentTimeMillis();
+    //long startStats = System.currentTimeMillis();
     calculateStats();
-    long endStats = System.currentTimeMillis();
+    //long endStats = System.currentTimeMillis();
 
-    System.out.println("Stats: " + (endStats - startStats)+"ms. ");
+    //System.out.println("Stats: " + (endStats - startStats)+"ms. ");
   }
 
   public Mover getMover() {
@@ -80,12 +79,10 @@ public class PositionalSDM {
         PostingMover<PositionsPosting> pos = iters.get(i);
         pos.moveTo(doc);
         if (pos.matches(doc)) {
-          System.out.println("match: "+doc+" "+terms.get(i));
           PositionsPosting p = pos.getCurrentPosting();
           extents.add(p.getPositions());
           term_cf[i] += p.getCount();
         } else {
-          System.out.println("!match: "+doc+" "+terms.get(i)+" next match="+pos.currentKey());
           assert(pos.currentKey() > doc);
           extents.add(EmptyPositionsList.instance);
         }
@@ -98,10 +95,6 @@ public class PositionalSDM {
         od_cf[i] += Bigram.count(left, right);
         uw_cf[i] += Bigram.countUnordered(left, right, 8);
       }
-      System.out.println(terms);
-      System.out.println(Arrays.toString(term_cf));
-      System.out.println(Arrays.toString(od_cf));
-      System.out.println(Arrays.toString(uw_cf));
     }
 
     for (int i = 0; i < numTerms; i++) {
@@ -115,14 +108,6 @@ public class PositionalSDM {
       double uw_cfv = Math.max(0.5, uw_cf[i]);
       uw_bg[i] = uw_cfv / collectionLength;
     }
-
-    System.out.println(terms);
-    System.out.println(Arrays.toString(term_cf));
-    System.out.println(Arrays.toString(term_bg));
-    System.out.println(Arrays.toString(od_cf));
-    System.out.println(Arrays.toString(od_bg));
-    System.out.println(Arrays.toString(uw_cf));
-    System.out.println(Arrays.toString(uw_bg));
 
     // reset so we can re-use them
     for (PostingMover<PositionsPosting> iter : iters) {
