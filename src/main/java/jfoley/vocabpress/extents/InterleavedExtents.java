@@ -1,7 +1,7 @@
 package jfoley.vocabpress.extents;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.postings.Extent;
+import jfoley.vocabpress.extents.iter.ListExtentsIterator;
 
 import java.util.AbstractList;
 import java.util.List;
@@ -12,7 +12,11 @@ import java.util.List;
 public class InterleavedExtents extends AbstractList<Extent> implements ExtentsList {
   private IntList data;
 
+  public InterleavedExtents() {
+    this.data = new IntList();
+  }
   public InterleavedExtents(List<Extent> original) {
+    this();
     for (Extent extent : original) {
       add(extent);
     }
@@ -42,7 +46,7 @@ public class InterleavedExtents extends AbstractList<Extent> implements ExtentsL
   }
 
   @Override
-  public ExtentsIterator getIterator() {
+  public ExtentsIterator getExtentsIterator() {
     return new ListExtentsIterator(this);
   }
 

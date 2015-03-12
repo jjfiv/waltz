@@ -1,6 +1,6 @@
-package jfoley.vocabpress.postings;
+package jfoley.vocabpress.extents;
 
-import jfoley.vocabpress.extents.ExtentsList;
+import jfoley.vocabpress.positions.PositionsPosting;
 
 /**
  * @author jfoley

@@ -4,7 +4,7 @@ import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.PositionsPosting;
+import jfoley.vocabpress.positions.PositionsPosting;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class MemoryPositionsIndexTest {
       assertTrue(foxIter.hasFeature(doc));
       PositionsPosting p = foxIter.getFeature(doc);
       //System.err.println(p);
-      foxPos.addAll(p.getPositions());
+      foxPos.addAll(p.getPositions().toList());
       foxHits.add(p.getCount());
       assertEquals(doc, p.getKey());
     }

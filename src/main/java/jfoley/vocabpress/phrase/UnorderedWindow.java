@@ -1,8 +1,8 @@
 package jfoley.vocabpress.phrase;
 
+import jfoley.vocabpress.extents.Extent;
+import jfoley.vocabpress.extents.ExtentIterable;
 import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.extents.IntArrayPosIter;
-import jfoley.vocabpress.postings.Extent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.List;
  */
 public class UnorderedWindow {
   /** This is the equivalent of Galago and Indri's uw:x(a, b, ...) operator */
-  public static int countPositions(List<int[]> positions, int totalSpacing) {
+  public static int countPositions(List<? extends ExtentIterable> positions, int totalSpacing) {
     // TODO, check for and call faster Bigram if applicable :)
 
     assert(positions.size() >= 2);
     List<ExtentsIterator> arr = new ArrayList<>(positions.size());
-    for (int[] position : positions) {
-      arr.add(new IntArrayPosIter(position));
+    for (ExtentIterable position : positions) {
+      arr.add(position.getExtentsIterator());
     }
     return countExtents(arr, totalSpacing);
   }
@@ -34,6 +34,7 @@ public class UnorderedWindow {
     }
 
     while(true) {
+      //System.err.println(Arrays.asList(min, max));
       boolean match = (max - min <= width) || (width == -1);
       if (match) {
         hits++;

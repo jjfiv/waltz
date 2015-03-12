@@ -1,13 +1,12 @@
 package jfoley.vocabpress.postings.impl;
 
-import jfoley.vocabpress.extents.BeginsView;
+import jfoley.vocabpress.extents.ExtentsAsPositions;
 import jfoley.vocabpress.extents.ExtentsIterator;
 import jfoley.vocabpress.extents.ExtentsList;
-import jfoley.vocabpress.extents.ListExtentsIterator;
+import jfoley.vocabpress.extents.iter.ListExtentsIterator;
 import jfoley.vocabpress.postings.APosting;
-import jfoley.vocabpress.postings.ExtentsPosting;
-
-import java.util.List;
+import jfoley.vocabpress.extents.ExtentsPosting;
+import jfoley.vocabpress.positions.PositionsList;
 
 /**
  * @author jfoley
@@ -31,8 +30,8 @@ public class SimpleExtentsPosting extends APosting implements ExtentsPosting {
   }
 
   @Override
-  public List<Integer> getPositions() {
-    return new BeginsView(extents);
+  public PositionsList getPositions() {
+    return new ExtentsAsPositions(extents);
   }
 
   @Override

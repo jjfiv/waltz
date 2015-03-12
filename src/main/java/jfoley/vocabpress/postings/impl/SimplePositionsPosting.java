@@ -2,9 +2,11 @@ package jfoley.vocabpress.postings.impl;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.extents.IntArrayPosIter;
+import jfoley.vocabpress.extents.iter.IntArrayPosIter;
+import jfoley.vocabpress.positions.PositionsList;
+import jfoley.vocabpress.positions.PositionsPosting;
+import jfoley.vocabpress.positions.SimplePositionsList;
 import jfoley.vocabpress.postings.APosting;
-import jfoley.vocabpress.postings.PositionsPosting;
 
 import java.util.List;
 
@@ -20,8 +22,8 @@ public class SimplePositionsPosting extends APosting implements PositionsPosting
   }
 
   @Override
-  public List<Integer> getPositions() {
-    return positions;
+  public PositionsList getPositions() {
+    return new SimplePositionsList(positions);
   }
 
   @Override

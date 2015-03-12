@@ -1,14 +1,11 @@
 package jfoley.vocabpress.extents;
 
-import jfoley.vocabpress.postings.Extent;
-
 import java.util.List;
 
 /**
  * @author jfoley
  */
-public interface ExtentsList extends List<Extent> {
+public interface ExtentsList extends List<Extent>, ExtentIterable {
   int getBegin(int index);
   int getEnd(int index);
-  ExtentsIterator getIterator();
 }

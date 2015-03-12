@@ -1,4 +1,4 @@
-package jfoley.vocabpress.postings;
+package jfoley.vocabpress.extents;
 
 /**
  * @author jfoley

@@ -1,8 +1,8 @@
-package jfoley.vocabpress.postings;
+package jfoley.vocabpress.positions;
 
 import jfoley.vocabpress.extents.ExtentsIterator;
-
-import java.util.List;
+import jfoley.vocabpress.positions.PositionsList;
+import jfoley.vocabpress.postings.CountPosting;
 
 /**
  * A positions posting has a document, a count, and a positions array.
@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface PositionsPosting extends CountPosting {
   /** return a reference to the positions array */
-  public List<Integer> getPositions();
+  public PositionsList getPositions();
   /** return an ExtentsIterator of the positions array */
   public ExtentsIterator getExtentsIterator();
 }

@@ -1,7 +1,7 @@
 package jfoley.vocabpress.phrase;
 
+import jfoley.vocabpress.extents.ExtentIterable;
 import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.extents.IntArrayPosIter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.List;
 public class OrderedWindow {
 
   /** This is the equivalent of Galago and Indri's od:x(a, b, ...) operator */
-  public static int countPositions(List<int[]> positions, int spacingBetween) {
+  public static int countPositions(List<? extends ExtentIterable> positions, int spacingBetween) {
     // TODO, check for and call faster Bigram if applicable :)
 
     assert(positions.size() >= 2);
     List<ExtentsIterator> arr = new ArrayList<>(positions.size());
-    for (int[] position : positions) {
-      arr.add(new IntArrayPosIter(position));
+    for (ExtentIterable pl : positions) {
+      arr.add(pl.getExtentsIterator());
     }
     return countExtents(arr, spacingBetween);
   }
