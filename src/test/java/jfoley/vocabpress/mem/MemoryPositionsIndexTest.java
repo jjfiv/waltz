@@ -59,6 +59,9 @@ public class MemoryPositionsIndexTest {
     }
     assertEquals(Arrays.asList(1,1), foxHits);
     assertEquals(Arrays.asList(1,3), foxPos);
+
+    assertEquals(Arrays.asList(3), index.getPositions("fox").getFeature(1).getPositions().toList());
+    assertEquals(Arrays.asList(8), index.getPositions("dog").getFeature(1).getPositions().toList());
   }
 
   @Test

@@ -23,21 +23,21 @@ import java.util.Map;
 public class MemoryPositionsIndex {
 	public Map<Integer, List<PositionsPosting>> positions;
 	public Map<Integer, int[]> corpus;
+  public IntList lengths;
 
 	public InternSpace<String> terms;
 	public InternSpace<String> docNames;
-
-	public int nextDocumentId = 0;
 
   public MemoryPositionsIndex() {
     this.positions = new HashMap<>();
     this.corpus = new HashMap<>();
     this.terms = new DoubleMapInternSpace<>();
     this.docNames = new DoubleMapInternSpace<>();
+    this.lengths = new IntList();
   }
 
 	public void addDocument(String documentName, List<String> termVector) {
-		int documentId = nextDocumentId++;
+		int documentId = lengths.size();
 		docNames.put(documentId, documentName);
 
     IntList id_terms = new IntList();
@@ -49,6 +49,7 @@ public class MemoryPositionsIndex {
 			MapFns.extendListInMap(postings, idk, pos);
 		}
     corpus.put(documentId, id_terms.asArray());
+    lengths.add(id_terms.size());
 
 		for (Map.Entry<Integer, List<Integer>> kv : postings.entrySet()) {
 			SimplePositionsPosting posting = new SimplePositionsPosting(documentId, kv.getValue());
@@ -57,7 +58,7 @@ public class MemoryPositionsIndex {
 	}
 
   public List<Integer> getAllDocumentIds() {
-    return IntRange.exclusive(0, nextDocumentId);
+    return IntRange.exclusive(0, lengths.size());
   }
 
   public PostingMover<CountPosting> getCountsMover(String term) {

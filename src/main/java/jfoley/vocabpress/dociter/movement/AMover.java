@@ -88,12 +88,10 @@ public abstract class AMover implements Mover {
     int currentKey = currentKey();
     if(key == currentKey) return;
     if(key >= currentKey) {
-      System.out.println("Skip ahead toward "+key+" from "+currentKey);
       moveTo(key);
       return;
     }
     rewindBlock(key);
-    System.out.println("rewindBlock for " + key + " from " + currentKey);
     if(key < currentKey()) {
       // TODO log a warning about slow resets needed.
       reset();
