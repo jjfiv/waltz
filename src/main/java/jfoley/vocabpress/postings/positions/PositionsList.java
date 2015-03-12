@@ -1,6 +1,6 @@
-package jfoley.vocabpress.positions;
+package jfoley.vocabpress.postings.positions;
 
-import jfoley.vocabpress.extents.ExtentIterable;
+import jfoley.vocabpress.postings.extents.ExtentIterable;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package jfoley.vocabpress.extents.iter;
+package jfoley.vocabpress.postings.extents.iter;
 
-import jfoley.vocabpress.extents.ExtentsIterator;
+import jfoley.vocabpress.postings.extents.ExtentsIterator;
 
 /**
  * @author jfoley

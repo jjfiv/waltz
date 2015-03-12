@@ -5,7 +5,7 @@ import ciir.jfoley.chai.collections.util.MapFns;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsPosting;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
 

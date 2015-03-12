@@ -1,8 +1,8 @@
-package jfoley.vocabpress.extents;
+package jfoley.vocabpress.postings.extents;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.positions.PositionsIterator;
-import jfoley.vocabpress.positions.PositionsList;
+import jfoley.vocabpress.postings.positions.PositionsIterator;
+import jfoley.vocabpress.postings.positions.PositionsList;
 
 import java.util.List;
 

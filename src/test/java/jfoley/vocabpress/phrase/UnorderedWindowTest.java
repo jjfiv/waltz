@@ -1,8 +1,8 @@
 package jfoley.vocabpress.phrase;
 
-import jfoley.vocabpress.extents.Extent;
-import jfoley.vocabpress.positions.PositionsList;
-import jfoley.vocabpress.positions.SimplePositionsList;
+import jfoley.vocabpress.postings.extents.Extent;
+import jfoley.vocabpress.postings.positions.PositionsList;
+import jfoley.vocabpress.postings.positions.SimplePositionsList;
 import org.junit.Test;
 
 import java.util.Arrays;

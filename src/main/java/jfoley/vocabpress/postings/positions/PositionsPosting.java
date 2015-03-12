@@ -1,7 +1,6 @@
-package jfoley.vocabpress.positions;
+package jfoley.vocabpress.postings.positions;
 
-import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.positions.PositionsList;
+import jfoley.vocabpress.postings.extents.ExtentsIterator;
 import jfoley.vocabpress.postings.CountPosting;
 
 /**

@@ -1,8 +1,8 @@
 package jfoley.vocabpress.phrase;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.positions.PositionsList;
-import jfoley.vocabpress.positions.SimplePositionsList;
+import jfoley.vocabpress.postings.positions.PositionsList;
+import jfoley.vocabpress.postings.positions.SimplePositionsList;
 
 /**
  * @author jfoley

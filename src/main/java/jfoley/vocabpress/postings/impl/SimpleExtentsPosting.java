@@ -1,12 +1,12 @@
 package jfoley.vocabpress.postings.impl;
 
-import jfoley.vocabpress.extents.ExtentsAsPositions;
-import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.extents.ExtentsList;
-import jfoley.vocabpress.extents.iter.ListExtentsIterator;
+import jfoley.vocabpress.postings.extents.ExtentsAsPositions;
+import jfoley.vocabpress.postings.extents.ExtentsIterator;
+import jfoley.vocabpress.postings.extents.ExtentsList;
+import jfoley.vocabpress.postings.extents.iter.ListExtentsIterator;
 import jfoley.vocabpress.postings.APosting;
-import jfoley.vocabpress.extents.ExtentsPosting;
-import jfoley.vocabpress.positions.PositionsList;
+import jfoley.vocabpress.postings.extents.ExtentsPosting;
+import jfoley.vocabpress.postings.positions.PositionsList;
 
 /**
  * @author jfoley

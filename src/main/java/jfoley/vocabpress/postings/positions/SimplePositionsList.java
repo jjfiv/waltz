@@ -1,4 +1,4 @@
-package jfoley.vocabpress.positions;
+package jfoley.vocabpress.postings.positions;
 
 import ciir.jfoley.chai.collections.util.ArrayFns;
 

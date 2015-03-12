@@ -1,7 +1,7 @@
-package jfoley.vocabpress.extents;
+package jfoley.vocabpress.postings.extents;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.extents.iter.ListExtentsIterator;
+import jfoley.vocabpress.postings.extents.iter.ListExtentsIterator;
 
 import java.util.AbstractList;
 import java.util.List;

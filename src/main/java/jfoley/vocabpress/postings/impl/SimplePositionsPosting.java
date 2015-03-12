@@ -1,11 +1,11 @@
 package jfoley.vocabpress.postings.impl;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.extents.iter.IntArrayPosIter;
-import jfoley.vocabpress.positions.PositionsList;
-import jfoley.vocabpress.positions.PositionsPosting;
-import jfoley.vocabpress.positions.SimplePositionsList;
+import jfoley.vocabpress.postings.extents.ExtentsIterator;
+import jfoley.vocabpress.postings.extents.iter.IntArrayPosIter;
+import jfoley.vocabpress.postings.positions.PositionsList;
+import jfoley.vocabpress.postings.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.SimplePositionsList;
 import jfoley.vocabpress.postings.APosting;
 
 import java.util.List;
