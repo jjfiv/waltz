@@ -1,6 +1,5 @@
 package jfoley.vocabpress.feature;
 
-import jfoley.vocabpress.dociter.movement.Mover;
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.postings.Posting;
 
