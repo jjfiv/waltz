@@ -1,5 +1,6 @@
 package jfoley.vocabpress.mem;
 
+import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.MapFns;
 import jfoley.vocabpress.feature.Feature;
@@ -47,10 +48,14 @@ public class MemoryPositionsIndex {
     corpus.put(documentId, id_terms.asArray());
 
 		for (Map.Entry<Integer, List<Integer>> kv : postings.entrySet()) {
-			SimplePositionsPosting posting = new SimplePositionsPosting(nextDocumentId, kv.getValue());
+			SimplePositionsPosting posting = new SimplePositionsPosting(documentId, kv.getValue());
 			MapFns.extendListInMap(positions, kv.getKey(), posting);
 		}
 	}
+
+  public List<Integer> getAllDocumentIds() {
+    return IntRange.exclusive(0, nextDocumentId);
+  }
 
 	public Feature<? extends PositionsPosting> getPositions(String term) {
 		int termId = terms.getId(term);

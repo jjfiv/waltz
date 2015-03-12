@@ -60,4 +60,25 @@ public class MemoryPositionsIndexTest {
     assertEquals(Arrays.asList(1,1), foxHits);
     assertEquals(Arrays.asList(1,3), foxPos);
   }
+
+  @Test
+  public void testAllDocuments() throws Exception {
+    MemoryPositionsIndex index = new MemoryPositionsIndex();
+    index.addDocument("fox", tokens("a fox is a mammal"));
+    index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
+
+    Feature<? extends CountPosting> foxCounts = index.getCounts("fox");
+
+    List<Integer> foxHits = new IntList();
+
+    for (int docId : index.getAllDocumentIds()) {
+      foxCounts.getMover().moveTo(docId);
+      if(foxCounts.hasFeature(docId)) {
+        CountPosting p = foxCounts.getFeature(docId);
+        foxHits.add(p.getCount());
+      }
+    }
+
+    assertEquals(Arrays.asList(1,1), foxHits);
+  }
 }
