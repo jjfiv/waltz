@@ -1,6 +1,6 @@
 package jfoley.vocabpress.extents;
 
-import jfoley.vocabpress.scoring.Extent;
+import jfoley.vocabpress.postings.Extent;
 
 import java.util.List;
 

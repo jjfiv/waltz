@@ -1,17 +1,18 @@
-package jfoley.vocabpress.scoring.impl;
+package jfoley.vocabpress.postings.impl;
 
 import jfoley.vocabpress.extents.BeginsView;
 import jfoley.vocabpress.extents.ExtentsIterator;
 import jfoley.vocabpress.extents.ExtentsList;
 import jfoley.vocabpress.extents.ListExtentsIterator;
-import jfoley.vocabpress.scoring.ExtentsPosting;
+import jfoley.vocabpress.postings.APosting;
+import jfoley.vocabpress.postings.ExtentsPosting;
 
 import java.util.List;
 
 /**
  * @author jfoley
  */
-public class SimpleExtentsPosting extends SimplePosting implements ExtentsPosting {
+public class SimpleExtentsPosting extends APosting implements ExtentsPosting {
   private final ExtentsList extents;
 
   protected SimpleExtentsPosting(int document, ExtentsList extents) {

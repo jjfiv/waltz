@@ -1,14 +1,12 @@
-package jfoley.vocabpress.scoring.impl;
-
-import jfoley.vocabpress.scoring.Posting;
+package jfoley.vocabpress.postings;
 
 /**
  * @author jfoley
  */
-public abstract class SimplePosting implements Posting {
+public abstract class APosting implements Posting {
   protected final int document;
 
-  protected SimplePosting(int document) {
+  protected APosting(int document) {
     this.document = document;
   }
 

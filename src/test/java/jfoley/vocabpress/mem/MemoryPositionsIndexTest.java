@@ -3,8 +3,8 @@ package jfoley.vocabpress.mem;
 import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.movement.Mover;
-import jfoley.vocabpress.scoring.CountPosting;
-import jfoley.vocabpress.scoring.PositionsPosting;
+import jfoley.vocabpress.postings.CountPosting;
+import jfoley.vocabpress.postings.PositionsPosting;
 import org.junit.Test;
 
 import java.util.Arrays;

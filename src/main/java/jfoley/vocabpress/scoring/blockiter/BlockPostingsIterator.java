@@ -1,6 +1,6 @@
 package jfoley.vocabpress.scoring.blockiter;
 
-import jfoley.vocabpress.scoring.Posting;
+import jfoley.vocabpress.postings.Posting;
 
 /**
  * @author jfoley

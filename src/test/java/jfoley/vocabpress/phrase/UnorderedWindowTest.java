@@ -1,7 +1,7 @@
 package jfoley.vocabpress.phrase;
 
 import jfoley.vocabpress.extents.IntArrayPosIter;
-import jfoley.vocabpress.scoring.Extent;
+import jfoley.vocabpress.postings.Extent;
 import org.junit.Test;
 
 import java.util.Arrays;

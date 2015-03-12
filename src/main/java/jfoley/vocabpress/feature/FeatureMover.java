@@ -2,7 +2,7 @@ package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.movement.AMover;
 import jfoley.vocabpress.movement.Mover;
-import jfoley.vocabpress.scoring.Posting;
+import jfoley.vocabpress.postings.Posting;
 import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
 import jfoley.vocabpress.scoring.blockiter.IValueBlock;
 

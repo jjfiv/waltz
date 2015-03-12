@@ -2,7 +2,7 @@ package jfoley.vocabpress.phrase;
 
 import jfoley.vocabpress.extents.ExtentsIterator;
 import jfoley.vocabpress.extents.IntArrayPosIter;
-import jfoley.vocabpress.scoring.Extent;
+import jfoley.vocabpress.postings.Extent;
 
 import java.util.ArrayList;
 import java.util.List;

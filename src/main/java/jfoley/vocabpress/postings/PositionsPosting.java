@@ -1,4 +1,4 @@
-package jfoley.vocabpress.scoring;
+package jfoley.vocabpress.postings;
 
 import jfoley.vocabpress.extents.ExtentsIterator;
 

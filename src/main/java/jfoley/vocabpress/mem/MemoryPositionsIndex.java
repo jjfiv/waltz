@@ -4,10 +4,10 @@ import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.MapFns;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.FeatureMover;
-import jfoley.vocabpress.scoring.CountPosting;
-import jfoley.vocabpress.scoring.PositionsPosting;
+import jfoley.vocabpress.postings.CountPosting;
+import jfoley.vocabpress.postings.PositionsPosting;
 import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
-import jfoley.vocabpress.scoring.impl.SimplePositionsPosting;
+import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
 
 import java.util.HashMap;
 import java.util.List;

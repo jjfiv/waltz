@@ -1,7 +1,7 @@
 package jfoley.vocabpress.scoring.blockiter;
 
-import jfoley.vocabpress.scoring.CountPosting;
-import jfoley.vocabpress.scoring.impl.SimpleCountPosting;
+import jfoley.vocabpress.postings.CountPosting;
+import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 import org.junit.Test;
 
 import java.util.ArrayList;

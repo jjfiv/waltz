@@ -2,7 +2,7 @@ package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.movement.Mover;
 import jfoley.vocabpress.movement.IdSetMover;
-import jfoley.vocabpress.scoring.Posting;
+import jfoley.vocabpress.postings.Posting;
 
 import java.util.Map;
 

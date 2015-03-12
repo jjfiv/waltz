@@ -1,12 +1,12 @@
-package jfoley.vocabpress.scoring.impl;
+package jfoley.vocabpress.postings.impl;
 
-import jfoley.vocabpress.scoring.CountPosting;
-import jfoley.vocabpress.scoring.Posting;
+import jfoley.vocabpress.postings.APosting;
+import jfoley.vocabpress.postings.CountPosting;
 
 /**
  * @author jfoley
  */
-public class SimpleCountPosting extends SimplePosting implements CountPosting{
+public class SimpleCountPosting extends APosting implements CountPosting {
   public final int count;
 
   public SimpleCountPosting(int document, int count) {
