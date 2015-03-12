@@ -1,9 +1,9 @@
 package jfoley.vocabpress.scoring.impl;
 
-import jfoley.vocabpress.extents.ListExtentsIterator;
-import jfoley.vocabpress.extents.PositionsView;
+import jfoley.vocabpress.extents.BeginsView;
 import jfoley.vocabpress.extents.ExtentsIterator;
-import jfoley.vocabpress.scoring.Extent;
+import jfoley.vocabpress.extents.ExtentsList;
+import jfoley.vocabpress.extents.ListExtentsIterator;
 import jfoley.vocabpress.scoring.ExtentsPosting;
 
 import java.util.List;
@@ -12,15 +12,15 @@ import java.util.List;
  * @author jfoley
  */
 public class SimpleExtentsPosting extends SimplePosting implements ExtentsPosting {
-  private final List<Extent> extents;
+  private final ExtentsList extents;
 
-  protected SimpleExtentsPosting(int document, List<Extent> extents) {
+  protected SimpleExtentsPosting(int document, ExtentsList extents) {
     super(document);
     this.extents = extents;
   }
 
   @Override
-  public List<Extent> getExtents() {
+  public ExtentsList getExtents() {
     return extents;
   }
 
@@ -31,7 +31,7 @@ public class SimpleExtentsPosting extends SimplePosting implements ExtentsPostin
 
   @Override
   public List<Integer> getPositions() {
-    return new PositionsView(extents);
+    return new BeginsView(extents);
   }
 
   @Override

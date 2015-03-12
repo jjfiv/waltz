@@ -1,10 +1,10 @@
 package jfoley.vocabpress.scoring;
 
-import java.util.List;
+import jfoley.vocabpress.extents.ExtentsList;
 
 /**
  * @author jfoley
  */
 public interface ExtentsPosting extends PositionsPosting {
-  public List<Extent> getExtents();
+  public ExtentsList getExtents();
 }
