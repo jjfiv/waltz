@@ -5,12 +5,13 @@ import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
 
+import java.io.Closeable;
 import java.util.List;
 
 /**
  * @author jfoley
  */
-public interface Index {
+public interface Index extends Closeable {
   // TODO longs here?
   int getCollectionLength();
 

@@ -14,6 +14,7 @@ import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,5 +109,10 @@ public class MemoryPositionsIndex implements Index {
   @Override
   public Feature<Integer> getLengths() {
     return new CompactLengthsFeature(lengths);
+  }
+
+  @Override
+  public void close() throws IOException {
+    // Since we're purely in-memory here, nothing to do here.
   }
 }

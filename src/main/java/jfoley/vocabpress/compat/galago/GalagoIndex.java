@@ -1,6 +1,9 @@
 package jfoley.vocabpress.compat.galago;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import jfoley.vocabpress.compat.galago.impl.GalagoCountMover;
+import jfoley.vocabpress.compat.galago.impl.GalagoLengthsFeature;
+import jfoley.vocabpress.compat.galago.impl.GalagoPositionsMover;
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;

@@ -1,4 +1,4 @@
-package jfoley.vocabpress.compat.galago;
+package jfoley.vocabpress.compat.galago.impl;
 
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
