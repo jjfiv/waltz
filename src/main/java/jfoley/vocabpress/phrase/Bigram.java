@@ -1,6 +1,7 @@
 package jfoley.vocabpress.phrase;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import jfoley.vocabpress.postings.positions.PositionsIterator;
 import jfoley.vocabpress.postings.positions.PositionsList;
 import jfoley.vocabpress.postings.positions.SimplePositionsList;
 
@@ -52,5 +53,33 @@ public class Bigram {
       }
     }
     return new SimplePositionsList(hits);
+  }
+
+  public static int countUnordered(PositionsList left, PositionsList right, int width) {
+    PositionsIterator iterA = left.getExtentsIterator();
+    PositionsIterator iterB = right.getExtentsIterator();
+
+    if(iterA.isDone() || iterB.isDone()) {
+      return 0;
+    }
+
+    int count = 0;
+    boolean hasNext = true;
+    while(hasNext) {
+      // choose minimum iterator based on start
+      final PositionsIterator minIter = (iterA.currentBegin() < iterB.currentBegin()) ? iterA : iterB;
+      final int minimumPosition = minIter.currentBegin();
+      final int maximumPosition = Math.max(iterA.currentEnd(), iterB.currentEnd());
+
+      // check for a match
+      if(maximumPosition - minimumPosition <= width) {
+        //extentCache.add(minimumPosition, maximumPosition);
+        count++;
+      }
+
+      // move minimum iterator
+      hasNext = minIter.next();
+    }
+    return count;
   }
 }

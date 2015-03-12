@@ -15,7 +15,7 @@ public class CompactLengthsFeature implements Feature<CountPosting> {
   }
   @Override
   public boolean hasFeature(int key) {
-    assert(key > 0);
+    assert(key >= 0);
     return key < data.size();
   }
 

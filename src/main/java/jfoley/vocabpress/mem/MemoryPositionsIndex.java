@@ -7,6 +7,7 @@ import ciir.jfoley.chai.collections.util.MapFns;
 import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.dociter.movement.BlockPostingsMover;
 import jfoley.vocabpress.dociter.movement.PostingMover;
+import jfoley.vocabpress.feature.CompactLengthsFeature;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
 import jfoley.vocabpress.postings.CountPosting;
@@ -24,6 +25,7 @@ public class MemoryPositionsIndex {
 	public Map<Integer, List<PositionsPosting>> positions;
 	public Map<Integer, int[]> corpus;
   public IntList lengths;
+  int collectionLength;
 
 	public InternSpace<String> terms;
 	public InternSpace<String> docNames;
@@ -34,6 +36,16 @@ public class MemoryPositionsIndex {
     this.terms = new DoubleMapInternSpace<>();
     this.docNames = new DoubleMapInternSpace<>();
     this.lengths = new IntList();
+    this.collectionLength = 0;
+  }
+
+  // TODO longs here?
+  public int getCollectionLength() {
+    return collectionLength;
+  }
+
+  public int getDocumentCount() {
+    return lengths.size();
   }
 
 	public void addDocument(String documentName, List<String> termVector) {
@@ -50,6 +62,7 @@ public class MemoryPositionsIndex {
 		}
     corpus.put(documentId, id_terms.asArray());
     lengths.add(id_terms.size());
+    collectionLength += id_terms.size();
 
 		for (Map.Entry<Integer, List<Integer>> kv : postings.entrySet()) {
 			SimplePositionsPosting posting = new SimplePositionsPosting(documentId, kv.getValue());
@@ -82,5 +95,9 @@ public class MemoryPositionsIndex {
 
   public String getDocumentName(int id) {
     return docNames.getValue(id);
+  }
+
+  public Feature<CountPosting> getLengths() {
+    return new CompactLengthsFeature(lengths);
   }
 }

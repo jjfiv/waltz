@@ -11,7 +11,7 @@ import java.util.List;
  * @author jfoley.
  */
 public class AnyOfMover extends AChildrenMover {
-	public AnyOfMover(List<Mover> children) {
+	public AnyOfMover(List<? extends Mover> children) {
 		super(children);
 	}
 

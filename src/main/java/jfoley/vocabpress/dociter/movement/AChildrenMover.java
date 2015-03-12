@@ -13,7 +13,7 @@ public abstract class AChildrenMover extends AMover {
 	protected final List<Mover> children;
 	protected int lastKey;
 
-	public AChildrenMover(List<Mover> children) {
+	public AChildrenMover(List<? extends Mover> children) {
 		this.children = ListFns.ensureRandomAccess(children);
 		assert(children.size() == new HashSet<>(children).size());
 		loadNewCurrentBlock();
