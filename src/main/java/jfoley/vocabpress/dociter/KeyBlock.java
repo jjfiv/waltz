@@ -1,4 +1,4 @@
-package jfoley.vocabpress.scoring.blockiter;
+package jfoley.vocabpress.dociter;
 
 import java.util.AbstractList;
 import java.util.Arrays;

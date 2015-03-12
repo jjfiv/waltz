@@ -1,11 +1,11 @@
 package jfoley.vocabpress.scoring.blockiter.movement;
 
 import ciir.jfoley.chai.fn.TransformFn;
-import jfoley.vocabpress.movement.AnyOfMover;
+import jfoley.vocabpress.dociter.movement.AnyOfMover;
 import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.scoring.blockiter.BlockPostingsIterator;
-import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
+import jfoley.vocabpress.dociter.BlockPostingsIterator;
+import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 import org.junit.Test;
 

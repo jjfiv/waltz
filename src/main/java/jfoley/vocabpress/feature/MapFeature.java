@@ -1,7 +1,7 @@
 package jfoley.vocabpress.feature;
 
-import jfoley.vocabpress.movement.Mover;
-import jfoley.vocabpress.movement.IdSetMover;
+import jfoley.vocabpress.dociter.movement.Mover;
+import jfoley.vocabpress.dociter.movement.IdSetMover;
 import jfoley.vocabpress.postings.Posting;
 
 import java.util.Map;

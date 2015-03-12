@@ -2,7 +2,7 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 
 import jfoley.vocabpress.feature.FeatureMover;
 import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.scoring.blockiter.ListBlockPostingsIterator;
+import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 import org.junit.Test;
 

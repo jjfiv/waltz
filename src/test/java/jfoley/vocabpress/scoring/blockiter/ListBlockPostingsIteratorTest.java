@@ -1,5 +1,8 @@
 package jfoley.vocabpress.scoring.blockiter;
 
+import jfoley.vocabpress.dociter.IKeyBlock;
+import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
+import jfoley.vocabpress.dociter.ValueBlock;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 import org.junit.Test;

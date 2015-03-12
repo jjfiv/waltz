@@ -2,7 +2,7 @@ package jfoley.vocabpress.mem;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.movement.Mover;
+import jfoley.vocabpress.dociter.movement.Mover;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
 import org.junit.Test;

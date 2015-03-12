@@ -1,7 +1,7 @@
 package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.movement.Mover;
+import jfoley.vocabpress.dociter.movement.Mover;
 
 /**
  * This interface could be wrapped around Map&lt;int, X&gt;

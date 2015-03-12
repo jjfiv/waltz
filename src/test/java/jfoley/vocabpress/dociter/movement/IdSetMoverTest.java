@@ -1,4 +1,4 @@
-package jfoley.vocabpress.movement;
+package jfoley.vocabpress.dociter.movement;
 
 import org.junit.Test;
 

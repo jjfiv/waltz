@@ -1,7 +1,7 @@
-package jfoley.vocabpress.movement;
+package jfoley.vocabpress.dociter.movement;
 
 import ciir.jfoley.chai.collections.util.ListFns;
-import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
+import jfoley.vocabpress.dociter.IKeyBlock;
 
 import java.util.HashSet;
 import java.util.List;

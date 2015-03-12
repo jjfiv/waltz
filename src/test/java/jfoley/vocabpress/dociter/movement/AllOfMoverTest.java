@@ -1,4 +1,4 @@
-package jfoley.vocabpress.movement;
+package jfoley.vocabpress.dociter.movement;
 
 import ciir.jfoley.chai.collections.IntRange;
 import org.junit.Test;

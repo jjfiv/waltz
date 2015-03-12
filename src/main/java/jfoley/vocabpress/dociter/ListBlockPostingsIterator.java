@@ -1,4 +1,4 @@
-package jfoley.vocabpress.scoring.blockiter;
+package jfoley.vocabpress.dociter;
 
 import jfoley.vocabpress.postings.Posting;
 

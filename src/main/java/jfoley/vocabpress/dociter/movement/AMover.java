@@ -1,6 +1,6 @@
-package jfoley.vocabpress.movement;
+package jfoley.vocabpress.dociter.movement;
 
-import jfoley.vocabpress.scoring.blockiter.IKeyBlock;
+import jfoley.vocabpress.dociter.IKeyBlock;
 
 /**
  * @author jfoley.

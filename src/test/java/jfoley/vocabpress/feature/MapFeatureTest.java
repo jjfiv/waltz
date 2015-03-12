@@ -1,6 +1,6 @@
 package jfoley.vocabpress.feature;
 
-import jfoley.vocabpress.movement.Mover;
+import jfoley.vocabpress.dociter.movement.Mover;
 import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 import org.junit.Test;
