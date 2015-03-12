@@ -7,7 +7,7 @@ import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 /**
  * @author jfoley
  */
-public class CompactLengthsFeature implements Feature<CountPosting> {
+public class CompactLengthsFeature implements Feature<Integer> {
   private final IntList data;
 
   public CompactLengthsFeature(IntList lengths) {
@@ -20,8 +20,8 @@ public class CompactLengthsFeature implements Feature<CountPosting> {
   }
 
   @Override
-  public CountPosting getFeature(int key) {
+  public Integer getFeature(int key) {
     assert(hasFeature(key));
-    return new SimpleCountPosting(key, data.getQuick(key));
+    return data.getQuick(key);
   }
 }

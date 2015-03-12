@@ -1,12 +1,10 @@
 package jfoley.vocabpress.feature;
 
-import jfoley.vocabpress.postings.Posting;
-
 /**
  * This interface could be wrapped around Map&lt;int, X&gt;
  * @author jfoley
  */
-public interface Feature<X extends Posting> {
+public interface Feature<X> {
   /** This determines if there is a feature at a specific value. */
   public boolean hasFeature(int key);
   /**

@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author jfoley.
  */
-public class MemoryPositionsIndex {
+public class MemoryPositionsIndex implements Index {
 	public Map<Integer, List<PositionsPosting>> positions;
 	public Map<Integer, int[]> corpus;
   public IntList lengths;
@@ -40,10 +40,12 @@ public class MemoryPositionsIndex {
   }
 
   // TODO longs here?
+  @Override
   public int getCollectionLength() {
     return collectionLength;
   }
 
+  @Override
   public int getDocumentCount() {
     return lengths.size();
   }
@@ -70,34 +72,41 @@ public class MemoryPositionsIndex {
 		}
 	}
 
+  @Override
   public List<Integer> getAllDocumentIds() {
     return IntRange.exclusive(0, lengths.size());
   }
 
+  @Override
   public PostingMover<CountPosting> getCountsMover(String term) {
     int termId = terms.getId(term);
     if(termId < 0) return null;
     return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(ListFns.castView(positions.get(termId))));
   }
+  @Override
   public PostingMover<PositionsPosting> getPositionsMover(String term) {
     int termId = terms.getId(term);
     if(termId < 0) return null;
     return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
   }
 
+  @Override
   public Feature<CountPosting> getCounts(String term) {
     return new MoverFeature<>(getCountsMover(term));
   }
 
+  @Override
   public Feature<PositionsPosting> getPositions(String term) {
     return new MoverFeature<>(getPositionsMover(term));
   }
 
+  @Override
   public String getDocumentName(int id) {
     return docNames.getValue(id);
   }
 
-  public Feature<CountPosting> getLengths() {
+  @Override
+  public Feature<Integer> getLengths() {
     return new CompactLengthsFeature(lengths);
   }
 }
