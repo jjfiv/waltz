@@ -1,6 +1,6 @@
 package jfoley.vocabpress.io.codec;
 
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.util.BufferList;
 import jfoley.vocabpress.io.util.StreamFns;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class VByteCodersTest {
   @Test
   public void testInts() {
-    Codec<Integer> c = VByteCoders.ints;
+    Coder<Integer> c = VByteCoders.ints;
     BufferList bl = new BufferList();
 
     Random r = new Random();
@@ -36,7 +36,7 @@ public class VByteCodersTest {
 
   @Test
   public void testLongs() {
-    Codec<Long> c = VByteCoders.longs;
+    Coder<Long> c = VByteCoders.longs;
     BufferList bl = new BufferList();
 
     Random r = new Random();

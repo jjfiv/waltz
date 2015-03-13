@@ -1,6 +1,6 @@
 package jfoley.vocabpress.io.codec;
 
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.util.BufferList;
 
 import java.io.IOException;
@@ -12,18 +12,18 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class ListCodec<T> extends Codec<List<T>> {
+public class ListCoder<T> extends Coder<List<T>> {
 
-  private final Codec<Integer> countCodec;
-  private final Codec<T> itemCodec;
+  private final Coder<Integer> countCoder;
+  private final Coder<T> itemCoder;
 
-  public ListCodec(Codec<T> itemCodec) {
-    this(VByteCoders.ints, itemCodec);
+  public ListCoder(Coder<T> itemCoder) {
+    this(VByteCoders.ints, itemCoder);
   }
-  public ListCodec(Codec<Integer> countCodec, Codec<T> itemCodec) {
-    this.countCodec = countCodec;
-    assert(itemCodec.knowsOwnSize());
-    this.itemCodec = itemCodec;
+  public ListCoder(Coder<Integer> countCoder, Coder<T> itemCoder) {
+    this.countCoder = countCoder;
+    assert(itemCoder.knowsOwnSize());
+    this.itemCoder = itemCoder;
   }
 
   @Override
@@ -35,19 +35,19 @@ public class ListCodec<T> extends Codec<List<T>> {
   public ByteBuffer writeImpl(List<T> obj) throws IOException {
     int count = obj.size();
     BufferList bl = new BufferList();
-    bl.add(countCodec.writeImpl(count));
+    bl.add(countCoder.writeImpl(count));
     for (T t : obj) {
-      bl.add(itemCodec, t);
+      bl.add(itemCoder, t);
     }
     return bl.compact();
   }
 
   @Override
   public List<T> readImpl(InputStream inputStream) throws IOException {
-    int amount = countCodec.read(inputStream);
+    int amount = countCoder.read(inputStream);
     List<T> output = new ArrayList<>(amount);
     for (int i = 0; i < amount; i++) {
-      output.add(itemCodec.read(inputStream));
+      output.add(itemCoder.read(inputStream));
     }
     return output;
   }

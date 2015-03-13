@@ -10,7 +10,7 @@ import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DeltaIntListCodecTest {
+public class DeltaIntListCoderTest {
 
   @Test
   public void testRandomly() throws Exception {
@@ -22,8 +22,8 @@ public class DeltaIntListCodecTest {
     }
     Collections.sort(testData);
 
-    ListCodec<Integer> lc = new ListCodec<>(VByteCoders.ints);
-    DeltaIntListCodec dlc = new DeltaIntListCodec();
+    ListCoder<Integer> lc = new ListCoder<>(VByteCoders.ints);
+    DeltaIntListCoder dlc = new DeltaIntListCoder();
 
     ByteBuffer withoutDeltas = lc.write(testData);
     ByteBuffer withDeltas = dlc.write(testData);

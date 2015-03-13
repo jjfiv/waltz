@@ -10,11 +10,11 @@ import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ListCodecTest {
+public class ListCoderTest {
 
   @Test
   public void testKnownStrings() throws Exception {
-    ListCodec<String> strs = new ListCodec<String>(UTF8.withVByteLength);
+    ListCoder<String> strs = new ListCoder<String>(UTF8.withVByteLength);
     assertTrue(strs.knowsOwnSize());
 
     List<String> testData = new ArrayList<>();
@@ -29,7 +29,7 @@ public class ListCodecTest {
 
   @Test
   public void testRandomNums() throws Exception {
-    ListCodec<Integer> strs = new ListCodec<>(VByteCoders.ints);
+    ListCoder<Integer> strs = new ListCoder<>(VByteCoders.ints);
     assertTrue(strs.knowsOwnSize());
 
     IntList testData = new IntList();

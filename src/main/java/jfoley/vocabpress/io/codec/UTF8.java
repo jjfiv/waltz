@@ -1,7 +1,7 @@
 package jfoley.vocabpress.io.codec;
 
 import ciir.jfoley.chai.io.IO;
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import java.nio.charset.Charset;
 public class UTF8 {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Codec<String> withoutLengthPrefix = new Codec<String>() {
+  public static final Coder<String> withoutLengthPrefix = new Coder<String>() {
     @Override
     public ByteBuffer writeImpl(String obj) throws IOException {
       return ByteBuffer.wrap(obj.getBytes(charset));
@@ -38,5 +38,5 @@ public class UTF8 {
     }
   };
 
-  public static final Codec<String> withVByteLength = new LengthPrefixCodec<>(VByteCoders.ints, withoutLengthPrefix);
+  public static final Coder<String> withVByteLength = new LengthPrefixCoder<>(VByteCoders.ints, withoutLengthPrefix);
 }

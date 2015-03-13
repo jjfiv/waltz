@@ -1,6 +1,6 @@
 package jfoley.vocabpress.io.codec;
 
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.CodecException;
 import jfoley.vocabpress.io.util.BufferList;
 import jfoley.vocabpress.io.util.StreamFns;
@@ -16,7 +16,7 @@ public class UTF8Test {
 
   @Test
   public void testWithoutLengthPrefix() {
-    Codec<String> c = UTF8.withoutLengthPrefix;
+    Coder<String> c = UTF8.withoutLengthPrefix;
     assertFalse(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -29,7 +29,7 @@ public class UTF8Test {
 
   @Test
   public void testWithLengthPrefix() throws IOException {
-    Codec<String> c = UTF8.withVByteLength;
+    Coder<String> c = UTF8.withVByteLength;
     assertTrue(c.knowsOwnSize());
 
     BufferList output = new BufferList();

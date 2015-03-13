@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * @author jfoley
  */
-public abstract class Codec<T> {
+public abstract class Coder<T> {
   /** Reading from a ByteBuffer in memory. Default implementation piggy-backs on readImpl. */
   public T read(ByteBuffer buf) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(buf.array(), buf.arrayOffset(), buf.limit())) {

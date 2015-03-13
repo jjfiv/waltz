@@ -1,7 +1,7 @@
 package jfoley.vocabpress.io.codec;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.util.BufferList;
 
 import java.io.IOException;
@@ -13,16 +13,16 @@ import java.util.List;
  * This integer list provides delta-gapped writing and reading, for sorted lists of integers.
  * @author jfoley
  */
-public class DeltaIntListCodec extends Codec<List<Integer>> {
-  private final Codec<Integer> countCodec;
-  private final Codec<Integer> itemCodec;
+public class DeltaIntListCoder extends Coder<List<Integer>> {
+  private final Coder<Integer> countCoder;
+  private final Coder<Integer> itemCoder;
 
-  public DeltaIntListCodec() {
+  public DeltaIntListCoder() {
     this(VByteCoders.ints, VByteCoders.ints);
   }
-  public DeltaIntListCodec(Codec<Integer> countCodec, Codec<Integer> itemCodec) {
-    this.countCodec = countCodec;
-    this.itemCodec = itemCodec;
+  public DeltaIntListCoder(Coder<Integer> countCoder, Coder<Integer> itemCoder) {
+    this.countCoder = countCoder;
+    this.itemCoder = itemCoder;
   }
 
   @Override
@@ -35,12 +35,12 @@ public class DeltaIntListCodec extends Codec<List<Integer>> {
     BufferList bl = new BufferList();
     int count = obj.size();
     int prev = 0;
-    bl.add(countCodec.write(count));
+    bl.add(countCoder.write(count));
 
     for (int x : obj) {
       int delta = x - prev;
       assert(delta > 0);
-      bl.add(itemCodec, delta);
+      bl.add(itemCoder, delta);
       prev = x;
     }
 
@@ -49,11 +49,11 @@ public class DeltaIntListCodec extends Codec<List<Integer>> {
 
   @Override
   public List<Integer> readImpl(InputStream inputStream) throws IOException {
-    int amount = countCodec.read(inputStream);
+    int amount = countCoder.read(inputStream);
     IntList output = new IntList();
     int delta = 0;
     for (int i = 0; i < amount; i++) {
-      delta += itemCodec.read(inputStream);
+      delta += itemCoder.read(inputStream);
       output.add(delta);
     }
     return output;

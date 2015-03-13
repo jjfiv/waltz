@@ -1,6 +1,6 @@
 package jfoley.vocabpress.io.codec;
 
-import jfoley.vocabpress.io.Codec;
+import jfoley.vocabpress.io.Coder;
 import org.lemurproject.galago.utility.compression.VByte;
 
 import java.io.DataInputStream;
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  * @author jfoley
  */
 public class VByteCoders {
-  public static final Codec<Integer> ints = new Codec<Integer>() {
+  public static final Coder<Integer> ints = new Coder<Integer>() {
     @Override
     public boolean knowsOwnSize() {
       return true;
@@ -30,7 +30,7 @@ public class VByteCoders {
     }
   };
 
-  public static final Codec<Long> longs = new Codec<Long>() {
+  public static final Coder<Long> longs = new Coder<Long>() {
     @Override
     public boolean knowsOwnSize() {
       return true;

@@ -30,7 +30,7 @@ public class BufferListTest {
 
   @Test
   public void testWithStringCodec() {
-    Codec<String> str = UTF8.withoutLengthPrefix;
+    Coder<String> str = UTF8.withoutLengthPrefix;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");
