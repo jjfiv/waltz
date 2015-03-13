@@ -6,7 +6,6 @@ import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.index.mem.MemoryPositionsIndex;
 import jfoley.vocabpress.phrase.Bigram;
-import jfoley.vocabpress.postings.CountPosting;
 import jfoley.vocabpress.postings.positions.EmptyPositionsList;
 import jfoley.vocabpress.postings.positions.PositionsList;
 import jfoley.vocabpress.postings.positions.PositionsPosting;
@@ -20,9 +19,7 @@ import java.util.List;
  * @author jfoley
  */
 public class PositionalSDM {
-  private final MemoryPositionsIndex index;
-  private final List<String> terms;
-  private final Feature<CountPosting> lengths;
+  private final Feature<Integer> lengths;
   private final int collectionLength;
   private final double mu;
   private final double unigramWeight;
@@ -35,8 +32,6 @@ public class PositionalSDM {
   private double term_bg[], od_bg[], uw_bg[];
 
   public PositionalSDM(MemoryPositionsIndex index, List<String> terms, Parameters cfg) {
-    this.index = index;
-    this.terms = terms;
     this.lengths = index.getLengths();
     this.collectionLength = index.getCollectionLength();
     iters = new ArrayList<>();
@@ -116,7 +111,7 @@ public class PositionalSDM {
   }
 
   public double score(int doc) {
-    long length = lengths.getFeature(doc).getCount();
+    long length = lengths.getFeature(doc);
 
     double unigram = 0.0;
     // collect extent arrays

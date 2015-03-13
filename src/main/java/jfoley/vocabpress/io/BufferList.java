@@ -27,6 +27,8 @@ public class BufferList {
     return size;
   }
 
+  /** write an object to this buffer list using the given codec. */
+  public <T> void add(Codec<T> coder, T obj) { bufs.add(coder.write(obj)); }
   public void add(ByteBuffer data) {
     bufs.add(data);
   }
