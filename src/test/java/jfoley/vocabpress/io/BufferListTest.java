@@ -1,9 +1,10 @@
 package jfoley.vocabpress.io;
 
 import jfoley.vocabpress.io.codec.UTF8;
+import jfoley.vocabpress.io.util.BufferList;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BufferListTest {
 
@@ -28,8 +29,8 @@ public class BufferListTest {
   }
 
   @Test
-  public void testWithCodecs() {
-    Codec<String> str = UTF8.strings;
+  public void testWithStringCodec() {
+    Codec<String> str = UTF8.withoutLengthPrefix;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");

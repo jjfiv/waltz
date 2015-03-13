@@ -1,4 +1,6 @@
-package jfoley.vocabpress.io;
+package jfoley.vocabpress.io.util;
+
+import jfoley.vocabpress.io.Codec;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -28,7 +30,9 @@ public class BufferList {
   }
 
   /** write an object to this buffer list using the given codec. */
-  public <T> void add(Codec<T> coder, T obj) { bufs.add(coder.write(obj)); }
+  public <T> void add(Codec<T> coder, T obj) {
+    bufs.add(coder.write(obj));
+  }
   public void add(ByteBuffer data) {
     bufs.add(data);
   }
