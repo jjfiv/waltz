@@ -17,9 +17,9 @@ public class InterleavedMapCoderTest {
     Random r = new Random();
 
     for (int i = 0; i < 1000; i++) {
-      data.put(Math.abs(r.nextInt()), Math.abs(r.nextInt()));
+      data.put(Math.abs(r.nextInt()), r.nextInt());
     }
-    Coder<Map<Integer, Integer>> c = new InterleavedMapCoder<>(VByteCoders.ints, VByteCoders.ints);
+    Coder<Map<Integer, Integer>> c = new InterleavedMapCoder<>(VByteCoders.ints, FixedSize.ints);
 
     assertEquals(data, c.read(c.write(data)));
   }
