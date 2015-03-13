@@ -21,8 +21,9 @@ public class ListCoder<T> extends Coder<List<T>> {
     this(VByteCoders.ints, itemCoder);
   }
   public ListCoder(Coder<Integer> countCoder, Coder<T> itemCoder) {
-    this.countCoder = countCoder;
+    assert(countCoder.knowsOwnSize());
     assert(itemCoder.knowsOwnSize());
+    this.countCoder = countCoder;
     this.itemCoder = itemCoder;
   }
 

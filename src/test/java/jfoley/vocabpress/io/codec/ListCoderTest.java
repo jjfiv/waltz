@@ -14,7 +14,7 @@ public class ListCoderTest {
 
   @Test
   public void testKnownStrings() throws Exception {
-    ListCoder<String> strs = new ListCoder<String>(UTF8.withVByteLength);
+    ListCoder<String> strs = new ListCoder<>(UTF8.withVByteLength);
     assertTrue(strs.knowsOwnSize());
 
     List<String> testData = new ArrayList<>();

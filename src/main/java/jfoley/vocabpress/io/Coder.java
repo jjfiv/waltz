@@ -9,7 +9,15 @@ import java.nio.ByteBuffer;
  * @author jfoley
  */
 public abstract class Coder<T> {
-  /** Reading from a ByteBuffer in memory. Default implementation piggy-backs on readImpl. */
+  /** Reading from a byte[] in memory. */
+  public T read(byte[] data) {
+    try (ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
+      return readImpl(bais);
+    } catch (IOException e) {
+      throw new CodecException(e, this.getClass());
+    }
+  }
+  /** Reading from a ByteBuffer in memory. */
   public T read(ByteBuffer buf) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(buf.array(), buf.arrayOffset(), buf.limit())) {
       return readImpl(bais);
@@ -17,6 +25,8 @@ public abstract class Coder<T> {
       throw new CodecException(e, this.getClass());
     }
   }
+
+  /** Reading from an InputStream. */
   public T read(InputStream is) {
     try {
       return readImpl(is);
@@ -24,6 +34,8 @@ public abstract class Coder<T> {
       throw new CodecException(e, this.getClass());
     }
   }
+
+  /** Write to a new ByteBuffer in memory. */
   public ByteBuffer write(T input) {
     try {
       return writeImpl(input);
