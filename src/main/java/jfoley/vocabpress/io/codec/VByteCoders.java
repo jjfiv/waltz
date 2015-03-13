@@ -14,6 +14,11 @@ import java.nio.ByteBuffer;
 public class VByteCoders {
   public static final Codec<Integer> ints = new Codec<Integer>() {
     @Override
+    public boolean knowsOwnSize() {
+      return true;
+    }
+
+    @Override
     public ByteBuffer writeImpl(Integer obj) throws IOException {
       assert(obj != null);
       return ByteBuffer.wrap(VByte.compressInt(obj));
@@ -26,6 +31,11 @@ public class VByteCoders {
   };
 
   public static final Codec<Long> longs = new Codec<Long>() {
+    @Override
+    public boolean knowsOwnSize() {
+      return true;
+    }
+
     @Override
     public ByteBuffer writeImpl(Long obj) throws IOException {
       assert(obj != null);

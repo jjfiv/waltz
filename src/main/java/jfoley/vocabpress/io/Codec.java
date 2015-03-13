@@ -32,6 +32,9 @@ public abstract class Codec<T> {
     }
   }
 
+  /** If false, always wrap in a LengthPrefixCodec for the ability to read it when you're streaming things! */
+  public abstract boolean knowsOwnSize();
+
   /** Writing, abstract, may throw IOException. */
   public abstract ByteBuffer writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
