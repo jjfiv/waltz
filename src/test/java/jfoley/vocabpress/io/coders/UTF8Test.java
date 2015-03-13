@@ -1,4 +1,4 @@
-package jfoley.vocabpress.io.codec;
+package jfoley.vocabpress.io.coders;
 
 import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.CodecException;

@@ -1,4 +1,4 @@
-package jfoley.vocabpress.io.codec;
+package jfoley.vocabpress.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import org.junit.Test;

@@ -1,9 +1,8 @@
-package jfoley.vocabpress.io.codec;
+package jfoley.vocabpress.io.coders;
 
 import jfoley.vocabpress.io.Coder;
-import org.lemurproject.galago.utility.compression.VByte;
+import jfoley.vocabpress.io.util.StreamFns;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -11,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * @author jfoley
  */
-public class VByteCoders {
+public class FixedSize {
   public static final Coder<Integer> ints = new Coder<Integer>() {
     @Override
     public boolean knowsOwnSize() {
@@ -20,16 +19,16 @@ public class VByteCoders {
 
     @Override
     public ByteBuffer writeImpl(Integer obj) throws IOException {
-      assert(obj != null);
-      return ByteBuffer.wrap(VByte.compressInt(obj));
+      ByteBuffer ofInt = ByteBuffer.allocate(4);
+      ofInt.putInt(0, obj);
+      return ofInt;
     }
 
     @Override
     public Integer readImpl(InputStream inputStream) throws IOException {
-      return VByte.uncompressInt(new DataInputStream(inputStream));
+      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 4)).getInt();
     }
   };
-
   public static final Coder<Long> longs = new Coder<Long>() {
     @Override
     public boolean knowsOwnSize() {
@@ -38,13 +37,14 @@ public class VByteCoders {
 
     @Override
     public ByteBuffer writeImpl(Long obj) throws IOException {
-      assert(obj != null);
-      return ByteBuffer.wrap(VByte.compressLong(obj));
+      ByteBuffer tmp = ByteBuffer.allocate(8);
+      tmp.putLong(0, obj);
+      return tmp;
     }
 
     @Override
     public Long readImpl(InputStream inputStream) throws IOException {
-      return VByte.uncompressLong(new DataInputStream(inputStream));
+      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 8)).getLong();
     }
   };
 }

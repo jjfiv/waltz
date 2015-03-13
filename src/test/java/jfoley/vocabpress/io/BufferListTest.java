@@ -1,6 +1,6 @@
 package jfoley.vocabpress.io;
 
-import jfoley.vocabpress.io.codec.UTF8;
+import jfoley.vocabpress.io.coders.UTF8;
 import jfoley.vocabpress.io.util.BufferList;
 import org.junit.Test;
 
