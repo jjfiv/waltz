@@ -11,9 +11,9 @@ import jfoley.vocabpress.feature.CompactLengthsFeature;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
 import jfoley.vocabpress.index.MutableIndex;
-import jfoley.vocabpress.postings.CountPosting;
+import jfoley.vocabpress.postings.Posting;
 import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsList;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author jfoley.
  */
 public class MemoryPositionsIndex implements MutableIndex {
-	public Map<Integer, List<PositionsPosting>> positions;
+	public Map<Integer, List<Posting<PositionsList>>> positions;
 	public Map<Integer, int[]> corpus;
   public IntList lengths;
   int collectionLength;
@@ -81,25 +81,25 @@ public class MemoryPositionsIndex implements MutableIndex {
   }
 
   @Override
-  public PostingMover<CountPosting> getCountsMover(String term) {
+  public PostingMover<Integer> getCountsMover(String term) {
     int termId = terms.getId(term);
     if(termId < 0) return null;
-    return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(ListFns.castView(positions.get(termId))));
+    return new CountsOfPositionsMover(new BlockPostingsMover<>(new ListBlockPostingsIterator<>(ListFns.castView(positions.get(termId)))));
   }
   @Override
-  public PostingMover<PositionsPosting> getPositionsMover(String term) {
+  public PostingMover<PositionsList> getPositionsMover(String term) {
     int termId = terms.getId(term);
     if(termId < 0) return null;
     return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
   }
 
   @Override
-  public Feature<CountPosting> getCounts(String term) {
+  public Feature<Integer> getCounts(String term) {
     return new MoverFeature<>(getCountsMover(term));
   }
 
   @Override
-  public Feature<PositionsPosting> getPositions(String term) {
+  public Feature<PositionsList> getPositions(String term) {
     return new MoverFeature<>(getPositionsMover(term));
   }
 

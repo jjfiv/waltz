@@ -2,12 +2,11 @@ package jfoley.vocabpress.dociter.movement;
 
 import jfoley.vocabpress.dociter.BlockPostingsIterator;
 import jfoley.vocabpress.dociter.IValueBlock;
-import jfoley.vocabpress.postings.Posting;
 
 /**
  * @author jfoley
  */
-public class BlockPostingsMover<X extends Posting> extends AMover implements PostingMover<X> {
+public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
   public final BlockPostingsIterator<X> iterator;
   private IValueBlock<X> valueBlock;
 
@@ -23,7 +22,6 @@ public class BlockPostingsMover<X extends Posting> extends AMover implements Pos
       valueBlock = iterator.nextValueBlock();
     }
     X val = valueBlock.getValue(index);
-    assert(val.getKey() == currentKey());
     return val;
   }
 

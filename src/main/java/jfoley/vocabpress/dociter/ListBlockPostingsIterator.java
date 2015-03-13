@@ -8,16 +8,16 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class ListBlockPostingsIterator<X extends Posting> implements BlockPostingsIterator<X> {
-  private final List<X> postings;
+public class ListBlockPostingsIterator<X> implements BlockPostingsIterator<X> {
+  private final List<Posting<X>> postings;
   private final int blockSize;
   private int keyReadPtr;
   private int valueReadPtr;
 
-  public ListBlockPostingsIterator(List<X> postings) {
+  public ListBlockPostingsIterator(List<Posting<X>> postings) {
     this(postings, 16);
   }
-  public ListBlockPostingsIterator(List<X> postings, int blockSize) {
+  public ListBlockPostingsIterator(List<Posting<X>> postings, int blockSize) {
     this.postings = postings;
     this.blockSize = blockSize;
     this.keyReadPtr = 0;
@@ -42,7 +42,7 @@ public class ListBlockPostingsIterator<X extends Posting> implements BlockPostin
   public ValueBlock<X> nextValueBlock() {
     List<X> bufferedVals = new ArrayList<>();
     for (int i = 0; i < blockSize && (valueReadPtr+i) < postings.size(); i++) {
-      bufferedVals.add(postings.get(valueReadPtr + i));
+      bufferedVals.add(postings.get(valueReadPtr + i).getValue());
     }
     valueReadPtr += bufferedVals.size();
     return new ValueBlock<>(bufferedVals);

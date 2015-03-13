@@ -2,8 +2,7 @@ package jfoley.vocabpress.index;
 
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsList;
 
 import java.io.Closeable;
 import java.util.List;
@@ -19,13 +18,13 @@ public interface Index extends Closeable {
 
   List<Integer> getAllDocumentIds();
 
-  PostingMover<CountPosting> getCountsMover(String term);
+  PostingMover<Integer> getCountsMover(String term);
 
-  PostingMover<PositionsPosting> getPositionsMover(String term);
+  PostingMover<PositionsList> getPositionsMover(String term);
 
-  Feature<CountPosting> getCounts(String term);
+  Feature<Integer> getCounts(String term);
 
-  Feature<PositionsPosting> getPositions(String term);
+  Feature<PositionsList> getPositions(String term);
 
   String getDocumentName(int id);
 

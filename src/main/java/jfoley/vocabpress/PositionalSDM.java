@@ -8,7 +8,6 @@ import jfoley.vocabpress.index.mem.MemoryPositionsIndex;
 import jfoley.vocabpress.phrase.Bigram;
 import jfoley.vocabpress.postings.positions.EmptyPositionsList;
 import jfoley.vocabpress.postings.positions.PositionsList;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
 import org.lemurproject.galago.utility.Parameters;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class PositionalSDM {
   private final double bigramWeight;
   private final double ubigramWeight;
   private final int numTerms;
-  private List<PostingMover<PositionsPosting>> iters;
+  private List<PostingMover<PositionsList>> iters;
 
   /** filled out by calculateStats() */
   private double term_bg[], od_bg[], uw_bg[];
@@ -71,12 +70,12 @@ public class PositionalSDM {
       int doc = mover.currentKey();
       List<PositionsList> extents = new ArrayList<>(numTerms);
       for (int i = 0; i < iters.size(); i++) {
-        PostingMover<PositionsPosting> pos = iters.get(i);
+        PostingMover<PositionsList> pos = iters.get(i);
         pos.moveTo(doc);
         if (pos.matches(doc)) {
-          PositionsPosting p = pos.getCurrentPosting();
-          extents.add(p.getPositions());
-          term_cf[i] += p.getCount();
+          PositionsList p = pos.getCurrentPosting();
+          extents.add(p);
+          term_cf[i] += p.size();
         } else {
           assert(pos.currentKey() > doc);
           extents.add(EmptyPositionsList.instance);
@@ -105,7 +104,7 @@ public class PositionalSDM {
     }
 
     // reset so we can re-use them
-    for (PostingMover<PositionsPosting> iter : iters) {
+    for (Mover iter : iters) {
       iter.reset();
     }
   }
@@ -123,9 +122,9 @@ public class PositionalSDM {
 
       int term_tf = 0;
       if(iters.get(i).matches(doc)) {
-        PositionsPosting p = iters.get(i).getCurrentPosting();
-        term_tf = p.getCount();
-        pos.add(p.getPositions());
+        PositionsList p = iters.get(i).getCurrentPosting();
+        term_tf = p.size();
+        pos.add(p);
       } else {
         pos.add(EmptyPositionsList.instance);
       }

@@ -3,8 +3,7 @@ package jfoley.vocabpress.index.mem;
 import ciir.jfoley.chai.collections.list.IntList;
 import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsList;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -25,15 +24,13 @@ public class MemoryPositionsIndexTest {
     index.addDocument("fox", tokens("a fox is a mammal"));
     index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
 
-    PostingMover<CountPosting> foxCounts = index.getCountsMover("fox");
+    PostingMover<Integer> foxCounts = index.getCountsMover("fox");
 
 		List<Integer> foxHits = new IntList();
     for(; !foxCounts.isDone(); foxCounts.next()) {
       int doc = foxCounts.currentKey();
       assertTrue(foxCounts.matches(doc));
-      CountPosting p = foxCounts.getCurrentPosting();
-			foxHits.add(p.getCount());
-      assertEquals(doc, p.getKey());
+			foxHits.add(foxCounts.getCurrentPosting());
     }
 		assertEquals(Arrays.asList(1,1), foxHits);
   }
@@ -44,24 +41,23 @@ public class MemoryPositionsIndexTest {
     index.addDocument("fox", tokens("a fox is a mammal"));
     index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
 
-    PostingMover<PositionsPosting> foxIter = index.getPositionsMover("fox");
+    PostingMover<PositionsList> foxIter = index.getPositionsMover("fox");
 
     IntList foxPos = new IntList();
     List<Integer> foxHits = new IntList();
     for(; !foxIter.isDone(); foxIter.next()) {
       int doc = foxIter.currentKey();
       assertTrue(foxIter.matches(doc));
-      PositionsPosting p = foxIter.getCurrentPosting();
+      PositionsList p = foxIter.getCurrentPosting();
       //System.err.println(p);
-      foxPos.addAll(p.getPositions().toList());
-      foxHits.add(p.getCount());
-      assertEquals(doc, p.getKey());
+      foxPos.addAll(p.toList());
+      foxHits.add(p.size());
     }
     assertEquals(Arrays.asList(1,1), foxHits);
     assertEquals(Arrays.asList(1,3), foxPos);
 
-    assertEquals(Arrays.asList(3), index.getPositions("fox").getFeature(1).getPositions().toList());
-    assertEquals(Arrays.asList(8), index.getPositions("dog").getFeature(1).getPositions().toList());
+    assertEquals(Arrays.asList(3), index.getPositions("fox").getFeature(1).toList());
+    assertEquals(Arrays.asList(8), index.getPositions("dog").getFeature(1).toList());
   }
 
   @Test
@@ -70,14 +66,13 @@ public class MemoryPositionsIndexTest {
     index.addDocument("fox", tokens("a fox is a mammal"));
     index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
 
-    Feature<? extends CountPosting> foxCounts = index.getCounts("fox");
+    Feature<Integer> foxCounts = index.getCounts("fox");
 
     List<Integer> foxHits = new IntList();
 
     for (int docId : index.getAllDocumentIds()) {
       if(foxCounts.hasFeature(docId)) {
-        CountPosting p = foxCounts.getFeature(docId);
-        foxHits.add(p.getCount());
+        foxHits.add(foxCounts.getFeature(docId));
       }
     }
 

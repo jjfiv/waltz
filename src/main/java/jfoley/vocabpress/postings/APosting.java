@@ -3,7 +3,7 @@ package jfoley.vocabpress.postings;
 /**
  * @author jfoley
  */
-public abstract class APosting implements Posting {
+public abstract class APosting<V> implements Posting<V> {
   protected final int document;
 
   protected APosting(int document) {
@@ -16,7 +16,7 @@ public abstract class APosting implements Posting {
   }
 
   @Override
-  public int compareTo(Posting o) {
+  public int compareTo(Posting<V> o) {
     assert(o != null);
     return Integer.compare(document, o.getKey());
   }

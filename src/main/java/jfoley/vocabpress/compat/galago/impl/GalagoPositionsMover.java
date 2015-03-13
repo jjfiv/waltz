@@ -1,10 +1,8 @@
 package jfoley.vocabpress.compat.galago.impl;
 
 import jfoley.vocabpress.dociter.movement.PostingMover;
-import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
 import jfoley.vocabpress.postings.positions.PositionsIterator;
 import jfoley.vocabpress.postings.positions.PositionsList;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
 import org.lemurproject.galago.core.retrieval.iterator.ExtentIterator;
 import org.lemurproject.galago.core.util.ExtentArray;
 
@@ -14,16 +12,16 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class GalagoPositionsMover extends AGalagoMover<ExtentIterator> implements PostingMover<PositionsPosting> {
+public class GalagoPositionsMover extends AGalagoMover<ExtentIterator> implements PostingMover<PositionsList> {
   public GalagoPositionsMover(ExtentIterator forTerm) {
     super(forTerm);
   }
 
   @Override
-  public PositionsPosting getCurrentPosting() {
+  public PositionsList getCurrentPosting() {
     ctx.document = currentKey();
     ExtentArray arr = iter.extents(ctx);
-    return new SimplePositionsPosting(currentKey(), new GalagoExtentsAsPositionsList(arr));
+    return new GalagoExtentsAsPositionsList(arr);
   }
 
   public static class GalagoExtentsAsPositionsList extends AbstractList<Integer> implements PositionsList {

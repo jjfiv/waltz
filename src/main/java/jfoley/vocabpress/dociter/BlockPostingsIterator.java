@@ -1,11 +1,9 @@
 package jfoley.vocabpress.dociter;
 
-import jfoley.vocabpress.postings.Posting;
-
 /**
  * @author jfoley
  */
-public interface BlockPostingsIterator<X extends Posting> {
+public interface BlockPostingsIterator<X> {
   /** return a set of keys until no more blocks are found */
   public IKeyBlock nextKeyBlock();
   /** return a set of values; call nextKeyBlock first! */

@@ -8,8 +8,7 @@ import jfoley.vocabpress.dociter.movement.PostingMover;
 import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
 import jfoley.vocabpress.index.Index;
-import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.positions.PositionsPosting;
+import jfoley.vocabpress.postings.positions.PositionsList;
 import org.lemurproject.galago.core.index.disk.DiskIndex;
 import org.lemurproject.galago.core.index.disk.DiskLengthsReader;
 import org.lemurproject.galago.core.index.disk.DiskNameReader;
@@ -74,7 +73,7 @@ public class GalagoIndex implements Index, Closeable {
   }
 
   @Override
-  public PostingMover<CountPosting> getCountsMover(String term) {
+  public PostingMover<Integer> getCountsMover(String term) {
     try {
       CountIterator forTerm = postings.getTermCounts(term);
       if(forTerm != null) {
@@ -87,7 +86,7 @@ public class GalagoIndex implements Index, Closeable {
   }
 
   @Override
-  public PostingMover<PositionsPosting> getPositionsMover(String term) {
+  public PostingMover<PositionsList> getPositionsMover(String term) {
     try {
       ExtentIterator forTerm = postings.getTermExtents(term);
       if(forTerm != null) {
@@ -100,12 +99,12 @@ public class GalagoIndex implements Index, Closeable {
   }
 
   @Override
-  public Feature<CountPosting> getCounts(String term) {
+  public Feature<Integer> getCounts(String term) {
     return new MoverFeature<>(getCountsMover(term));
   }
 
   @Override
-  public Feature<PositionsPosting> getPositions(String term) {
+  public Feature<PositionsList> getPositions(String term) {
     return new MoverFeature<>(getPositionsMover(term));
   }
 

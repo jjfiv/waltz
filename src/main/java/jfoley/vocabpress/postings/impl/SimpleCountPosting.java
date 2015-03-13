@@ -1,12 +1,11 @@
 package jfoley.vocabpress.postings.impl;
 
 import jfoley.vocabpress.postings.APosting;
-import jfoley.vocabpress.postings.CountPosting;
 
 /**
  * @author jfoley
  */
-public class SimpleCountPosting extends APosting implements CountPosting {
+public class SimpleCountPosting extends APosting<Integer> {
   public final int count;
 
   public SimpleCountPosting(int document, int count) {
@@ -14,8 +13,12 @@ public class SimpleCountPosting extends APosting implements CountPosting {
     this.count = count;
   }
 
-  @Override
   public int getCount() {
+    return count;
+  }
+
+  @Override
+  public Integer getValue() {
     return count;
   }
 }

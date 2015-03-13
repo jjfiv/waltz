@@ -1,17 +1,15 @@
 package jfoley.vocabpress.feature;
 
 import jfoley.vocabpress.dociter.movement.PostingMover;
-import jfoley.vocabpress.postings.Posting;
 
 /**
  * @author jfoley
  */
-public class MoverFeature<X extends Posting> implements Feature<X> {
+public class MoverFeature<X> implements Feature<X> {
   private final PostingMover<X> mover;
 
   public MoverFeature(PostingMover<X> mover) {
     this.mover = mover;
-
   }
 
   @Override
