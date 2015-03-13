@@ -1,8 +1,10 @@
 package jfoley.vocabpress.io.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * @author jfoley
@@ -18,5 +20,10 @@ public class StreamFns {
       throw new IOException();
     }
     return buf;
+  }
+
+  public static InputStream fromByteBuffer(ByteBuffer compact) {
+    // TODO, add a ByteBufferInputStream implementation from a trusted source: e.g. http://stackoverflow.com/questions/4332264/wrapping-a-bytebuffer-with-an-inputstream
+    return new ByteArrayInputStream(compact.array(), compact.arrayOffset(), compact.limit());
   }
 }
