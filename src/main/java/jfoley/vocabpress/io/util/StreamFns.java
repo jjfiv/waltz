@@ -24,6 +24,6 @@ public class StreamFns {
 
   public static InputStream fromByteBuffer(ByteBuffer compact) {
     // TODO, add a ByteBufferInputStream implementation from a trusted source: e.g. http://stackoverflow.com/questions/4332264/wrapping-a-bytebuffer-with-an-inputstream
-    return new ByteArrayInputStream(compact.array(), compact.arrayOffset(), compact.limit());
+    return new ByteArrayInputStream(compact.array());
   }
 }

@@ -29,9 +29,10 @@ public class LengthPrefixCodec<T> extends Codec<T> {
 
   @Override
   public ByteBuffer writeImpl(T obj) throws IOException {
-    BufferList bl = new BufferList();
     ByteBuffer payload = payloadCodec.writeImpl(obj);
-    bl.add(lengthCodec.write(payload.limit()));
+    ByteBuffer length = lengthCodec.write(payload.limit());
+    BufferList bl = new BufferList();
+    bl.add(length);
     bl.add(payload);
     return bl.compact();
   }

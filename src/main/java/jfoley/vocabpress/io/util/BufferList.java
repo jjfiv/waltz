@@ -45,7 +45,19 @@ public class BufferList {
     for (ByteBuffer buf : bufs) {
       output.put(buf);
     }
+    // Because put moves the position() of the buffer, we need to rewind before we return it.
+    output.rewind();
     return output;
   }
 
+  public int getByte(int index) {
+    int start = 0;
+    for (ByteBuffer buf : bufs) {
+      if (index < start + buf.limit()) {
+        return buf.get(index - start) & 0xff;
+      }
+      start += buf.limit();
+    }
+    return -1;
+  }
 }
