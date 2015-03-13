@@ -4,7 +4,7 @@ import jfoley.vocabpress.dociter.IKeyBlock;
 import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.dociter.ValueBlock;
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.postings.impl.SimpleCountPosting;
+import jfoley.vocabpress.postings.SimplePosting;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class ListBlockPostingsIteratorTest {
   public void testNextKeyBlock() throws Exception {
     List<Posting<Integer>> exampleData = new ArrayList<>();
     for (int i = 0; i < 35; i++) {
-      exampleData.add(new SimpleCountPosting(i, i*2));
+      exampleData.add(SimplePosting.Count(i, i*2));
     }
 
     ListBlockPostingsIterator<Integer> countBlocks = new ListBlockPostingsIterator<>(exampleData, 16);

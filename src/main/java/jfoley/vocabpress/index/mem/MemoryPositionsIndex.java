@@ -12,8 +12,9 @@ import jfoley.vocabpress.feature.Feature;
 import jfoley.vocabpress.feature.MoverFeature;
 import jfoley.vocabpress.index.MutableIndex;
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.postings.impl.SimplePositionsPosting;
+import jfoley.vocabpress.postings.SimplePosting;
 import jfoley.vocabpress.postings.positions.PositionsList;
+import jfoley.vocabpress.postings.positions.SimplePositionsList;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class MemoryPositionsIndex implements MutableIndex {
     collectionLength += id_terms.size();
 
 		for (Map.Entry<Integer, List<Integer>> kv : postings.entrySet()) {
-			SimplePositionsPosting posting = new SimplePositionsPosting(documentId, kv.getValue());
+			SimplePosting<PositionsList> posting = new SimplePosting<>(documentId, new SimplePositionsList(kv.getValue()));
 			MapFns.extendListInMap(positions, kv.getKey(), posting);
 		}
 	}

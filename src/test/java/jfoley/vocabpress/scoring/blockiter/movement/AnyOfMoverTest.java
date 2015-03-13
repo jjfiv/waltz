@@ -6,7 +6,7 @@ import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.dociter.movement.AnyOfMover;
 import jfoley.vocabpress.dociter.movement.BlockPostingsMover;
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.postings.impl.SimpleCountPosting;
+import jfoley.vocabpress.postings.SimplePosting;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -21,17 +21,17 @@ public class AnyOfMoverTest {
 	@Test
 	public void testSimple() throws Exception {
 		BlockPostingsIterator<Integer> lhsData = new ListBlockPostingsIterator<>(Arrays.asList(
-			new SimpleCountPosting(1, 1),
-			new SimpleCountPosting(3, 3),
-			new SimpleCountPosting(5, 5),
-			new SimpleCountPosting(7, 7),
-			new SimpleCountPosting(9, 9)
+			SimplePosting.Count(1, 1),
+			SimplePosting.Count(3, 3),
+			SimplePosting.Count(5, 5),
+			SimplePosting.Count(7, 7),
+			SimplePosting.Count(9, 9)
 		), 2);
 		BlockPostingsIterator<Integer> rhsData = new ListBlockPostingsIterator<>(Arrays.asList(
-			new SimpleCountPosting(0,0),
-			new SimpleCountPosting(2,4),
-			new SimpleCountPosting(5,10),
-			new SimpleCountPosting(8,16)
+			SimplePosting.Count(0, 0),
+			SimplePosting.Count(2, 4),
+			SimplePosting.Count(5, 10),
+			SimplePosting.Count(8, 16)
 		), 3);
 
 		BlockPostingsMover<Integer> lhs = new BlockPostingsMover<>(lhsData);
@@ -64,7 +64,7 @@ public class AnyOfMoverTest {
 	public static BlockPostingsMover<Integer> forDocuments(TransformFn<Integer,Integer> mapper, int... docids) {
 		List<Posting<Integer>> output = new ArrayList<>();
 		for (int docid : docids) {
-			output.add(new SimpleCountPosting(docid, mapper.transform(docid)));
+			output.add(SimplePosting.Count(docid, mapper.transform(docid)));
 		}
 		return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(output, 3));
 	}

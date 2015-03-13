@@ -1,7 +1,7 @@
 package jfoley.vocabpress.io.coders;
 
-import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.CodecException;
+import jfoley.vocabpress.io.Coder;
 import jfoley.vocabpress.io.util.BufferList;
 import jfoley.vocabpress.io.util.StreamFns;
 import org.junit.Test;

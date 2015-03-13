@@ -1,7 +1,6 @@
 package jfoley.vocabpress.compat.galago.impl;
 
 import jfoley.vocabpress.feature.Feature;
-import jfoley.vocabpress.postings.CountPosting;
 import org.lemurproject.galago.core.index.disk.DiskLengthSource;
 import org.lemurproject.galago.core.index.disk.DiskLengthsReader;
 

@@ -1,7 +1,7 @@
 package jfoley.vocabpress;
 
-import ciir.jfoley.chai.collections.util.ArrayFns;
 import ciir.jfoley.chai.collections.chained.ChaiIterable;
+import ciir.jfoley.chai.collections.util.ArrayFns;
 import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.io.LinesIterable;
 import org.lemurproject.galago.core.btree.simple.DiskMapBuilder;
@@ -10,7 +10,7 @@ import org.lemurproject.galago.utility.ByteUtil;
 import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.compression.VByte;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
 
 /**

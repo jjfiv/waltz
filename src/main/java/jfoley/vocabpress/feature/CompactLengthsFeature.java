@@ -1,8 +1,6 @@
 package jfoley.vocabpress.feature;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import jfoley.vocabpress.postings.CountPosting;
-import jfoley.vocabpress.postings.impl.SimpleCountPosting;
 
 /**
  * @author jfoley

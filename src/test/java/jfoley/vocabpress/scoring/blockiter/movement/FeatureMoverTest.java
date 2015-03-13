@@ -3,7 +3,7 @@ package jfoley.vocabpress.scoring.blockiter.movement;
 import jfoley.vocabpress.dociter.ListBlockPostingsIterator;
 import jfoley.vocabpress.dociter.movement.BlockPostingsMover;
 import jfoley.vocabpress.postings.Posting;
-import jfoley.vocabpress.postings.impl.SimpleCountPosting;
+import jfoley.vocabpress.postings.SimplePosting;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class FeatureMoverTest {
 	public void testBlock() {
 		List<Posting<Integer>> data = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			data.add(new SimpleCountPosting(i, i*2));
+			data.add(new SimplePosting<>(i, i*2));
 		}
 
 		BlockPostingsMover<Integer> mover = new BlockPostingsMover<>(new ListBlockPostingsIterator<>(data, 3));
