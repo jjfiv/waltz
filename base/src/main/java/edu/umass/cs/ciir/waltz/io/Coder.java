@@ -1,5 +1,8 @@
 package edu.umass.cs.ciir.waltz.io;
 
+import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import edu.umass.cs.ciir.waltz.io.util.StreamFns;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +22,16 @@ public abstract class Coder<T> {
   }
   /** Reading from a ByteBuffer in memory. */
   public T read(ByteBuffer buf) {
-    try (ByteArrayInputStream bais = new ByteArrayInputStream(buf.array(), buf.arrayOffset(), buf.limit())) {
+    try (InputStream bais = StreamFns.fromByteBuffer(buf)) {
       return readImpl(bais);
     } catch (IOException e) {
       throw new CodecException(e, this.getClass());
     }
+  }
+
+  /** Reading from a DataChunk. */
+  public T read(DataChunk data) {
+    return read(data.asInputStream());
   }
 
   /** Reading from an InputStream. */
@@ -38,6 +46,14 @@ public abstract class Coder<T> {
   /** Write to a new ByteBuffer in memory. */
   public ByteBuffer write(T input) {
     try {
+      return writeImpl(input).asByteBuffer();
+    } catch (IOException e) {
+      throw new CodecException(e, this.getClass());
+    }
+  }
+
+  public DataChunk writeData(T input) {
+    try {
       return writeImpl(input);
     } catch (IOException e) {
       throw new CodecException(e, this.getClass());
@@ -48,7 +64,7 @@ public abstract class Coder<T> {
   public abstract boolean knowsOwnSize();
 
   /** Writing, abstract, may throw IOException. */
-  public abstract ByteBuffer writeImpl(T obj) throws IOException;
+  public abstract DataChunk writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
   public abstract T readImpl(InputStream inputStream) throws IOException;
 }

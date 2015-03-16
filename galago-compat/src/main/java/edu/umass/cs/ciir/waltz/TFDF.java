@@ -37,7 +37,7 @@ public class TFDF {
       BufferList bl = new BufferList();
       bl.add(VByteCoders.ints.write(obj.tf));
       bl.add(VByteCoders.ints.write(obj.df));
-      return bl.compact();
+      return bl.asByteBuffer();
     }
 
     @Override

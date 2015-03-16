@@ -24,7 +24,7 @@ public class UTF8Test {
     System.out.println(output.byteCount());
     output.add(c, "get concatenated on read!");
     System.out.println(output.byteCount());
-    assertEquals("this will get concatenated on read!", c.read(output.compact()));
+    assertEquals("this will get concatenated on read!", c.read(output.asByteBuffer()));
   }
 
   @Test
@@ -39,7 +39,7 @@ public class UTF8Test {
     // Make sure the first byte has a vbyte ending marker.
     assert((output.getByte(0) & 0x80) > 0);
 
-    InputStream input = StreamFns.fromByteBuffer(output.compact());
+    InputStream input = StreamFns.fromByteBuffer(output.asByteBuffer());
     assertEquals("this will not ", c.read(input));
     assertEquals("get concatenated on read!", c.read(input));
 

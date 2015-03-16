@@ -5,7 +5,6 @@ import edu.umass.cs.ciir.waltz.io.util.BufferList;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,14 +32,14 @@ public class ListCoder<T> extends Coder<List<T>> {
   }
 
   @Override
-  public ByteBuffer writeImpl(List<T> obj) throws IOException {
+  public BufferList writeImpl(List<T> obj) throws IOException {
     int count = obj.size();
     BufferList bl = new BufferList();
     bl.add(countCoder.writeImpl(count));
     for (T t : obj) {
       bl.add(itemCoder, t);
     }
-    return bl.compact();
+    return bl;
   }
 
   @Override

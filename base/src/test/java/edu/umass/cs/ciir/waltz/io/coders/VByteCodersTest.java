@@ -27,7 +27,7 @@ public class VByteCodersTest {
     }
 
     List<Integer> readData = new ArrayList<>();
-    InputStream input = StreamFns.fromByteBuffer(bl.compact());
+    InputStream input = StreamFns.fromByteBuffer(bl.asByteBuffer());
     for (int i = 0; i < 1000; i++) {
       readData.add(c.read(input));
     }
@@ -48,7 +48,7 @@ public class VByteCodersTest {
     }
 
     List<Long> readData = new ArrayList<>();
-    InputStream input = StreamFns.fromByteBuffer(bl.compact());
+    InputStream input = StreamFns.fromByteBuffer(bl.asByteBuffer());
     for (int i = 0; i < 1000; i++) {
       readData.add(c.read(input));
     }

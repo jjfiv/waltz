@@ -6,7 +6,6 @@ import edu.umass.cs.ciir.waltz.io.util.BufferList;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
   }
 
   @Override
-  public ByteBuffer writeImpl(List<Integer> obj) throws IOException {
+  public BufferList writeImpl(List<Integer> obj) throws IOException {
     BufferList bl = new BufferList();
     int count = obj.size();
     int prev = 0;
@@ -44,7 +43,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
       prev = x;
     }
 
-    return bl.compact();
+    return bl;
   }
 
   @Override

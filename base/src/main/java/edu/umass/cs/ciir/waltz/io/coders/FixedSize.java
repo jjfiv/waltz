@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.io.util.BufferList;
 import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 
 import java.io.IOException;
@@ -18,10 +19,10 @@ public class FixedSize {
     }
 
     @Override
-    public ByteBuffer writeImpl(Integer obj) throws IOException {
+    public BufferList writeImpl(Integer obj) throws IOException {
       ByteBuffer ofInt = ByteBuffer.allocate(4);
       ofInt.putInt(0, obj);
-      return ofInt;
+      return BufferList.singleton(ofInt);
     }
 
     @Override
@@ -36,10 +37,10 @@ public class FixedSize {
     }
 
     @Override
-    public ByteBuffer writeImpl(Long obj) throws IOException {
+    public BufferList writeImpl(Long obj) throws IOException {
       ByteBuffer tmp = ByteBuffer.allocate(8);
       tmp.putLong(0, obj);
-      return tmp;
+      return BufferList.singleton(tmp);
     }
 
     @Override

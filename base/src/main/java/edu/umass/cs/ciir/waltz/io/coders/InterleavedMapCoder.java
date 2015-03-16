@@ -5,7 +5,6 @@ import edu.umass.cs.ciir.waltz.io.util.BufferList;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,14 +35,14 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
   }
 
   @Override
-  public ByteBuffer writeImpl(Map<K, V> obj) throws IOException {
+  public BufferList writeImpl(Map<K, V> obj) throws IOException {
     BufferList output = new BufferList();
     output.add(countCoder, obj.size());
     for (Map.Entry<K, V> kvEntry : obj.entrySet()) {
       output.add(keyCoder, kvEntry.getKey());
       output.add(valCoder, kvEntry.getValue());
     }
-    return output.compact();
+    return output;
   }
 
   @Override

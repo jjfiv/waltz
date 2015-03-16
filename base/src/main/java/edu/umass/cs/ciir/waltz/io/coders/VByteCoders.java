@@ -1,12 +1,13 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.io.util.ByteBufferDataChunk;
+import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import org.lemurproject.galago.utility.compression.VByte;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * @author jfoley
@@ -19,9 +20,9 @@ public class VByteCoders {
     }
 
     @Override
-    public ByteBuffer writeImpl(Integer obj) throws IOException {
+    public DataChunk writeImpl(Integer obj) throws IOException {
       assert(obj != null);
-      return ByteBuffer.wrap(VByte.compressInt(obj));
+      return ByteBufferDataChunk.of(VByte.compressInt(obj));
     }
 
     @Override
@@ -37,9 +38,9 @@ public class VByteCoders {
     }
 
     @Override
-    public ByteBuffer writeImpl(Long obj) throws IOException {
+    public DataChunk writeImpl(Long obj) throws IOException {
       assert(obj != null);
-      return ByteBuffer.wrap(VByte.compressLong(obj));
+      return ByteBufferDataChunk.of(VByte.compressLong(obj));
     }
 
     @Override

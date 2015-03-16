@@ -28,13 +28,13 @@ public class LengthPrefixCoder<T> extends Coder<T> {
   }
 
   @Override
-  public ByteBuffer writeImpl(T obj) throws IOException {
-    ByteBuffer payload = payloadCoder.writeImpl(obj);
-    ByteBuffer length = lengthCoder.write(payload.limit());
+  public BufferList writeImpl(T obj) throws IOException {
+    BufferList payload = payloadCoder.writeImpl(obj);
+    ByteBuffer length = lengthCoder.write(payload.byteCount());
     BufferList bl = new BufferList();
     bl.add(length);
     bl.add(payload);
-    return bl.compact();
+    return bl;
   }
 
   @Override

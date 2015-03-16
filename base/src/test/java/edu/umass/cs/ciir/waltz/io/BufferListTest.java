@@ -24,7 +24,7 @@ public class BufferListTest {
     assertEquals(5, bl.byteCount());
     bl.add(" world".getBytes("UTF-8"));
     assertEquals(11, bl.byteCount());
-    String hw = new String(bl.compact().array(), "UTF-8");
+    String hw = new String(bl.asByteBuffer().array(), "UTF-8");
     assertEquals("hello world", hw);
   }
 
@@ -37,7 +37,7 @@ public class BufferListTest {
     assertEquals(5, bl.byteCount());
     bl.add(str, " world");
     assertEquals(11, bl.byteCount());
-    String hw = str.read(bl.compact());
+    String hw = str.read(bl.asByteBuffer());
     assertEquals("hello world", hw);
   }
 }
