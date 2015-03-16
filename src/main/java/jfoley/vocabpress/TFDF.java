@@ -1,8 +1,8 @@
 package jfoley.vocabpress;
 
-import jfoley.vocabpress.io.Coder;
-import jfoley.vocabpress.io.coders.VByteCoders;
-import jfoley.vocabpress.io.util.BufferList;
+import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
+import edu.umass.cs.ciir.waltz.io.util.BufferList;
 
 import java.io.IOException;
 import java.io.InputStream;
