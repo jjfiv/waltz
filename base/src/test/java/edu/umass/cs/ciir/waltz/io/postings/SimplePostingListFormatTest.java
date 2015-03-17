@@ -32,8 +32,6 @@ public class SimplePostingListFormatTest {
       memIndex.addDocument("doc"+i, Sample.strings(rand, rand.nextInt(40)+10));
     }
 
-    System.out.println(memIndex.getAllDocumentIds());
-
     Parameters argp = Parameters.create();
     argp.put("valCoder", SimplePostingListFormat.PostingCoder.class.getName());
     argp.put("innerValCoder", PositionsListCoder.class.getName());
@@ -67,12 +65,10 @@ public class SimplePostingListFormatTest {
           assertFalse(fromMemIndex.isDone());
           assertFalse(fromDisk.isDone());
           for( ; !fromMemIndex.isDone(); fromDisk.next(), fromMemIndex.next()) {
-            System.err.printf("on disk: %d, in mem: %d\n", fromDisk.currentKey(), fromMemIndex.currentKey());
             assertTrue(lastId < fromMemIndex.currentKey());
             assertTrue(lastId < fromDisk.currentKey());
             lastId = fromMemIndex.currentKey();
 
-            System.err.printf("on disk: %d, in mem: %d\n", fromDisk.currentKey(), fromMemIndex.currentKey());
             assertEquals(fromDisk.currentKey(), fromMemIndex.currentKey());
             assertEquals(fromDisk.getCurrentPosting().toList(), fromMemIndex.getCurrentPosting().toList());
           }

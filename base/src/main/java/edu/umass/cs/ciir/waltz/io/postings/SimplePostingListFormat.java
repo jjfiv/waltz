@@ -81,6 +81,7 @@ public class SimplePostingListFormat {
       assert(data.byteCount() < Integer.MAX_VALUE);
       output.add(VByteCoders.ints.write((int) data.byteCount()));
       output.add(data);
+      currentChunk.clear();
     }
 
     public DataChunk getData() throws IOException {
@@ -131,7 +132,6 @@ public class SimplePostingListFormat {
       if(usedKeys == totalKeys) return null;
 
       try {
-        System.err.printf("used: %d, total: %d\n", usedKeys, totalKeys);
         // Skip values if possible.
         if (!haveReadCurrentValues) {
           stream.seek(nextKeyBlockOffset);
@@ -168,11 +168,11 @@ public class SimplePostingListFormat {
   public static class PostingListChunk<V> {
     public final IntList keys;
     public final List<V> vals;
-    public final Coder<List<Integer>> intCoder;
+    public final Coder<List<Integer>> intsCoder;
     public final Coder<V> valCoder;
 
-    public PostingListChunk(Coder<List<Integer>> intCoder, Coder<V> valCoder) {
-      this.intCoder = intCoder;
+    public PostingListChunk(Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
+      this.intsCoder = intsCoder;
       this.valCoder = valCoder;
       keys = new IntList();
       vals = new ArrayList<>();
@@ -190,11 +190,16 @@ public class SimplePostingListFormat {
 
     public DataChunk encode() {
       BufferList bl = new BufferList();
-      bl.add(intCoder, keys);
+      bl.add(intsCoder, keys);
       for (V val : vals) {
         bl.add(valCoder, val);
       }
       return bl;
+    }
+
+    public void clear() {
+      keys.clear();
+      vals.clear();
     }
   }
 
