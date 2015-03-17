@@ -78,4 +78,9 @@ public abstract class MappingMover<A, B> implements PostingMover<B> {
   public void moveToAbsolute(int key) {
     inner.moveToAbsolute(key);
   }
+
+  @Override
+  public int totalKeys() {
+    return inner.totalKeys();
+  }
 }

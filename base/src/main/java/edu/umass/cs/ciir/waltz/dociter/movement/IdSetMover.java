@@ -48,6 +48,11 @@ public class IdSetMover extends AMover {
     nextBlock();
   }
 
+  @Override
+  public int totalKeys() {
+    return keys.size();
+  }
+
   public static IdSetMover of(int... i) {
 		return new IdSetMover(new HashSet<>(ArrayFns.toList(i)));
 	}

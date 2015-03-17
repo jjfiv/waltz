@@ -41,4 +41,13 @@ public class AnyOfMover extends AChildrenMover {
 
 		return new KeyBlock(ids);
 	}
+
+  @Override
+  public int totalKeys() {
+    int estimate = 0;
+    for (Mover aChild : children) {
+      estimate += aChild.totalKeys();
+    }
+    return estimate;
+  }
 }

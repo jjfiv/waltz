@@ -52,4 +52,9 @@ public class ListBlockPostingsIterator<X> implements BlockPostingsIterator<X> {
   public void reset() {
     keyReadPtr = valueReadPtr = 0;
   }
+
+  @Override
+  public int totalKeys() {
+    return postings.size();
+  }
 }

@@ -46,4 +46,7 @@ public interface Mover {
 
   /** Move the iterator to before a given key, resetting if need be. */
   public void moveToAbsolute(int key);
+
+  /** The total number of hits, or an overestimate if not possible (AnyOf). */
+  public int totalKeys();
 }

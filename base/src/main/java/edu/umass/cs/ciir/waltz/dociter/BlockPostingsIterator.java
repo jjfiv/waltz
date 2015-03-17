@@ -11,5 +11,7 @@ public interface BlockPostingsIterator<X> {
 
   /** return to the beginning of the list. */
   public void reset();
+  /** How many hits there are in total. */
+  int totalKeys();
 }
 

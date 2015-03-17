@@ -68,4 +68,12 @@ public class AllOfMover extends AChildrenMover {
 		return new KeyBlock(ids);
 	}
 
+  @Override
+  public int totalKeys() {
+    int estimate = children.get(0).totalKeys();
+    for (int i = 1; i < children.size(); i++) {
+      estimate = Math.min(estimate, children.get(i).totalKeys());
+    }
+    return estimate;
+  }
 }

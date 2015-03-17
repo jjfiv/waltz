@@ -37,4 +37,9 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
     iterator.reset();
     nextBlock();
   }
+
+  @Override
+  public int totalKeys() {
+    return iterator.totalKeys();
+  }
 }

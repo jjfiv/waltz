@@ -163,6 +163,11 @@ public class SimplePostingListFormat {
 
       return new ValueBlock<>(values);
     }
+
+    @Override
+    public int totalKeys() {
+      return totalKeys;
+    }
   }
 
   public static class PostingListChunk<V> {
