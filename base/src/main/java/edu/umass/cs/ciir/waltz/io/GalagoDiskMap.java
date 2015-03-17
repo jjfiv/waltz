@@ -84,7 +84,13 @@ public class GalagoDiskMap<K,V> implements IOMap<K,V> {
     byte[] kq = keyCoder.write(key).array();
     final DiskBTreeIterator iterator = reader.getIterator(kq);
     if(iterator == null) return null;
-    return () -> new GalagoSkipInputStream(iterator.getValueStream());
+    return () -> {
+      try {
+        return new GalagoSkipInputStream(iterator.getValueStream());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 
   @Override
