@@ -2,7 +2,8 @@ package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.io.Coder;
-import edu.umass.cs.ciir.waltz.io.util.BufferList;
+import edu.umass.cs.ciir.waltz.io.util.ByteBufferDataChunk;
+import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +19,8 @@ public class UTF8 {
 
   public static final Coder<String> withoutLengthPrefix = new Coder<String>() {
     @Override
-    public BufferList writeImpl(String obj) throws IOException {
-      return BufferList.singleton(obj.getBytes(charset));
+    public DataChunk writeImpl(String obj) throws IOException {
+      return ByteBufferDataChunk.of(obj.getBytes(charset));
     }
 
     @Override

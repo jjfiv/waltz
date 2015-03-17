@@ -1,7 +1,8 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import edu.umass.cs.ciir.waltz.io.Coder;
-import edu.umass.cs.ciir.waltz.io.util.BufferList;
+import edu.umass.cs.ciir.waltz.io.util.ByteBufferDataChunk;
+import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 
 import java.io.IOException;
@@ -19,10 +20,10 @@ public class FixedSize {
     }
 
     @Override
-    public BufferList writeImpl(Integer obj) throws IOException {
+    public DataChunk writeImpl(Integer obj) throws IOException {
       ByteBuffer ofInt = ByteBuffer.allocate(4);
       ofInt.putInt(0, obj);
-      return BufferList.singleton(ofInt);
+      return ByteBufferDataChunk.of(ofInt);
     }
 
     @Override
@@ -37,10 +38,10 @@ public class FixedSize {
     }
 
     @Override
-    public BufferList writeImpl(Long obj) throws IOException {
+    public DataChunk writeImpl(Long obj) throws IOException {
       ByteBuffer tmp = ByteBuffer.allocate(8);
       tmp.putLong(0, obj);
-      return BufferList.singleton(tmp);
+      return ByteBufferDataChunk.of(tmp);
     }
 
     @Override

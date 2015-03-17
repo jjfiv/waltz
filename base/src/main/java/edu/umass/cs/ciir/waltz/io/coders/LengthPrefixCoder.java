@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.io.coders;
 
 import edu.umass.cs.ciir.waltz.io.Coder;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
+import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class LengthPrefixCoder<T> extends Coder<T> {
 
   @Override
   public BufferList writeImpl(T obj) throws IOException {
-    BufferList payload = payloadCoder.writeImpl(obj);
+    DataChunk payload = payloadCoder.writeImpl(obj);
     ByteBuffer length = lengthCoder.write(payload.byteCount());
     BufferList bl = new BufferList();
     bl.add(length);
