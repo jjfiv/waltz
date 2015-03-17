@@ -7,7 +7,6 @@ import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.io.CodecException;
 import edu.umass.cs.ciir.waltz.io.Coder;
 import edu.umass.cs.ciir.waltz.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
@@ -105,6 +104,8 @@ public class SimplePostingListFormat {
     private boolean haveReadCurrentValues;
     private long nextKeyBlockOffset;
     private int numKeysInThisBlock;
+    private int totalKeys;
+    private int usedKeys = 0;
     private boolean done;
 
     public Reader(Coder<List<Integer>> intsCoder, Coder<V> valCoder, StaticStream streamSource) {
@@ -116,18 +117,22 @@ public class SimplePostingListFormat {
     @Override
     public void readStreamHeader() throws IOException {
       numKeysInThisBlock = -1;
-      haveReadCurrentValues = false;
+      haveReadCurrentValues = true;
       nextKeyBlockOffset = 0;
       done = false;
+      totalKeys = VByteCoders.ints.read(stream);
+      usedKeys = 0;
     }
 
     @Override
     public IKeyBlock nextKeyBlock() {
       if(done) return null;
+      if(usedKeys == totalKeys) return null;
 
       try {
         // Skip values if possible.
         if (!haveReadCurrentValues) {
+          //System.err.printf("used: %d, total: %d\n", usedKeys, totalKeys);
           stream.seek(nextKeyBlockOffset);
         }
         haveReadCurrentValues = false;
@@ -137,10 +142,11 @@ public class SimplePostingListFormat {
         // Read in all the keys.
         List<Integer> keys = intsCoder.read(stream);
         this.numKeysInThisBlock = keys.size();
+        usedKeys += numKeysInThisBlock;
         return new KeyBlock(keys);
 
-      } catch (IOException | CodecException e) {
-        return null;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
     }
 

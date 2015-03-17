@@ -63,8 +63,7 @@ public class SimplePostingListFormatTest {
           assertTrue(fromMemIndex.isDone());
           assertTrue(fromDisk.isDone());
         }
-
-      }
+      } // close disk reader
 
     } // delete temp file
 

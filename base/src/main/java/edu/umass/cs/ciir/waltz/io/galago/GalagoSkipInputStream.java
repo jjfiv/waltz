@@ -38,6 +38,10 @@ public class GalagoSkipInputStream extends SkipInputStream {
   /** Moves to the given offset into this input stream. */
   @Override
   public void seek(long offset) throws IOException {
+    if(offset >= inner.length()) {
+      inner.seek(offset - 1);
+      return;
+    }
     inner.seek(offset);
   }
   @Override
