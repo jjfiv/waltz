@@ -10,7 +10,7 @@ import java.io.IOException;
  * @author jfoley
  */
 public abstract class StaticStreamPostingsIterator<X> implements BlockPostingsIterator<X> {
-  private SkipInputStream stream;
+  protected SkipInputStream stream;
   private final StaticStream streamSource;
 
   public StaticStreamPostingsIterator(StaticStream streamSource) {

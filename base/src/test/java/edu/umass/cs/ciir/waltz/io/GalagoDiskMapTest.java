@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.chained.ChaiMap;
 import ciir.jfoley.chai.io.TemporaryFile;
 import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
+import edu.umass.cs.ciir.waltz.io.galago.GalagoDiskMap;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 

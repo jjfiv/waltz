@@ -1,6 +1,7 @@
-package edu.umass.cs.ciir.waltz.io;
+package edu.umass.cs.ciir.waltz.io.galago;
 
-import edu.umass.cs.ciir.waltz.io.streams.GalagoSkipInputStream;
+import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.io.IOMap;
 import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import org.lemurproject.galago.utility.CmpUtil;

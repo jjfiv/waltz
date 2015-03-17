@@ -1,7 +1,11 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * @author jfoley
@@ -18,7 +22,7 @@ public class ByteBufferDataChunk implements DataChunk {
   }
 
   @Override
-  public int byteCount() {
+  public long byteCount() {
     return buffer.limit();
   }
 
@@ -32,10 +36,25 @@ public class ByteBufferDataChunk implements DataChunk {
     return StreamFns.fromByteBuffer(buffer);
   }
 
+  @Override
+  public void write(OutputStream out) throws IOException {
+    write(Channels.newChannel(out));
+  }
+
+  @Override
+  public void write(WritableByteChannel out) throws IOException {
+    out.write(buffer);
+  }
+
   public static ByteBufferDataChunk of(ByteBuffer buf) {
     return new ByteBufferDataChunk(buf);
   }
   public static ByteBufferDataChunk of(byte[] data) {
     return new ByteBufferDataChunk(ByteBuffer.wrap(data));
+  }
+
+  @Override
+  public void close() throws IOException {
+    // Nothing.
   }
 }

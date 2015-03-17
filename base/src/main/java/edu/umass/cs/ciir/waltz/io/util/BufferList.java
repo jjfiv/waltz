@@ -3,8 +3,12 @@ package edu.umass.cs.ciir.waltz.io.util;
 import edu.umass.cs.ciir.waltz.io.Coder;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +28,7 @@ public class BufferList implements DataChunk {
 
   /** Returns the total size in bytes. */
   @Override
-  public int byteCount() {
+  public long byteCount() {
     int size = 0;
     for (DataChunk buf : bufs) {
       size += buf.byteCount();
@@ -52,7 +56,7 @@ public class BufferList implements DataChunk {
 
   @Override
   public ByteBuffer asByteBuffer() {
-    ByteBuffer output = ByteBuffer.allocate(byteCount());
+    ByteBuffer output = ByteBuffer.allocate((int) byteCount());
     for (DataChunk buf : bufs) {
       output.put(buf.asByteBuffer());
     }
@@ -68,6 +72,18 @@ public class BufferList implements DataChunk {
   }
 
   @Override
+  public void write(OutputStream out) throws IOException {
+    write(Channels.newChannel(out));
+  }
+
+  @Override
+  public void write(WritableByteChannel out) throws IOException {
+    for (DataChunk buf : bufs) {
+      buf.write(out);
+    }
+  }
+
+  @Override
   public int getByte(int index) {
     int start = 0;
     for (DataChunk buf : bufs) {
@@ -77,5 +93,12 @@ public class BufferList implements DataChunk {
       start += buf.byteCount();
     }
     return -1;
+  }
+
+  @Override
+  public void close() throws IOException {
+    for (DataChunk buf : bufs) {
+      buf.close();
+    }
   }
 }
