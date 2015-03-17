@@ -68,7 +68,7 @@ public class GalagoDiskMap<K,V> implements IOMap<K,V> {
   public V get(K key) throws IOException {
     StaticStream stream = getSource(key);
     if(stream == null) return null;
-    return valCoder.readImpl(stream);
+    return valCoder.read(stream);
   }
 
   @Override

@@ -52,7 +52,7 @@ public class SimplePostingListFormat {
     }
 
     @Override
-    public PostingMover<V> readImpl(StaticStream streamFn) throws IOException {
+    public PostingMover<V> read(StaticStream streamFn) throws IOException {
       return new BlockPostingsMover<>(new Reader<>(intsCoder, valCoder, streamFn));
     }
   }

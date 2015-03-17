@@ -60,6 +60,10 @@ public abstract class Coder<T> {
       throw new CodecException(e, this.getClass());
     }
   }
+  /** Reading of something that can be read again. */
+  public T read(StaticStream streamFn) throws IOException {
+    return readImpl(streamFn.getNewStream());
+  }
 
   /** If false, always wrap in a LengthPrefixCodec for the ability to read it when you're streaming things! */
   public abstract boolean knowsOwnSize();
@@ -68,8 +72,4 @@ public abstract class Coder<T> {
   public abstract DataChunk writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
   public abstract T readImpl(InputStream inputStream) throws IOException;
-  /** Reading, abstract, may throw IOException. */
-  public T readImpl(StaticStream streamFn) throws IOException {
-    return readImpl(streamFn.getNewStream());
-  }
 }
