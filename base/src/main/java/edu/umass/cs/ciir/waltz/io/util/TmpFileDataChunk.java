@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
+import edu.umass.cs.ciir.waltz.io.Coder;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ import static java.nio.file.StandardOpenOption.*;
  * This data chunk immediately starts using a temporary file for storage of other DataChunks written to it.
  * @author jfoley
  */
-public class TmpFileDataChunk implements DataChunk {
+public class TmpFileDataChunk implements MutableDataChunk {
   private final File tmp;
   private final FileChannel channel;
   private long size;
@@ -35,13 +37,31 @@ public class TmpFileDataChunk implements DataChunk {
     return size;
   }
 
-  public void add(DataChunk chunk) throws IOException {
-    size += chunk.byteCount();
-    chunk.write(channel);
+  @Override
+  public <T> void add(Coder<T> coder, T obj) {
+    add(coder.writeData(obj));
   }
-  public void add(ByteBuffer buff) throws IOException {
-    size += buff.limit();
-    channel.write(buff);
+  @Override
+  public void add(byte[] data) {
+    add(ByteBuffer.wrap(data));
+  }
+  @Override
+  public void add(DataChunk chunk) {
+    try {
+      size += chunk.byteCount();
+      chunk.write(channel);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  @Override
+  public void add(ByteBuffer buff) {
+    try {
+      size += buff.limit();
+      channel.write(buff);
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

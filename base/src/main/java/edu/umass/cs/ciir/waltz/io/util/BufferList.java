@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class BufferList implements DataChunk {
+public class BufferList implements MutableDataChunk {
   List<DataChunk> bufs;
 
   public BufferList() {
@@ -36,16 +36,20 @@ public class BufferList implements DataChunk {
     return size;
   }
 
-  /** write an object to this buffer list using the given codec. */
+  @Override
   public <T> void add(Coder<T> coder, T obj) {
     bufs.add(coder.writeData(obj));
   }
+  @Override
   public void add(ByteBuffer data) {
     bufs.add(ByteBufferDataChunk.of(data));
   }
+  @Override
   public void add(byte[] data) {
     add(ByteBuffer.wrap(data));
   }
+
+  @Override
   public void add(DataChunk data) {
     if(data instanceof BufferList) {
       bufs.addAll(((BufferList) data).bufs);

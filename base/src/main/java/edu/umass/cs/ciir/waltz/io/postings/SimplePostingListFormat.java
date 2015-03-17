@@ -13,6 +13,7 @@ import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
 import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
 import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import edu.umass.cs.ciir.waltz.io.util.MutableDataChunk;
 import edu.umass.cs.ciir.waltz.io.util.TmpFileDataChunk;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class SimplePostingListFormat {
     /** The number of items to put in each block by default. */
     private final int blockSize;
     public PostingListChunk<V> currentChunk;
-    TmpFileDataChunk output;
+    MutableDataChunk output;
     public int totalKeys = 0;
 
     public Builder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
