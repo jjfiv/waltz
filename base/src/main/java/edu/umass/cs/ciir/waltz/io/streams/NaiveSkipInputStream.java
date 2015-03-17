@@ -1,0 +1,57 @@
+package edu.umass.cs.ciir.waltz.io.streams;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * An input stream that knows where it is (tell()) and can skip to absolute references: seek(where).
+ * @author jfoley
+ */
+public class NaiveSkipInputStream extends SkipInputStream {
+  private final InputStream inner;
+  private long offset;
+
+  public NaiveSkipInputStream(InputStream inner) {
+    this.inner = inner;
+    this.offset = 0L;
+  }
+  @Override
+  public int read() throws IOException {
+    this.offset++;
+    return inner.read();
+  }
+
+  @Override
+  public int read(byte[] b) throws IOException  {
+    int amountRead = inner.read(b);
+    this.offset += amountRead;
+    return amountRead;
+  }
+
+  @Override
+  public int read(byte[] b, int offset, int amount) throws IOException  {
+    int amountRead = inner.read(b, offset, amount);
+    this.offset += amountRead;
+    return amountRead;
+  }
+
+  @Override
+  public long tell() throws IOException {
+    return this.offset;
+  }
+
+  @Override
+  public void seekRelative(long delta) throws IOException {
+    assert(delta >= 0);
+    if(delta == 0) return;
+    long actualDelta = inner.skip(delta);
+    this.offset += actualDelta;
+    if(actualDelta < delta) throw new EOFException();
+  }
+
+  @Override
+  public void close() throws IOException {
+    inner.close();
+  }
+}
