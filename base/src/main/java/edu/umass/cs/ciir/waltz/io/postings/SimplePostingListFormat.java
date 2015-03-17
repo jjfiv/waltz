@@ -71,7 +71,7 @@ public class SimplePostingListFormat {
     }
 
     public void add(int key, V value) throws IOException {
-      if(currentChunk.count() > blockSize) { writeCurrentBlock(); }
+      if(currentChunk.count() >= blockSize) { writeCurrentBlock(); }
       currentChunk.add(key, value);
       totalKeys++;
     }
@@ -131,9 +131,9 @@ public class SimplePostingListFormat {
       if(usedKeys == totalKeys) return null;
 
       try {
+        System.err.printf("used: %d, total: %d\n", usedKeys, totalKeys);
         // Skip values if possible.
         if (!haveReadCurrentValues) {
-          //System.err.printf("used: %d, total: %d\n", usedKeys, totalKeys);
           stream.seek(nextKeyBlockOffset);
         }
         haveReadCurrentValues = false;
