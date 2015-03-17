@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.index.mem;
 
+import java.util.Map;
+
 /**
  * @author jfoley.
  */
@@ -8,4 +10,5 @@ public interface InternSpace<Val> {
 	public Val getValue(int query);
 	public void put(int first, Val second);
   public int insertOrGet(Val k);
+  public Map<Val, Integer> getAllItems();
 }

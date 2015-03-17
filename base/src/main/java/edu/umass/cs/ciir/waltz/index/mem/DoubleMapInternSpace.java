@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.index.mem;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,5 +47,10 @@ public class DoubleMapInternSpace<Val> implements InternSpace<Val> {
     int id = nextId++;
     put(id, k);
     return id;
+  }
+
+  @Override
+  public Map<Val, Integer> getAllItems() {
+    return Collections.unmodifiableMap(secondLookup);
   }
 }

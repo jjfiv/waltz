@@ -6,14 +6,12 @@ import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.Parameters;
-import org.lemurproject.galago.utility.btree.GenericElement;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeReader;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeWriter;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -38,9 +36,9 @@ public class GalagoDiskMap<K,V> implements IOMap<K,V> {
 
     /** Requires keys be given in sorted order. */
     public void put(K key, V val) throws IOException {
-      writer.add(new GenericElement(
-          keyCoder.write(key).array(),
-          valCoder.write(val).array()
+      writer.add(new DataChunkElement(
+          keyCoder.writeData(key),
+          valCoder.writeData(val)
       ));
     }
 
@@ -68,9 +66,9 @@ public class GalagoDiskMap<K,V> implements IOMap<K,V> {
 
   @Override
   public V get(K key) throws IOException {
-    InputStream stream = getStream(key);
+    StaticStream stream = getSource(key);
     if(stream == null) return null;
-    return valCoder.read(stream);
+    return valCoder.readImpl(stream);
   }
 
   @Override

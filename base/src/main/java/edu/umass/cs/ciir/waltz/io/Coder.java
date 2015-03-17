@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.io;
 
+import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 
@@ -67,4 +68,8 @@ public abstract class Coder<T> {
   public abstract DataChunk writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
   public abstract T readImpl(InputStream inputStream) throws IOException;
+  /** Reading, abstract, may throw IOException. */
+  public T readImpl(StaticStream streamFn) throws IOException {
+    return readImpl(streamFn.getNewStream());
+  }
 }

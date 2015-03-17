@@ -36,9 +36,11 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
     int prev = 0;
     bl.add(countCoder.write(count));
 
+    System.err.println(obj);
+
     for (int x : obj) {
       int delta = x - prev;
-      assert(delta > 0);
+      assert(delta >= 0);
       bl.add(itemCoder, delta);
       prev = x;
     }

@@ -1,10 +1,15 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
+
+import static java.nio.file.StandardOpenOption.*;
 
 /**
  * This data chunk immediately starts using a temporary file for storage of other DataChunks written to it.
@@ -17,8 +22,9 @@ public class TmpFileDataChunk implements DataChunk {
 
   public TmpFileDataChunk() throws IOException {
     this.tmp = File.createTempFile("tfdc", "datachunk");
-    FileOutputStream writer = new FileOutputStream(tmp.getAbsolutePath());
-    this.channel = writer.getChannel();
+    //FileOutputStream writer = new FileOutputStream(tmp.getAbsolutePath());
+    //this.channel = writer.getChannel();
+    this.channel = FileChannel.open(tmp.toPath(), CREATE, WRITE, READ);
     this.size = 0L;
   }
   @Override

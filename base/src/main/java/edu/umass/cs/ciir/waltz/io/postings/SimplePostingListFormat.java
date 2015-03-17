@@ -5,6 +5,8 @@ import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
+import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
+import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.io.CodecException;
 import edu.umass.cs.ciir.waltz.io.Coder;
 import edu.umass.cs.ciir.waltz.io.coders.DeltaIntListCoder;
@@ -24,17 +26,45 @@ import java.util.List;
  */
 public class SimplePostingListFormat {
 
-  public static class Writer<V> {
+  public static class PostingCoder<V> extends PostingListCoder<V> {
+    private final int blockSize;
+    private final Coder<V> valCoder;
+    private final Coder<List<Integer>> intsCoder;
+
+    public PostingCoder(Coder<V> valCoder) throws IOException {
+      this(128, new DeltaIntListCoder(), valCoder);
+    }
+    public PostingCoder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
+      this.blockSize = blockSize;
+      assert(intsCoder.knowsOwnSize());
+      assert(valCoder.knowsOwnSize());
+      this.intsCoder = intsCoder;
+      this.valCoder = valCoder;
+    }
+
+    @Override
+    public DataChunk writeImpl(PostingMover<V> obj) throws IOException {
+      Builder<V> writer = new Builder<>(blockSize, intsCoder, valCoder);
+      for(; !obj.isDone(); obj.next()) {
+        writer.add(obj.currentKey(), obj.getCurrentPosting());
+      }
+      return writer.getData();
+    }
+
+    @Override
+    public PostingMover<V> readImpl(StaticStream streamFn) throws IOException {
+      return new BlockPostingsMover<>(new Reader<>(intsCoder, valCoder, streamFn));
+    }
+  }
+
+  public static class Builder<V> {
     /** The number of items to put in each block by default. */
     private final int blockSize;
     public PostingListChunk<V> currentChunk;
     TmpFileDataChunk output;
     public int totalKeys = 0;
 
-    public Writer(Coder<V> valCoder) throws IOException {
-      this(128, new DeltaIntListCoder(), valCoder);
-    }
-    public Writer(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
+    public Builder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
       output = new TmpFileDataChunk();
       this.blockSize = blockSize;
       currentChunk = new PostingListChunk<>(intsCoder, valCoder);
