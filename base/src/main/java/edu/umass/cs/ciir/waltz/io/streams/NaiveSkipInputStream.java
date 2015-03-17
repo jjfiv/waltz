@@ -42,6 +42,32 @@ public class NaiveSkipInputStream extends SkipInputStream {
   }
 
   @Override
+  public int available() throws IOException {
+    return inner.available();
+  }
+
+  @Override
+  public boolean markSupported() {
+    return inner.markSupported();
+  }
+  @Override
+  public void mark(int readLimit) {
+    inner.mark(readLimit);
+  }
+  @Override
+  public void reset() throws IOException {
+    inner.reset();
+  }
+
+  @Override
+  public long skip(long delta) throws IOException {
+    long actualDelta = inner.skip(delta);
+    this.offset += actualDelta;
+    return actualDelta;
+  }
+
+
+  @Override
   public void seekRelative(long delta) throws IOException {
     assert(delta >= 0);
     if(delta == 0) return;

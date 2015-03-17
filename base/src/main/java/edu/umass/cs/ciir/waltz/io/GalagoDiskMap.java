@@ -1,5 +1,8 @@
 package edu.umass.cs.ciir.waltz.io;
 
+import edu.umass.cs.ciir.waltz.io.streams.GalagoSkipInputStream;
+import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
+import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.utility.btree.GenericElement;
@@ -70,11 +73,18 @@ public class GalagoDiskMap<K,V> implements IOMap<K,V> {
   }
 
   @Override
-  public InputStream getStream(K key) throws IOException {
+  public SkipInputStream getStream(K key) throws IOException {
+    StaticStream str = getSource(key);
+    if(str == null) return null;
+    return str.getNewStream();
+  }
+
+  @Override
+  public StaticStream getSource(K key) throws IOException {
     byte[] kq = keyCoder.write(key).array();
-    DiskBTreeIterator iterator = reader.getIterator(kq);
+    final DiskBTreeIterator iterator = reader.getIterator(kq);
     if(iterator == null) return null;
-    return iterator.getValueStream();
+    return () -> new GalagoSkipInputStream(iterator.getValueStream());
   }
 
   @Override
