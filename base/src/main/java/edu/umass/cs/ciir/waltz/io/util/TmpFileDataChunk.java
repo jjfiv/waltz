@@ -22,8 +22,6 @@ public class TmpFileDataChunk implements DataChunk {
 
   public TmpFileDataChunk() throws IOException {
     this.tmp = File.createTempFile("tfdc", "datachunk");
-    //FileOutputStream writer = new FileOutputStream(tmp.getAbsolutePath());
-    //this.channel = writer.getChannel();
     this.channel = FileChannel.open(tmp.toPath(), CREATE, WRITE, READ);
     this.size = 0L;
   }
@@ -48,12 +46,16 @@ public class TmpFileDataChunk implements DataChunk {
 
   @Override
   public ByteBuffer asByteBuffer() {
-    throw new UnsupportedOperationException();
+    try {
+      return channel.map(FileChannel.MapMode.READ_ONLY, 0, (int) size);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
   public InputStream asInputStream() {
-    throw new UnsupportedOperationException();
+    return Channels.newInputStream(channel);
   }
 
   @Override
