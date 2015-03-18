@@ -16,10 +16,14 @@ class ReadableBufferStaticStream implements StaticStream {
   private final long end;
   private final ReadableBuffer file;
 
+  // Convenience method, probably shouldn't be here...
   public ReadableBufferStaticStream(DiskBTreeIterator iterator) throws IOException {
-    this.start = iterator.getValueStart();
-    this.end = iterator.getValueEnd();
-    this.file = iterator.input;
+    this(iterator.input, iterator.getValueStart(), iterator.getValueEnd());
+  }
+  public ReadableBufferStaticStream(ReadableBuffer file, long start, long end) throws IOException {
+    this.start = start;
+    this.end = end;
+    this.file = file;
   }
 
   @Override
