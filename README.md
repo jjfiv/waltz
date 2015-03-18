@@ -17,6 +17,7 @@ A tool for low-level information retrieval research.
 ## Goals
 
 - To be as minimally useful as possible.
+- To be slightly compatible with [Galago](http://lemurproject.org/galago.php)
 - Enable changing of everything.
 - Enable storing and querying of your weird, wacky data in your weird, wacky format.
 
