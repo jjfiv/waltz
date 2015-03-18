@@ -9,6 +9,7 @@ import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.CompactLengthsFeature;
 import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.index.MutableIndex;
+import edu.umass.cs.ciir.waltz.index.intern.InternSpace;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 import edu.umass.cs.ciir.waltz.postings.SimplePosting;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;

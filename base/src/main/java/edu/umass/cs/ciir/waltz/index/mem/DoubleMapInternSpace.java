@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.index.mem;
 
+import edu.umass.cs.ciir.waltz.index.intern.InternSpace;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

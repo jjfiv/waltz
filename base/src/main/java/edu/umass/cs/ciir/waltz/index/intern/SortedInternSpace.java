@@ -1,18 +1,17 @@
-package edu.umass.cs.ciir.waltz.index.mem;
+package edu.umass.cs.ciir.waltz.index.intern;
 
 import java.util.*;
 
 /**
- * TODO, find bugs in here.
  * @author jfoley
  */
-public class CompactInternSpace<Val extends Comparable<? super Val>> implements InternSpace<Val> {
+public class SortedInternSpace<Val extends Comparable<? super Val>> implements StaticInternSpace<Val> {
   private final ArrayList<Val> values;
 
-  public CompactInternSpace() {
+  public SortedInternSpace() {
     values = new ArrayList<>();
   }
-  public CompactInternSpace(List<Val> items) {
+  public SortedInternSpace(List<Val> items) {
     values = new ArrayList<>(items);
   }
 
@@ -24,25 +23,6 @@ public class CompactInternSpace<Val extends Comparable<? super Val>> implements 
   @Override
   public Val getValue(int query) {
     return values.get(query);
-  }
-
-  @Override
-  public void put(int first, Val second) {
-    values.ensureCapacity(first+1);
-    while(values.size() <= first) {
-      values.add(null);
-    }
-    values.set(first, second);
-  }
-
-  @Override
-  public int insertOrGet(Val k) {
-    int index = getId(k);
-    if(index < 0) {
-      index = values.size();
-      values.add(k);
-    }
-    return index;
   }
 
   @Override

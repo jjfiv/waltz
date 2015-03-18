@@ -70,6 +70,15 @@ public class BufferList implements MutableDataChunk {
   }
 
   @Override
+  public byte[] asByteArray() {
+    try {
+      return StreamFns.readAll(asByteBuffer());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public InputStream asInputStream() {
     // Kind of a hack; might be more performant to be lazy about it.
     return new ByteArrayInputStream(asByteBuffer().array());

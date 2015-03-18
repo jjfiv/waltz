@@ -32,6 +32,16 @@ public class ByteBufferDataChunk implements DataChunk {
   }
 
   @Override
+  public byte[] asByteArray() {
+    if(buffer.hasArray()) return buffer.array();
+    try {
+      return StreamFns.readAll(buffer);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public InputStream asInputStream() {
     return StreamFns.fromByteBuffer(buffer);
   }

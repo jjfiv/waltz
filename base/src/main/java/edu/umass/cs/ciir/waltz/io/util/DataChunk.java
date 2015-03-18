@@ -18,10 +18,13 @@ public interface DataChunk extends Closeable {
   long byteCount();
   /** Return the data inside this buffer as a ByteBuffer. */
   public ByteBuffer asByteBuffer();
+  /** Return the data inside as a byte array if at all possible. */
+  public byte[] asByteArray();
   /** Return the data inside this as an InputStream. */
   public InputStream asInputStream();
   /** Write the data to the given OutputStream */
   public void write(OutputStream out) throws IOException;
   /** Write the data to the given WritableByteChannel */
   public void write(WritableByteChannel out) throws IOException;
+
 }

@@ -5,6 +5,8 @@ import ciir.jfoley.chai.collections.chained.ChaiMap;
 import ciir.jfoley.chai.io.TemporaryFile;
 import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
 import edu.umass.cs.ciir.waltz.io.galago.GalagoDiskMap;
+import edu.umass.cs.ciir.waltz.io.galago.RawGalagoDiskMap;
+import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 
@@ -24,7 +26,7 @@ public class GalagoDiskMapTest {
         writer.put(3,30);
       } // close Writer
 
-      try (IOMap<Integer, Integer> reader = new GalagoDiskMap<>(VByteCoders.ints, VByteCoders.ints, tmpFile.getPath())) {
+      try (IOMap<Integer, Integer> reader = RawGalagoDiskMap.createIOMap(VByteCoders.ints, VByteCoders.ints, tmpFile.getPath())) {
         assertEquals("world", reader.getConfig().get("hello"));
         assertEquals(10, reader.get(1).intValue());
         assertEquals(30, reader.get(3).intValue());

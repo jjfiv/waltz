@@ -74,6 +74,15 @@ public class TmpFileDataChunk implements MutableDataChunk {
   }
 
   @Override
+  public byte[] asByteArray() {
+    try {
+      return StreamFns.readAll(asByteBuffer());
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public InputStream asInputStream() {
     return Channels.newInputStream(channel);
   }

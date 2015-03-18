@@ -6,7 +6,7 @@ import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
-import edu.umass.cs.ciir.waltz.io.IOMap;
+import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import edu.umass.cs.ciir.waltz.io.coders.FixedSize;
 import edu.umass.cs.ciir.waltz.io.galago.GalagoDiskMap;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
@@ -53,7 +53,7 @@ public class SimplePostingListFormatTest {
       } // close disk writer
 
       try (IOMap<Integer, PostingMover<PositionsList>> part =
-               new GalagoDiskMap<>(
+               new GalagoDiskMap(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath())) {

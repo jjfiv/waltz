@@ -6,4 +6,5 @@ package edu.umass.cs.ciir.waltz.io.streams;
  */
 public interface StaticStream {
   public SkipInputStream getNewStream();
+  public long length();
 }
