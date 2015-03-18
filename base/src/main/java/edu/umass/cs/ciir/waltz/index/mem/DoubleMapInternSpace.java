@@ -50,7 +50,7 @@ public class DoubleMapInternSpace<Val> implements InternSpace<Val> {
   }
 
   @Override
-  public Map<Val, Integer> getAllItems() {
-    return Collections.unmodifiableMap(secondLookup);
+  public Iterable<Map.Entry<Val, Integer>> getAllItems() {
+    return Collections.unmodifiableMap(secondLookup).entrySet();
   }
 }

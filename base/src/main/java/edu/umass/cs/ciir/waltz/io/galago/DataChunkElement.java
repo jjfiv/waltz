@@ -1,27 +1,32 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
 import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.btree.IndexElement;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 
 /**
 * @author jfoley
 */
-public class DataChunkElement implements IndexElement {
+public class DataChunkElement implements IndexElement, Comparable<DataChunkElement> {
+  private final byte[] key;
   private final DataChunk val;
-  private final DataChunk key;
 
   public DataChunkElement(DataChunk key, DataChunk val) {
-    this.key = key;
+    this.key = key.asByteBuffer().array();
+    try {
+      key.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
     this.val = val;
   }
 
   @Override
   public byte[] key() {
-    return key.asByteBuffer().array();
+    return key;
   }
 
   @Override
@@ -32,8 +37,11 @@ public class DataChunkElement implements IndexElement {
   @Override
   public void write(OutputStream stream) throws IOException {
     val.write(stream);
-    if(val instanceof Closeable) {
-      ((Closeable) val).close();
-    }
+    val.close();
+  }
+
+  @Override
+  public int compareTo(DataChunkElement o) {
+    return CmpUtil.compare(this.key(), o.key());
   }
 }

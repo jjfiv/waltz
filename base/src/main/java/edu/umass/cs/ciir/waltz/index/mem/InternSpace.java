@@ -10,5 +10,5 @@ public interface InternSpace<Val> {
 	public Val getValue(int query);
 	public void put(int first, Val second);
   public int insertOrGet(Val k);
-  public Map<Val, Integer> getAllItems();
+  public Iterable<Map.Entry<Val, Integer>> getAllItems();
 }
