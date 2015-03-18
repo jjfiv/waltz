@@ -68,7 +68,7 @@ public class RawGalagoDiskMap implements RawIOMap {
     final DiskBTreeIterator iterator = reader.getIterator(kq);
     if(iterator == null) return null; // We ran off the end.
     if(!Arrays.equals(iterator.getKey(), kq)) return null; // We found something close, but not equal.
-    return new BTreeIterStaticStream(iterator);
+    return new ReadableBufferStaticStream(iterator);
   }
 
 
@@ -93,7 +93,7 @@ public class RawGalagoDiskMap implements RawIOMap {
       }
 
       // is a match:
-      output.add(Pair.of(new ByteArray(currentKey), new BTreeIterStaticStream(iterator)));
+      output.add(Pair.of(new ByteArray(currentKey), new ReadableBufferStaticStream(iterator)));
     }
     return output;
   }
