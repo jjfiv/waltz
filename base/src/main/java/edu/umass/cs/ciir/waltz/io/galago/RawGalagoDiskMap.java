@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.io.Coder;
 import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import edu.umass.cs.ciir.waltz.io.map.RawIOMap;
+import edu.umass.cs.ciir.waltz.io.map.RawIOMapWriter;
 import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.io.util.ByteArray;
 import edu.umass.cs.ciir.waltz.io.util.DataChunk;
@@ -35,6 +36,20 @@ public class RawGalagoDiskMap implements RawIOMap {
   }
   public static RawIOMap create(String path) throws IOException {
     return new RawGalagoDiskMap(path);
+  }
+  public static <K,V> IOMapWriter<K,V> getWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
+    return new IOMapWriter<>(getWriter(path, argp), keyCoder, valCoder);
+  }
+
+  private static RawIOMapWriter getWriter(String path, Parameters argp) throws IOException {
+    return new RawGalagoDiskMapWriter(path, argp);
+  }
+
+  public static <K,V> IOMapWriter<K,V> getWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
+    return new IOMapWriter<>(getWriter(path), keyCoder, valCoder);
+  }
+  public static RawIOMapWriter getWriter(String path) throws IOException {
+    return new RawGalagoDiskMapWriter(path);
   }
 
   @Override

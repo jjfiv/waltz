@@ -6,9 +6,10 @@ import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
-import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import edu.umass.cs.ciir.waltz.io.coders.FixedSize;
-import edu.umass.cs.ciir.waltz.io.galago.GalagoDiskMap;
+import edu.umass.cs.ciir.waltz.io.galago.IOMapWriter;
+import edu.umass.cs.ciir.waltz.io.galago.RawGalagoDiskMap;
+import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
@@ -39,8 +40,8 @@ public class SimplePostingListFormatTest {
     argp.put("keyCoder", FixedSize.ints.getClass().getName());
 
     try (TemporaryFile tmpFile = new TemporaryFile("positions", "index")) {
-      try (GalagoDiskMap.Writer<Integer, PostingMover<PositionsList>> postingsWriter =
-               new GalagoDiskMap.Writer<>(
+      try (IOMapWriter<Integer, PostingMover<PositionsList>> postingsWriter =
+               RawGalagoDiskMap.getWriter(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath(),
@@ -53,7 +54,7 @@ public class SimplePostingListFormatTest {
       } // close disk writer
 
       try (IOMap<Integer, PostingMover<PositionsList>> part =
-               new GalagoDiskMap(
+               RawGalagoDiskMap.createIOMap(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath())) {
