@@ -1,0 +1,9 @@
+package edu.umass.cs.ciir.waltz.compat.galago;
+
+type KeyDocValue {
+  bytes key;
+  int doc;
+  bytes value;
+
+  order: +key, +doc; // for writing to inverted lists
+}
