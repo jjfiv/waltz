@@ -23,10 +23,9 @@ public abstract class PostingListCoder<V> extends Coder<PostingMover<V>> {
 
   @Override
   public PostingMover<V> readImpl(InputStream inputStream) throws IOException {
-    return read(() -> {
-      return SkipInputStream.wrap(inputStream);
-    });
+		return read(SkipInputStream.wrap(inputStream));
   }
+
   @Override
   public abstract PostingMover<V> read(StaticStream streamFn) throws IOException;
 }

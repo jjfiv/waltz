@@ -107,4 +107,9 @@ public class AGalagoMover<X extends BaseIterator> implements Mover {
       moveTo(key);
     }
   }
+
+	@Override
+	public int totalKeys() {
+		return (int) iter.totalEntries();
+	}
 }
