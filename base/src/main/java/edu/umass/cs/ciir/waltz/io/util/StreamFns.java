@@ -17,7 +17,7 @@ public class StreamFns {
       throw new EOFException();
     }
     if(read < amt) {
-      throw new IOException();
+      throw new IOException(String.format("Expected %d bytes, but only read %d", amt, read));
     }
     return buf;
   }

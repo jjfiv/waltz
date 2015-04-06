@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +85,9 @@ public class BufferList implements MutableDataChunk {
 
   @Override
   public void write(OutputStream out) throws IOException {
-    write(Channels.newChannel(out));
+    for (DataChunk buf : bufs) {
+      buf.write(out);
+    }
   }
 
   @Override
