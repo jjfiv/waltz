@@ -7,6 +7,7 @@ import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -72,4 +73,10 @@ public abstract class Coder<T> {
   public abstract DataChunk writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
   public abstract T readImpl(InputStream inputStream) throws IOException;
+
+  public void write(OutputStream out, T elem) throws IOException {
+    DataChunk chunk = writeImpl(elem);
+    chunk.write(out);
+    out.flush();
+  }
 }
