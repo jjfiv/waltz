@@ -14,10 +14,10 @@ public class ListCoderTest {
 
   @Test
   public void testKnownStrings() throws Exception {
-    ListCoder<String> strs = new ListCoder<>(UTF8.withVByteLength);
+    ListCoder<java.lang.String> strs = new ListCoder<>(StringC.withVByteLength);
     assertTrue(strs.knowsOwnSize());
 
-    List<String> testData = new ArrayList<>();
+    List<java.lang.String> testData = new ArrayList<>();
     testData.add("Hello World!");
     testData.add("Hello Variable Variable Length!");
     testData.add("Fox!");

@@ -16,7 +16,7 @@ public class UTF8Test {
 
   @Test
   public void testWithoutLengthPrefix() {
-    Coder<String> c = UTF8.withoutLengthPrefix;
+    Coder<java.lang.String> c = StringC.withoutLengthPrefix;
     assertFalse(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -29,7 +29,7 @@ public class UTF8Test {
 
   @Test
   public void testWithLengthPrefix() throws IOException {
-    Coder<String> c = UTF8.withVByteLength;
+    Coder<java.lang.String> c = StringC.withVByteLength;
     assertTrue(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -44,7 +44,7 @@ public class UTF8Test {
     assertEquals("get concatenated on read!", c.read(input));
 
     try {
-      String ignored = c.read(input);
+      java.lang.String ignored = c.read(input);
       assertNull(ignored);
       fail("Shouldn't get here.");
     } catch (CodecException ex) {

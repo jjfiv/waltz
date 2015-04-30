@@ -14,24 +14,24 @@ import java.nio.charset.Charset;
 /**
  * @author jfoley
  */
-public class UTF8 {
+public class StringC {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Coder<String> withoutLengthPrefix = new Coder<String>() {
+  public static final Coder<java.lang.String> withoutLengthPrefix = new Coder<java.lang.String>() {
     @Override
-    public DataChunk writeImpl(String obj) throws IOException {
+    public DataChunk writeImpl(java.lang.String obj) throws IOException {
       return ByteBufferDataChunk.of(obj.getBytes(charset));
     }
 
     @Override
-    public String readImpl(InputStream inputStream) throws IOException {
+    public java.lang.String readImpl(InputStream inputStream) throws IOException {
       InputStreamReader reader = new InputStreamReader(inputStream, charset);
       return IO.readAll(reader);
     }
 
     @Override
-    public String read(ByteBuffer buf) {
-      return new String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
+    public java.lang.String read(ByteBuffer buf) {
+      return new java.lang.String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
     }
 
     @Override
@@ -40,5 +40,5 @@ public class UTF8 {
     }
   };
 
-  public static final Coder<String> withVByteLength = new LengthPrefixCoder<>(VByteCoders.ints, withoutLengthPrefix);
+  public static final Coder<java.lang.String> withVByteLength = new LengthPrefixCoder<>(VByteCoders.ints, withoutLengthPrefix);
 }

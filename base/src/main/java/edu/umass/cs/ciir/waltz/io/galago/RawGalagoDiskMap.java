@@ -41,7 +41,7 @@ public class RawGalagoDiskMap implements RawIOMap {
     return new IOMapWriter<>(getWriter(path, argp), keyCoder, valCoder);
   }
 
-  private static RawIOMapWriter getWriter(String path, Parameters argp) throws IOException {
+  public static RawIOMapWriter getWriter(String path, Parameters argp) throws IOException {
     return new RawGalagoDiskMapWriter(path, argp);
   }
 
