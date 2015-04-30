@@ -12,12 +12,19 @@ import java.nio.ByteBuffer;
 public class StreamFns {
   public static byte[] readBytes(InputStream is, int amt) throws IOException {
     byte[] buf = new byte[amt];
-    int read = is.read(buf);
-    if(read < -1) {
-      throw new EOFException();
-    }
-    if(read < amt) {
-      throw new IOException(String.format("Expected %d bytes, but only read %d", amt, read));
+
+    // Begin I/O loop:
+    int off = 0;
+    while(true) {
+      int read = is.read(buf, off, amt);
+      if (read < -1) {
+        throw new EOFException();
+      }
+      if(read == amt) break;
+
+      // Ugh; try again
+      off += read;
+      amt -= read;
     }
     return buf;
   }
