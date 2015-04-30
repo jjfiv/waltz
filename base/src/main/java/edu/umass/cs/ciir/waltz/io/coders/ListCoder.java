@@ -47,10 +47,8 @@ public class ListCoder<T> extends Coder<List<T>> {
   public List<T> readImpl(InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);
     assert(amount == 10000);
-    //System.out.println(amount);
     List<T> output = new ArrayList<>(amount);
     for (int i = 0; i < amount; i++) {
-      System.err.println(i);
       output.add(itemCoder.read(inputStream));
     }
     return output;
