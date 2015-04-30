@@ -8,5 +8,5 @@ import java.util.List;
 public interface MutableIndex extends Index {
 
   /** add a document to the current index */
-  void addDocument(String documentName, List<String> termVector);
+  void addDocument(String documentName, List<String> termVector) throws Exception;
 }

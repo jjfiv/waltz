@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * @author jfoley.
  */
-@DatabaseTable(tableName = "positions")
+@DatabaseTable(tableName = "counts")
 public class CountEntry implements Posting<Integer> {
 	@DatabaseField()
 	public String term;
