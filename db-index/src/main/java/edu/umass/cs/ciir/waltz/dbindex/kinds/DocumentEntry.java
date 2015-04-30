@@ -10,15 +10,23 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "documents")
 public class DocumentEntry {
 	public static final int MaxNameWidth = 1024;
+
+	/** Document id. */
 	@DatabaseField(id=true, throwIfNull=true)
 	public int id;
+
+	/** Document name. */
 	@DatabaseField(canBeNull=false, throwIfNull=true, width= MaxNameWidth)
 	public String name;
+
+	/** Document length. */
 	@DatabaseField(throwIfNull=true)
 	public int length;
 
+	/** Needed for reflection. */
+	@SuppressWarnings("unused")
 	public DocumentEntry() {
-		this.id = Integer.MIN_VALUE;
+		this.id = -1;
 		this.name = null;
 		this.length = 0;
 	}

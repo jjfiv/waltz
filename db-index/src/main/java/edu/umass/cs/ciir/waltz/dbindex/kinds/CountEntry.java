@@ -25,6 +25,8 @@ public class CountEntry implements Posting<Integer> {
 	@DatabaseField(throwIfNull = true, canBeNull = false)
 	public int count;
 
+	/** Needed for reflection. */
+	@SuppressWarnings("unused")
 	public CountEntry() {
 		this(null, -1, 0);
 	}
