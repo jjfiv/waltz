@@ -5,6 +5,6 @@ package edu.umass.cs.ciir.waltz.postings;
  */
 public interface Posting<X> extends Comparable<Posting<X>> {
   /** Returns the document id, referred to as a key here. */
-  public int getKey();
-  public X getValue();
+  int getKey();
+  X getValue();
 }

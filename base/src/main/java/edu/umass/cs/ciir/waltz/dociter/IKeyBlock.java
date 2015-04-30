@@ -7,11 +7,11 @@ import java.util.List;
  * @author jfoley
  */
 public interface IKeyBlock extends List<Integer> {
-  public int minKey();
-  public int maxKey();
-  public int getKey(int index);
+  int minKey();
+  int maxKey();
+  int getKey(int index);
   @Override
-  public int size();
+  int size();
 
-  public static final IKeyBlock EMPTY = new KeyBlock(Collections.emptyList());
+  IKeyBlock EMPTY = new KeyBlock(Collections.emptyList());
 }

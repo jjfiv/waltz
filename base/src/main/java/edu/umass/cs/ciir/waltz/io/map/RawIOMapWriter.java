@@ -9,5 +9,5 @@ import java.io.IOException;
  * @author jfoley
  */
 public interface RawIOMapWriter extends Closeable {
-  public void put(DataChunk key, DataChunk val) throws IOException;
+  void put(DataChunk key, DataChunk val) throws IOException;
 }

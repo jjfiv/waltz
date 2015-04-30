@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import edu.umass.cs.ciir.waltz.dbindex.kinds.DocumentEntry;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.index.MutableIndex;
@@ -109,7 +110,11 @@ public class DBIndex implements MutableIndex {
 
 	@Override
 	public String getDocumentName(int id) {
-		return null;
+		try {
+			return documents.queryForId(id).name;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

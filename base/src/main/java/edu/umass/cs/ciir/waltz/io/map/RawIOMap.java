@@ -13,8 +13,8 @@ import java.util.Map;
  * @author jfoley
  */
 public interface RawIOMap extends Closeable {
-  public long keyCount();
-  public Map<String, Object> getConfig();
-  public StaticStream get(DataChunk key) throws IOException;
-  public List<Pair<DataChunk, StaticStream>> getInBulk(List<DataChunk> keys) throws IOException;
+  long keyCount();
+  Map<String, Object> getConfig();
+  StaticStream get(DataChunk key) throws IOException;
+  List<Pair<DataChunk, StaticStream>> getInBulk(List<DataChunk> keys) throws IOException;
 }

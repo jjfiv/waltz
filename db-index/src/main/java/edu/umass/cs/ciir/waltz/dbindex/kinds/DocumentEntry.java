@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.dbindex;
+package edu.umass.cs.ciir.waltz.dbindex.kinds;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

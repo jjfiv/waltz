@@ -31,7 +31,7 @@ public class GalagoLengthsFeature implements Feature<Integer> {
   @Override
   public Integer getFeature(int key) {
     try {
-      return (int) lengths.getLength(key);
+      return lengths.getLength(key);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

@@ -8,9 +8,9 @@ import java.util.List;
  * @author jfoley
  */
 public interface PositionsList extends ExtentIterable {
-  public int getPosition(int index);
-  public int size();
+  int getPosition(int index);
+  int size();
   @Override
-  public PositionsIterator getExtentsIterator();
-  public List<Integer> toList();
+  PositionsIterator getExtentsIterator();
+  List<Integer> toList();
 }

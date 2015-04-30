@@ -9,8 +9,8 @@ import java.nio.ByteBuffer;
  */
 public interface MutableDataChunk extends DataChunk {
   /** write an object to this buffer list using the given codec. */
-  public <T> void add(Coder<T> coder, T obj);
-  public void add(ByteBuffer data);
-  public void add(byte[] data);
-  public void add(DataChunk data);
+  <T> void add(Coder<T> coder, T obj);
+  void add(ByteBuffer data);
+  void add(byte[] data);
+  void add(DataChunk data);
 }
