@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -47,8 +48,8 @@ public class ByteBufferDataChunk implements DataChunk {
 
   @Override
   public void write(OutputStream out) throws IOException {
-    out.write(buffer.array());
-    //write(Channels.newChannel(out));
+    //out.write(buffer.array());
+    write(Channels.newChannel(out));
   }
 
   @Override

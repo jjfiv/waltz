@@ -83,7 +83,7 @@ public class AnyOfMoverTest {
 		List<Integer> hits = new ArrayList<>();
 		for(; !mover.isDone(); mover.next()) {
 			int doc = mover.currentKey();
-      System.out.println(doc);
+      //System.out.println(doc);
 
       if(hits.size() > 1000) throw new RuntimeException();
 			hits.add(doc);
