@@ -16,7 +16,7 @@ public class DocumentEntry {
 	public int id;
 
 	/** Document name. */
-	@DatabaseField(canBeNull=false, throwIfNull=true, width= MaxNameWidth)
+	@DatabaseField(canBeNull=false, width= MaxNameWidth)
 	public String name;
 
 	/** Document length. */

@@ -30,11 +30,15 @@ public class DBIndex implements MutableIndex {
 	private final Dao<CountEntry, String> counts;
 	private int nextDocumentId = 0;
 
-	public DBIndex(DBConfig cfg) throws SQLException {
-		this.source = new JdbcConnectionSource(cfg.getJDBCURL());
+	public DBIndex(ConnectionSource source) throws SQLException {
+		this.source = source;
 		this.documents = DaoManager.createDao(source, DocumentEntry.class);
 		this.counts = DaoManager.createDao(source, CountEntry.class);
 		setup();
+	}
+
+	public DBIndex(DBConfig cfg) throws SQLException {
+		this(new JdbcConnectionSource(cfg.getJDBCURL(), cfg.getUser(), cfg.getPassword()));
 	}
 
 	private void setup() throws SQLException {
@@ -144,6 +148,18 @@ public class DBIndex implements MutableIndex {
 	public String getDocumentName(int id) {
 		try {
 			return documents.queryForId(id).name;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public int getDocumentId(String documentName) {
+		try {
+			return documents.queryForFirst(
+					documents.queryBuilder()
+					.where().eq("name", documentName).prepare()
+			).id;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
