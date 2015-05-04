@@ -1,11 +1,7 @@
-package edu.umass.cs.ciir.waltz.dbindex.kinds;
+package edu.umass.cs.ciir.waltz.dociter;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.io.IO;
-import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
-import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.postings.Posting;
 
 import java.util.ArrayList;

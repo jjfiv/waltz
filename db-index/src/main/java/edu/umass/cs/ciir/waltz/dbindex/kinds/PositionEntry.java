@@ -1,21 +1,21 @@
 package edu.umass.cs.ciir.waltz.dbindex.kinds;
 
-import ciir.jfoley.chai.collections.iters.GroupByIterator;
-import ciir.jfoley.chai.collections.iters.MappingIterator;
 import ciir.jfoley.chai.collections.list.IntList;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.fn.CompareFn;
 import ciir.jfoley.chai.fn.TransformFn;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.table.DatabaseTable;
+import edu.umass.cs.ciir.waltz.dbindex.SQLIterable;
+import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
+import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.postings.Posting;
 import edu.umass.cs.ciir.waltz.postings.SimplePosting;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -40,47 +40,36 @@ public class PositionEntry {
     this.position = position;
   }
 
-  public static class PositionsEntryIterable implements Iterable<Posting<PositionsList>> {
-
-    private final PreparedQuery<PositionEntry> prep;
-    private final Dao<PositionEntry, String> table;
-
-    public PositionsEntryIterable(String term, Dao<PositionEntry, String> table) throws SQLException {
-      this.table = table;
-      this.prep = this.table.queryBuilder()
-          .orderByRaw("document, position")
-          .where().idEq(term)
-          .prepare();
-    }
-
-    private static CompareFn<PositionEntry> sameDocumentFn = new CompareFn<PositionEntry>() {
-      @Override
-      public boolean compare(PositionEntry lhs, PositionEntry rhs) {
-        return lhs.document == rhs.document;
-      }
-    };
-    private static TransformFn<List<PositionEntry>, Posting<PositionsList>> toPositionsFn = new TransformFn<List<PositionEntry>, Posting<PositionsList>>() {
-      @Override
-      public Posting<PositionsList> transform(List<PositionEntry> input) {
-        IntList raw = new IntList();
-        for (PositionEntry entry : input) {
-          raw.add(entry.position);
-        }
-        return new SimplePosting<>(input.get(0).document, new SimplePositionsList(raw));
-      }
-    };
-
+  private static CompareFn<PositionEntry> sameDocumentFn = new CompareFn<PositionEntry>() {
     @Override
-    public Iterator<Posting<PositionsList>> iterator() {
-      try {
-        // Group by document and then convert to the right type.
-        return new MappingIterator<>(
-            new GroupByIterator<>(table.iterator(prep), sameDocumentFn),
-            toPositionsFn);
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
+    public boolean compare(PositionEntry lhs, PositionEntry rhs) {
+      return lhs.document == rhs.document;
     }
-  }
+  };
+  private static TransformFn<List<PositionEntry>, Posting<PositionsList>> toPositionsFn = new TransformFn<List<PositionEntry>, Posting<PositionsList>>() {
+    @Override
+    public Posting<PositionsList> transform(List<PositionEntry> input) {
+      IntList raw = new IntList();
+      for (PositionEntry entry : input) {
+        raw.add(entry.position);
+      }
+      return new SimplePosting<>(input.get(0).document, new SimplePositionsList(raw));
+    }
+  };
 
+
+  public static PostingMover<PositionsList> FromTable(String term, Dao<PositionEntry, String> table) throws SQLException {
+    Iterable<PositionEntry> infos = new SQLIterable<>(
+                        table.queryBuilder()
+                            .orderByRaw("document, position")
+                            .where().idEq(term).prepare(),
+                        table);
+
+    Iterable<Posting<PositionsList>> postings =
+        IterableFns.map(
+            IterableFns.groupBy(infos, sameDocumentFn),
+            toPositionsFn);
+
+    return BlockPostingsMover.ofIterable(postings);
+  }
 }

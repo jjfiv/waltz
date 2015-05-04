@@ -10,9 +10,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import edu.umass.cs.ciir.waltz.dbindex.kinds.CountEntry;
 import edu.umass.cs.ciir.waltz.dbindex.kinds.DocumentEntry;
-import edu.umass.cs.ciir.waltz.dbindex.kinds.IterableBlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.dbindex.kinds.PositionEntry;
-import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
@@ -138,11 +136,7 @@ public class DBIndex implements MutableIndex {
 	@Override
 	public PostingMover<PositionsList> getPositionsMover(String term) {
 		try {
-			return new BlockPostingsMover<>(
-          new IterableBlockPostingsIterator<>(
-              new PositionEntry.PositionsEntryIterable(term, positions)
-          )
-      );
+			return PositionEntry.FromTable(term, positions);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}

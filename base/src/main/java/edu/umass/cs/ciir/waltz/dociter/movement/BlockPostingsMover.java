@@ -2,6 +2,8 @@ package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
+import edu.umass.cs.ciir.waltz.dociter.IterableBlockPostingsIterator;
+import edu.umass.cs.ciir.waltz.postings.Posting;
 
 /**
  * @author jfoley
@@ -41,5 +43,10 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
   @Override
   public int totalKeys() {
     return iterator.totalKeys();
+  }
+
+
+  public static <Z> BlockPostingsMover<Z> ofIterable(Iterable<? extends Posting<Z>> coll) {
+    return new BlockPostingsMover<Z>(new IterableBlockPostingsIterator<>(coll));
   }
 }
