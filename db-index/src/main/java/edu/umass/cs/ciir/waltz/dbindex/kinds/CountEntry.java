@@ -47,6 +47,7 @@ public class CountEntry implements Posting<Integer> {
 	}
 
 	@Override
+	@SuppressWarnings("NullableProblems")
 	public int compareTo(Posting<Integer> o) {
 		return Integer.compare(document, o.getKey());
 	}
@@ -54,11 +55,9 @@ public class CountEntry implements Posting<Integer> {
 	public static class CountEntryIterable implements Iterable<Posting<Integer>> {
 
 		private final Dao<CountEntry, String> table;
-		private final String term;
 		private final PreparedQuery<CountEntry> prep;
 
 		public CountEntryIterable(String term, Dao<CountEntry, String> table) throws SQLException {
-			this.term = term;
 			this.table = table;
 			this.prep = table.queryBuilder()
 					.where()
