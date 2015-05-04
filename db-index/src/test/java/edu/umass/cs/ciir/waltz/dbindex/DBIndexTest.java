@@ -1,10 +1,13 @@
 package edu.umass.cs.ciir.waltz.dbindex;
 
+import edu.umass.cs.ciir.waltz.feature.Feature;
 import org.junit.Test;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author jfoley.
@@ -24,11 +27,10 @@ public class DBIndexTest {
 		int soundsId = index.getDocumentId("sounds");
 		assertEquals("sounds", index.getDocumentName(soundsId));
 
-		/* TODO
 		Feature<Integer> lengths = index.getLengths();
 		assertNotNull(lengths);
 		assertTrue(lengths.hasFeature(soundsId));
 		assertEquals(3, lengths.getFeature(soundsId).intValue());
-		 */
 	}
+
 }

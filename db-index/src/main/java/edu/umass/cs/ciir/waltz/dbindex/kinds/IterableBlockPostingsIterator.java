@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-class IterableBlockPostingsIterator<X> implements BlockPostingsIterator<X>, AutoCloseable {
+public class IterableBlockPostingsIterator<X> implements BlockPostingsIterator<X>, AutoCloseable {
 
 	private final int blockSize;
 	private final Iterable<? extends Posting<X>> iterGen;

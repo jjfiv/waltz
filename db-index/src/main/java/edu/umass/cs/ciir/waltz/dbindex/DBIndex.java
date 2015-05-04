@@ -10,6 +10,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import edu.umass.cs.ciir.waltz.dbindex.kinds.CountEntry;
 import edu.umass.cs.ciir.waltz.dbindex.kinds.DocumentEntry;
+import edu.umass.cs.ciir.waltz.dbindex.kinds.IterableBlockPostingsIterator;
+import edu.umass.cs.ciir.waltz.dbindex.kinds.PositionEntry;
+import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
@@ -28,12 +31,14 @@ public class DBIndex implements MutableIndex {
 	private final ConnectionSource source;
 	private final Dao<DocumentEntry, Integer> documents;
 	private final Dao<CountEntry, String> counts;
+	private final Dao<PositionEntry, String> positions;
 	private int nextDocumentId = 0;
 
 	public DBIndex(ConnectionSource source) throws SQLException {
 		this.source = source;
 		this.documents = DaoManager.createDao(source, DocumentEntry.class);
 		this.counts = DaoManager.createDao(source, CountEntry.class);
+		this.positions = DaoManager.createDao(source, PositionEntry.class);
 		setup();
 	}
 
@@ -44,6 +49,7 @@ public class DBIndex implements MutableIndex {
 	private void setup() throws SQLException {
 		TableUtils.createTableIfNotExists(source, DocumentEntry.class);
 		TableUtils.createTableIfNotExists(source, CountEntry.class);
+		TableUtils.createTableIfNotExists(source, PositionEntry.class);
 
 		// figure out the nextDocumentId to assign:
 		int maxId = 0;
@@ -131,7 +137,15 @@ public class DBIndex implements MutableIndex {
 
 	@Override
 	public PostingMover<PositionsList> getPositionsMover(String term) {
-		return null;
+		try {
+			return new BlockPostingsMover<>(
+          new IterableBlockPostingsIterator<>(
+              new PositionEntry.PositionsEntryIterable(term, positions)
+          )
+      );
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -141,7 +155,7 @@ public class DBIndex implements MutableIndex {
 
 	@Override
 	public Feature<PositionsList> getPositions(String term) {
-		return null;
+		return new MoverFeature<>(getPositionsMover(term));
 	}
 
 	@Override
@@ -167,7 +181,30 @@ public class DBIndex implements MutableIndex {
 
 	@Override
 	public Feature<Integer> getLengths() {
-		return null; // TODO
+		return new Feature<Integer>() {
+			private DocumentEntry cachedEntry = null;
+			@Override
+			public boolean hasFeature(int key) {
+				return getCached(key) != null;
+			}
+
+			private DocumentEntry getCached(int key) {
+				try {
+					if(cachedEntry != null && cachedEntry.id == key) {
+						return cachedEntry;
+					}
+					cachedEntry = documents.queryForId(key);
+					return cachedEntry;
+				} catch (SQLException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			@Override
+			public Integer getFeature(int key) {
+				return getCached(key).length;
+			}
+		};
 	}
 
 	@Override
