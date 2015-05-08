@@ -45,4 +45,9 @@ public class GalagoPositionIterator extends AGalagoIterator<PostingMover<Positio
   public ExtentArray data(ScoringContext c) {
     return extents(c);
   }
+
+  @Override
+  public boolean indicator(ScoringContext c) {
+    return count(c) > 0;
+  }
 }

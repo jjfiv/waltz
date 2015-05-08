@@ -91,7 +91,8 @@ public class AGalagoMover<X extends BaseIterator> implements Mover {
 
   @Override
   public boolean matches(int key) {
-    return iter.hasMatch(key);
+    ctx.document = key;
+    return iter.hasMatch(ctx);
   }
 
   @Override

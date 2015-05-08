@@ -42,8 +42,8 @@ public class AGalagoIterator<MoverKind extends Mover> implements BaseIterator {
   }
 
   @Override
-  public boolean hasMatch(long identifier) {
-    return mover.matches((int) identifier);
+  public boolean hasMatch(ScoringContext ctx) {
+    return mover.matches((int) ctx.document);
   }
 
   @Override

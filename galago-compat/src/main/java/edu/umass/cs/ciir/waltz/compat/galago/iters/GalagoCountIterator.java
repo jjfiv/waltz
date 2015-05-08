@@ -19,4 +19,9 @@ public class GalagoCountIterator extends AGalagoIterator<PostingMover<Integer>> 
     }
     return 0;
   }
+
+  @Override
+  public boolean indicator(ScoringContext c) {
+    return count(c) > 0;
+  }
 }
