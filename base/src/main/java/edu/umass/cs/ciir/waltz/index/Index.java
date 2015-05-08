@@ -27,6 +27,8 @@ public interface Index extends Closeable {
   Feature<PositionsList> getPositions(String term);
 
   String getDocumentName(int id);
+  int getDocumentId(String documentName);
 
   Feature<Integer> getLengths();
+
 }

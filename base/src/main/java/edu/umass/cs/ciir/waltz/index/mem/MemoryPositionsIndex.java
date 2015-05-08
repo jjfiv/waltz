@@ -111,6 +111,11 @@ public class MemoryPositionsIndex implements MutableIndex {
   }
 
   @Override
+  public int getDocumentId(String documentName) {
+    return docNames.getId(documentName);
+  }
+
+  @Override
   public Feature<Integer> getLengths() {
     return new CompactLengthsFeature(lengths);
   }
