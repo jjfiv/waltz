@@ -9,10 +9,7 @@ import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
 import edu.umass.cs.ciir.waltz.index.Index;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
-import org.lemurproject.galago.core.index.disk.DiskIndex;
-import org.lemurproject.galago.core.index.disk.DiskLengthsReader;
-import org.lemurproject.galago.core.index.disk.DiskNameReader;
-import org.lemurproject.galago.core.index.disk.PositionIndexReader;
+import org.lemurproject.galago.core.index.disk.*;
 import org.lemurproject.galago.core.retrieval.iterator.CountIterator;
 import org.lemurproject.galago.core.retrieval.iterator.ExtentIterator;
 import org.lemurproject.galago.utility.Parameters;
@@ -31,6 +28,7 @@ public class GalagoIndex implements Index, Closeable {
   private final DiskNameReader names;
   private final PositionIndexReader postings;
   private final DiskLengthsReader lengths;
+  private final DiskNameReverseReader namesRev;
 
   public GalagoIndex(String path, Parameters cfg) throws IOException {
     this(new DiskIndex(path), cfg);
@@ -39,6 +37,7 @@ public class GalagoIndex implements Index, Closeable {
     try {
       this.inner = galagoDiskIndex;
       this.names = (DiskNameReader) inner.getIndexPart("names");
+      this.namesRev = (DiskNameReverseReader) inner.getIndexPart("names.reverse");
       this.lengths = (DiskLengthsReader) inner.getIndexPart("lengths");
       this.postings = (PositionIndexReader) inner.getIndexPart(cfg.get("positionsPart", "postings"));
     } catch (IOException e) {
@@ -112,6 +111,15 @@ public class GalagoIndex implements Index, Closeable {
   public String getDocumentName(int id) {
     try {
       return names.getDocumentName(id);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public int getDocumentId(String documentName) {
+    try {
+      return (int) namesRev.getDocumentIdentifier(documentName);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
