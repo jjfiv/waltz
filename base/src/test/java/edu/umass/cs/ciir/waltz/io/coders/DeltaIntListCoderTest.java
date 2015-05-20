@@ -1,9 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 import edu.umass.cs.ciir.waltz.galago.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.galago.io.coders.ListCoder;
-import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -25,7 +25,7 @@ public class DeltaIntListCoderTest {
     }
     Collections.sort(testData);
 
-    ListCoder<Integer> lc = new ListCoder<>(VByteCoders.ints);
+    ListCoder<Integer> lc = new ListCoder<>(VarInt.instance);
     DeltaIntListCoder dlc = new DeltaIntListCoder();
 
     ByteBuffer withoutDeltas = lc.write(testData);

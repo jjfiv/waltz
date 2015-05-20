@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.galago.io.coders;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +19,7 @@ public class ListCoder<T> extends Coder<List<T>> {
   private final Coder<T> itemCoder;
 
   public ListCoder(Coder<T> itemCoder) {
-    this(VByteCoders.ints, itemCoder);
+    this(VarInt.instance, itemCoder);
   }
   public ListCoder(Coder<Integer> countCoder, Coder<T> itemCoder) {
     assert(countCoder.knowsOwnSize());

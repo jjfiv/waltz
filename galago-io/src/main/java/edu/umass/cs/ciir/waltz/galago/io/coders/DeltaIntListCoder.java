@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.galago.io.coders;
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +18,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
   private final Coder<Integer> itemCoder;
 
   public DeltaIntListCoder() {
-    this(VByteCoders.ints, VByteCoders.ints);
+    this(VarInt.instance, VarInt.instance);
   }
   public DeltaIntListCoder(Coder<Integer> countCoder, Coder<Integer> itemCoder) {
     this.countCoder = countCoder;
@@ -38,7 +39,6 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
 
     for (int x : obj) {
       int delta = x - prev;
-      assert(delta >= 0);
       bl.add(itemCoder, delta);
       prev = x;
     }
