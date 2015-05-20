@@ -11,7 +11,7 @@ import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.galago.io.coders.DeltaIntListCoder;
-import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
+import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
@@ -79,7 +79,7 @@ public class SimplePostingListFormat {
     private void writeCurrentBlock() throws IOException {
       DataChunk data = currentChunk.encode();
       assert(data.byteCount() < Integer.MAX_VALUE);
-      output.add(VByteCoders.ints.write((int) data.byteCount()));
+      output.add(GalagoVByteCoders.ints.write((int) data.byteCount()));
       output.add(data);
       currentChunk.clear();
     }
@@ -96,7 +96,7 @@ public class SimplePostingListFormat {
 
     public ByteBuffer getMetadataChunk() {
       // No matter what posting it is, it knows it's df.
-      return VByteCoders.ints.write(totalKeys);
+      return GalagoVByteCoders.ints.write(totalKeys);
     }
   }
 
@@ -122,7 +122,7 @@ public class SimplePostingListFormat {
       haveReadCurrentValues = true;
       nextKeyBlockOffset = 0;
       done = false;
-      totalKeys = VByteCoders.ints.read(stream);
+      totalKeys = GalagoVByteCoders.ints.read(stream);
       usedKeys = 0;
     }
 
@@ -138,7 +138,7 @@ public class SimplePostingListFormat {
         }
         haveReadCurrentValues = false;
         // VByte: size of next block of keys+values
-        int nextBlockSize = VByteCoders.ints.read(stream);
+        int nextBlockSize = GalagoVByteCoders.ints.read(stream);
         nextKeyBlockOffset = stream.tell() + nextBlockSize;
         // Read in all the keys.
         List<Integer> keys = intsCoder.read(stream);

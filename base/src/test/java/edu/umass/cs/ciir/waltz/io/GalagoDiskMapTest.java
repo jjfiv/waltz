@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.io;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.io.TemporaryFile;
-import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
+import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.galago.io.RawGalagoDiskMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
@@ -20,12 +20,12 @@ public class GalagoDiskMapTest {
     Parameters testP = Parameters.create();
     testP.put("hello", "world");
     try (TemporaryFile tmpFile = new TemporaryFile("gdmt", "btree")) {
-      try (IOMapWriter<Integer, Integer> writer = RawGalagoDiskMap.getWriter(VByteCoders.ints, VByteCoders.ints, tmpFile.getPath(), testP)) {
+      try (IOMapWriter<Integer, Integer> writer = RawGalagoDiskMap.getWriter(GalagoVByteCoders.ints, GalagoVByteCoders.ints, tmpFile.getPath(), testP)) {
         writer.put(1,10);
         writer.put(3,30);
       } // close Writer
 
-      try (IOMap<Integer, Integer> reader = RawGalagoDiskMap.createIOMap(VByteCoders.ints, VByteCoders.ints, tmpFile.getPath())) {
+      try (IOMap<Integer, Integer> reader = RawGalagoDiskMap.createIOMap(GalagoVByteCoders.ints, GalagoVByteCoders.ints, tmpFile.getPath())) {
         assertEquals("world", reader.getConfig().get("hello"));
         assertEquals(10, reader.get(1).intValue());
         assertEquals(30, reader.get(3).intValue());
