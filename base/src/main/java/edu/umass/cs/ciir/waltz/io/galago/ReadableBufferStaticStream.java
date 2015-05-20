@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
-import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
-import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
+import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.buffer.CachedBufferDataStream;
 import org.lemurproject.galago.utility.buffer.ReadableBuffer;

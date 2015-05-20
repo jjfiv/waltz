@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import org.junit.Test;
 
 import java.util.Random;

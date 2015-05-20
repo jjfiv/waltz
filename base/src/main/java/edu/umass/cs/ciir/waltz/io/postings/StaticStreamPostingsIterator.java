@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
 import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
-import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
-import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
+import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.IOException;
 

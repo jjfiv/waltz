@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.map;
 
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 
 /**
  * This allows a new type of information to be written to a writer:

@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.io;
 
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.io.coders.StringC;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class BufferListTest {
 
   @Test
   public void testWithStringCodec() {
-    Coder<java.lang.String> str = StringC.withoutLengthPrefix;
+    Coder<String> str = StringC.withoutLengthPrefix;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");

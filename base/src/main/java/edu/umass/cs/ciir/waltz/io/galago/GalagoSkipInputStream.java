@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
-import edu.umass.cs.ciir.waltz.io.streams.SkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import org.lemurproject.galago.utility.buffer.DataStream;
 
 import java.io.IOException;

@@ -1,18 +1,18 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.io.Coder;
 import edu.umass.cs.ciir.waltz.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
-import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.MutableDataChunk;
 import edu.umass.cs.ciir.waltz.io.util.TmpFileDataChunk;
 

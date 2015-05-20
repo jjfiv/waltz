@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.io.map.RawIOMapWriter;
 
 import java.io.Closeable;

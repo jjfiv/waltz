@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.ByteBufferDataChunk;
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 import org.lemurproject.galago.utility.compression.VByte;
 
 import java.io.DataInputStream;

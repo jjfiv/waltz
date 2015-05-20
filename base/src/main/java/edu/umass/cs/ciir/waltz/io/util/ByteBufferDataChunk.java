@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

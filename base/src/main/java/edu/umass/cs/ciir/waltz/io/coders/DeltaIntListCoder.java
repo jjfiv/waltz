@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
 
 import java.io.IOException;

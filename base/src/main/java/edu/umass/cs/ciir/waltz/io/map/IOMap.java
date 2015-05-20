@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.map;
 
 import ciir.jfoley.chai.collections.Pair;
-import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.Closeable;
 import java.io.IOException;

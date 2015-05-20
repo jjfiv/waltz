@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import org.lemurproject.galago.utility.CmpUtil;
 
 import java.io.ByteArrayInputStream;

@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
-import edu.umass.cs.ciir.waltz.io.CodecException;
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
 import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class UTF8Test {
 
   @Test
   public void testWithoutLengthPrefix() {
-    Coder<java.lang.String> c = StringC.withoutLengthPrefix;
+    Coder<String> c = StringC.withoutLengthPrefix;
     assertFalse(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -47,7 +47,7 @@ public class UTF8Test {
       java.lang.String ignored = c.read(input);
       assertNull(ignored);
       fail("Shouldn't get here.");
-    } catch (CodecException ex) {
+    } catch (CoderException ex) {
       assertTrue(ex.getCause() instanceof EOFException);
     }
   }

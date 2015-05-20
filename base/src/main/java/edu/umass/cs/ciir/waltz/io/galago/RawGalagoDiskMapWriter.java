@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
 import edu.umass.cs.ciir.waltz.io.map.RawIOMapWriter;
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeWriter;
 

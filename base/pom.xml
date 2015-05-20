@@ -39,13 +39,19 @@
     <dependency>
       <groupId>edu.umass.cs.ciir.jfoley</groupId>
       <artifactId>chai-core</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.3.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.lemurproject.galago</groupId>
       <artifactId>utility</artifactId>
       <version>${galagoVersion}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>jfoley.waltz</groupId>
+      <artifactId>waltz-coders</artifactId>
+      <version>0.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

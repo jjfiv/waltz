@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.util;
+package edu.umass.cs.ciir.waltz.coders.data;
 
 import java.io.Closeable;
 import java.io.IOException;

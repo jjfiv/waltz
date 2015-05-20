@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.map;
 
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.io.Closeable;
 import java.io.IOException;

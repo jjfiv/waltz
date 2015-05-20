@@ -1,9 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.io.IO;
-import edu.umass.cs.ciir.waltz.io.Coder;
+import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.ByteBufferDataChunk;
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
 public class StringC {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Coder<java.lang.String> withoutLengthPrefix = new Coder<java.lang.String>() {
+  public static final Coder<String> withoutLengthPrefix = new Coder<java.lang.String>() {
     @Override
     public DataChunk writeImpl(java.lang.String obj) throws IOException {
       return ByteBufferDataChunk.of(obj.getBytes(charset));

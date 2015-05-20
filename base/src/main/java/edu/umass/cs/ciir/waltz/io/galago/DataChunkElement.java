@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.galago;
 
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import org.lemurproject.galago.utility.CmpUtil;
 import org.lemurproject.galago.utility.btree.IndexElement;
 

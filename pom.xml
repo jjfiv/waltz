@@ -15,6 +15,7 @@
     <module>base</module>
     <module>galago-compat</module>
     <module>db-index</module>
+    <module>coders</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

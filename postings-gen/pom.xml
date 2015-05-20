@@ -41,12 +41,6 @@
       <artifactId>waltz-base</artifactId>
       <version>0.1.0-SNAPSHOT</version>
     </dependency>
-        
-    <dependency>
-      <groupId>edu.umass.cs.ciir.jfoley</groupId>
-      <artifactId>chai</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
-    </dependency>
 
     <dependency>
       <groupId>org.lemurproject.galago</groupId>

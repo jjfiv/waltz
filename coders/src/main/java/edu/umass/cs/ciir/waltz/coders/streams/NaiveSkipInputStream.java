@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.streams;
+package edu.umass.cs.ciir.waltz.coders.streams;
 
 import java.io.EOFException;
 import java.io.IOException;

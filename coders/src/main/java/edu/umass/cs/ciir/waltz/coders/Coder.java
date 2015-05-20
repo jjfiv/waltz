@@ -1,8 +1,8 @@
-package edu.umass.cs.ciir.waltz.io;
+package edu.umass.cs.ciir.waltz.coders;
 
-import edu.umass.cs.ciir.waltz.io.streams.StaticStream;
-import edu.umass.cs.ciir.waltz.io.util.DataChunk;
-import edu.umass.cs.ciir.waltz.io.util.StreamFns;
+import ciir.jfoley.chai.io.StreamFns;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public abstract class Coder<T> {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
       return readImpl(bais);
     } catch (IOException e) {
-      throw new CodecException(e, this.getClass());
+      throw new CoderException(e, this.getClass());
     }
   }
   /** Reading from a ByteBuffer in memory. */
@@ -27,7 +27,7 @@ public abstract class Coder<T> {
     try (InputStream bais = StreamFns.fromByteBuffer(buf)) {
       return readImpl(bais);
     } catch (IOException e) {
-      throw new CodecException(e, this.getClass());
+      throw new CoderException(e, this.getClass());
     }
   }
 
@@ -41,7 +41,7 @@ public abstract class Coder<T> {
     try {
       return readImpl(is);
     } catch (IOException e) {
-      throw new CodecException(e, this.getClass());
+      throw new CoderException(e, this.getClass());
     }
   }
 
@@ -50,7 +50,7 @@ public abstract class Coder<T> {
     try {
       return writeImpl(input).asByteBuffer();
     } catch (IOException e) {
-      throw new CodecException(e, this.getClass());
+      throw new CoderException(e, this.getClass());
     }
   }
 
@@ -58,7 +58,7 @@ public abstract class Coder<T> {
     try {
       return writeImpl(input);
     } catch (IOException e) {
-      throw new CodecException(e, this.getClass());
+      throw new CoderException(e, this.getClass());
     }
   }
   /** Reading of something that can be read again. */
