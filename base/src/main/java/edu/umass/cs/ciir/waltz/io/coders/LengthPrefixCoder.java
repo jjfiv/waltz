@@ -1,9 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
+import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
-import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 
 import java.io.IOException;
 import java.io.InputStream;

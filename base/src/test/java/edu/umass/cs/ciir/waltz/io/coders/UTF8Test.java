@@ -1,9 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
-import edu.umass.cs.ciir.waltz.coders.CoderException;
+import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.io.util.BufferList;
-import edu.umass.cs.ciir.waltz.io.util.StreamFns;
 import org.junit.Test;
 
 import java.io.EOFException;

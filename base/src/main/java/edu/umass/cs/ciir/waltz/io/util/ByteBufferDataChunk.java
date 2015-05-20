@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.util;
 
+import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.io.IOException;
