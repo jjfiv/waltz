@@ -1,16 +1,18 @@
-package edu.umass.cs.ciir.waltz.io.postings;
+package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.chained.ChaiIterable;
 import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
+import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.map.IOMap;
+import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
-import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
-import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
-import edu.umass.cs.ciir.waltz.galago.io.RawGalagoDiskMap;
-import edu.umass.cs.ciir.waltz.coders.map.IOMap;
+import edu.umass.cs.ciir.waltz.io.postings.PositionsListCoder;
+import edu.umass.cs.ciir.waltz.io.postings.SimplePostingListFormat;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
+import org.junit.Assert;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 
@@ -71,8 +73,8 @@ public class SimplePostingListFormatTest {
             assertTrue(lastId < fromDisk.currentKey());
             lastId = fromMemIndex.currentKey();
 
-            assertEquals(fromDisk.currentKey(), fromMemIndex.currentKey());
-            assertEquals(fromDisk.getCurrentPosting().toList(), fromMemIndex.getCurrentPosting().toList());
+            Assert.assertEquals(fromDisk.currentKey(), fromMemIndex.currentKey());
+            Assert.assertEquals(fromDisk.getCurrentPosting().toList(), fromMemIndex.getCurrentPosting().toList());
           }
           assertTrue(fromMemIndex.isDone());
           assertTrue(fromDisk.isDone());

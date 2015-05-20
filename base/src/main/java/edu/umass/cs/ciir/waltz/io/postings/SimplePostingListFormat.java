@@ -7,6 +7,7 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
@@ -14,7 +15,6 @@ import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -79,7 +79,7 @@ public class SimplePostingListFormat {
     private void writeCurrentBlock() throws IOException {
       DataChunk data = currentChunk.encode();
       assert(data.byteCount() < Integer.MAX_VALUE);
-      output.add(GalagoVByteCoders.ints.write((int) data.byteCount()));
+      output.add(VarUInt.instance.write((int) data.byteCount()));
       output.add(data);
       currentChunk.clear();
     }
@@ -96,7 +96,7 @@ public class SimplePostingListFormat {
 
     public ByteBuffer getMetadataChunk() {
       // No matter what posting it is, it knows it's df.
-      return GalagoVByteCoders.ints.write(totalKeys);
+      return VarUInt.instance.write(totalKeys);
     }
   }
 
@@ -122,7 +122,7 @@ public class SimplePostingListFormat {
       haveReadCurrentValues = true;
       nextKeyBlockOffset = 0;
       done = false;
-      totalKeys = GalagoVByteCoders.ints.read(stream);
+      totalKeys = VarUInt.instance.read(stream);
       usedKeys = 0;
     }
 
@@ -138,7 +138,7 @@ public class SimplePostingListFormat {
         }
         haveReadCurrentValues = false;
         // VByte: size of next block of keys+values
-        int nextBlockSize = GalagoVByteCoders.ints.read(stream);
+        int nextBlockSize = VarUInt.instance.read(stream);
         nextKeyBlockOffset = stream.tell() + nextBlockSize;
         // Read in all the keys.
         List<Integer> keys = intsCoder.read(stream);
