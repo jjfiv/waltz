@@ -13,7 +13,7 @@ import java.io.InputStream;
 /**
  * @author jfoley
  */
-public class VByteCoders extends Module {
+public class GalagoVByteCoders extends Module {
   public static final Coder<Integer> ints = new Coder<Integer>() {
     @Override
     public boolean knowsOwnSize() {

@@ -3,7 +3,7 @@ package edu.umass.cs.ciir.waltz.io.coders;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
+import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -13,10 +13,10 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 
-public class VByteCodersTest {
+public class GalagoVByteCodersTest {
   @Test
   public void testInts() {
-    Coder<Integer> c = VByteCoders.ints;
+    Coder<Integer> c = GalagoVByteCoders.ints;
     BufferList bl = new BufferList();
 
     Random r = new Random();
@@ -37,7 +37,7 @@ public class VByteCodersTest {
 
   @Test
   public void testLongs() {
-    Coder<Long> c = VByteCoders.longs;
+    Coder<Long> c = GalagoVByteCoders.longs;
     BufferList bl = new BufferList();
 
     Random r = new Random();
