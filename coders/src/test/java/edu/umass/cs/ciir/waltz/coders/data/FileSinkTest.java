@@ -23,7 +23,7 @@ public class FileSinkTest {
 
   @Test
   public void testWrite() throws Exception {
-    Coder<String> coder = CharsetCoders.withVByteLength;
+    Coder<String> coder = CharsetCoders.utf8LengthPrefixed;
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", "tmp")) {
       try(FileSink sink = new FileSink(tmpFile.getPath())) {
         sink.write(coder, "Hello World!");
@@ -36,7 +36,7 @@ public class FileSinkTest {
 
   @Test
   public void testWriteList() throws Exception {
-    ListCoder<String> coder = new ListCoder<>(CharsetCoders.withVByteLength);
+    ListCoder<String> coder = new ListCoder<>(CharsetCoders.utf8LengthPrefixed);
     List<String> data = Sample.strings(new Random(), 100);
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", "tmp")) {
       try(FileSink sink = new FileSink(tmpFile.getPath())) {
@@ -50,7 +50,7 @@ public class FileSinkTest {
 
   @Test
   public void testGZipList() throws IOException {
-    ListCoder<String> coder = new ListCoder<>(CharsetCoders.withVByteLength);
+    ListCoder<String> coder = new ListCoder<>(CharsetCoders.utf8LengthPrefixed);
     List<String> data = Sample.strings(new Random(), 10000);
     assertEquals(10000, data.size());
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", ".tmp.gz")) {

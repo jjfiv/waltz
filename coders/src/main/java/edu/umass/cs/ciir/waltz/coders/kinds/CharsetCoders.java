@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 public class CharsetCoders extends Module {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Coder<String> withoutLengthPrefix = new Coder<java.lang.String>() {
+  public static final Coder<String> utf8Raw = new Coder<java.lang.String>() {
     @Override
     public DataChunk writeImpl(java.lang.String obj) throws IOException {
       return ByteBufferDataChunk.of(obj.getBytes(charset));
@@ -41,5 +41,5 @@ public class CharsetCoders extends Module {
     }
   };
 
-  public static final Coder<java.lang.String> withVByteLength = new LengthPrefixCoder<>(VarInt.instance, withoutLengthPrefix);
+  public static final Coder<java.lang.String> utf8LengthPrefixed = new LengthPrefixCoder<>(VarUInt.instance, utf8Raw);
 }

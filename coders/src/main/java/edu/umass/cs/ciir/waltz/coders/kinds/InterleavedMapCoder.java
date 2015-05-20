@@ -2,7 +2,6 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +18,7 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
   private final Coder<V> valCoder;
 
   public InterleavedMapCoder(Coder<K> keyCoder, Coder<V> valCoder) {
-    this(VarInt.instance, keyCoder, valCoder);
+    this(VarUInt.instance, keyCoder, valCoder);
   }
   public InterleavedMapCoder(Coder<Integer> countCoder, Coder<K> keyCoder, Coder<V> valCoder) {
     assert(countCoder.knowsOwnSize());

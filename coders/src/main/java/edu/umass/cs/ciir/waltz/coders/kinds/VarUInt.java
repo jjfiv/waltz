@@ -10,11 +10,11 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 /**
- * This is based on Galago's implementation, but tweaked, so it can actually handle negative numbers.
+ * This is based on Galago's implementation.
  * @author jfoley
  */
-public class VarInt extends Coder<Integer> {
-  public static final VarInt instance = new VarInt();
+public class VarUInt extends Coder<Integer> {
+  public static final VarUInt instance = new VarUInt();
 
   @Override
   public boolean knowsOwnSize() {
@@ -23,29 +23,19 @@ public class VarInt extends Coder<Integer> {
 
   // Magic bits for this format:
   private static int DONE_BIT =  0b10000000;
-  private static int SIGN_BIT =  0b01000000;
-  private static int LAST_DATA = 0b00111111;
   private static int REG_DATA =  0b01111111;
 
   @Override
   public DataChunk writeImpl(Integer obj) throws IOException {
     assert(obj != null);
     int x = obj;
-
-    boolean negative = x < 0;
-    if(negative) {
-      x *= -1;
-    }
+    assert(x >= 0);
 
     byte[] data = new byte[6];
     int put = 0;
     while((x != 0) || (put == 0)) {
-      if(x < SIGN_BIT) { // fits in 6 bits:
-        data[put++] = (byte) ((x & LAST_DATA) | (negative ? SIGN_BIT | DONE_BIT : DONE_BIT));
-        break;
-      } else if(x < DONE_BIT) { // fits in 7, perfectly.
-        data[put++] = (byte) (x & REG_DATA);
-        data[put++] = (byte) (negative ? SIGN_BIT | DONE_BIT : DONE_BIT); // mostly waste last byte :(
+      if(x < DONE_BIT) { // fits in 7 bits:
+        data[put++] = (byte) (x | DONE_BIT);
         break;
       } else {
         data[put++] = (byte) (x & REG_DATA);
@@ -68,14 +58,14 @@ public class VarInt extends Coder<Integer> {
       if (x == -1) throw new EOFException();
       int b = x & 0xff;
       if ((b & DONE_BIT) != 0) {
-        result |= ((b & LAST_DATA) << (position * 7));
-        if((b & SIGN_BIT) != 0) { result *= -1; }
+        result |= ((b & REG_DATA) << (position * 7));
         break;
       } else {
         result |= (b << (position * 7));
       }
     }
 
+    assert(result >= 0);
     return result;
   }
 }

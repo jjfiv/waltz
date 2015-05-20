@@ -17,7 +17,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
   private final Coder<Integer> itemCoder;
 
   public DeltaIntListCoder() {
-    this(VarInt.instance, VarInt.instance);
+    this(VarUInt.instance, VarInt.instance);
   }
   public DeltaIntListCoder(Coder<Integer> countCoder, Coder<Integer> itemCoder) {
     this.countCoder = countCoder;

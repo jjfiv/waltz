@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 public class BufferListTest {
   @Test
   public void testWithStringCodec() {
-    Coder<String> str = CharsetCoders.withoutLengthPrefix;
+    Coder<String> str = CharsetCoders.utf8Raw;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");

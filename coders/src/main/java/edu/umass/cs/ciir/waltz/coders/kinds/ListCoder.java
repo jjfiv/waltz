@@ -18,7 +18,7 @@ public class ListCoder<T> extends Coder<List<T>> {
   private final Coder<T> itemCoder;
 
   public ListCoder(Coder<T> itemCoder) {
-    this(VarInt.instance, itemCoder);
+    this(VarUInt.instance, itemCoder);
   }
   public ListCoder(Coder<Integer> countCoder, Coder<T> itemCoder) {
     assert(countCoder.knowsOwnSize());
