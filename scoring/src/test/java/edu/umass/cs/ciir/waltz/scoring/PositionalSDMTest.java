@@ -1,8 +1,7 @@
-package edu.umass.cs.ciir.waltz;
+package edu.umass.cs.ciir.waltz.scoring;
 
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
 import org.junit.Test;
-import org.lemurproject.galago.utility.Parameters;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,9 @@ public class PositionalSDMTest {
     index.addDocument("fox", tokens("a fox is a mammal"));
     index.addDocument("quick", tokens("the quick brown fox jumped over the lazy dog"));
 
-    PositionalSDM sdm = new PositionalSDM(index, tokens("quick brown fox"), Parameters.parseArray("mu", 1.0));
+    PositionalSDM.SDMParameters cfg = new PositionalSDM.SDMParameters();
+    cfg.mu = 1.0;
+    PositionalSDM sdm = new PositionalSDM(index, tokens("quick brown fox"), cfg);
     double scoreFox = sdm.score(0);
     double scoreQuick = sdm.score(1);
 

@@ -17,6 +17,7 @@
     <module>coders</module>
     <module>galago-io</module>
     <module>galago-compat</module>
+    <module>scoring</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

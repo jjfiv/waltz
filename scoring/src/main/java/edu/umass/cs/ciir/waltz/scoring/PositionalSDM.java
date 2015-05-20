@@ -1,14 +1,13 @@
-package edu.umass.cs.ciir.waltz;
+package edu.umass.cs.ciir.waltz.scoring;
 
 import edu.umass.cs.ciir.waltz.dociter.movement.AnyOfMover;
+import edu.umass.cs.ciir.waltz.dociter.movement.Mover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
 import edu.umass.cs.ciir.waltz.phrase.Bigram;
 import edu.umass.cs.ciir.waltz.postings.positions.EmptyPositionsList;
-import edu.umass.cs.ciir.waltz.dociter.movement.Mover;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
-import org.lemurproject.galago.utility.Parameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +19,32 @@ import java.util.List;
 public class PositionalSDM {
   private final Feature<Integer> lengths;
   private final int collectionLength;
-  private final double mu;
-  private final double unigramWeight;
-  private final double bigramWeight;
-  private final double ubigramWeight;
   private final int numTerms;
   private List<PostingMover<PositionsList>> iters;
 
   /** filled out by calculateStats() */
   private double term_bg[], od_bg[], uw_bg[];
 
-  public PositionalSDM(MemoryPositionsIndex index, List<String> terms, Parameters cfg) {
+  public double mu;
+  public double unigramWeight;
+  public double bigramWeight;
+  public double ubigramWeight;
+
+  /**
+   * This class defines the required parameters to run this SDM scoring model.
+   */
+  public static class SDMParameters {
+    /** Dirichlet smoothing mu. */
+    public double mu = 2500.0;
+    /** Unigram combination weight. */
+    public double unigramWeight = 0.8;
+    /** Bigram combination weight. */
+    public double bigramWeight = 0.15;
+    /** Skipgram combination weight. */
+    public double unorderedWeight = 0.05;
+  }
+
+  public PositionalSDM(MemoryPositionsIndex index, List<String> terms, SDMParameters cfg) {
     this.lengths = index.getLengths();
     this.collectionLength = index.getCollectionLength();
     iters = new ArrayList<>();
@@ -39,10 +53,11 @@ public class PositionalSDM {
     }
     this.numTerms = iters.size();
 
-    mu = cfg.get("mu", 2500.0);
-    unigramWeight = cfg.get("unigramWeight", 0.8);
-    bigramWeight = cfg.get("bigramWeight", 0.15);
-    ubigramWeight = cfg.get("unordredWeight", 0.05);
+    double N = terms.size();
+    mu = cfg.mu;
+    unigramWeight = cfg.unigramWeight / N;
+    bigramWeight = cfg.bigramWeight / (N-1.0);
+    ubigramWeight = cfg.unorderedWeight / (N-1.0);
 
     //long startStats = System.currentTimeMillis();
     calculateStats();
@@ -129,7 +144,7 @@ public class PositionalSDM {
         pos.add(EmptyPositionsList.instance);
       }
 
-      unigram += dirichlet(term_tf, length, mu, term_bg[i]);
+      unigram += logDirichlet(term_tf, length, mu, term_bg[i]);
     }
 
     double bigram = 0.0;
@@ -141,14 +156,14 @@ public class PositionalSDM {
       long od_tf = Bigram.count(left, right);
       long uw_tf = Bigram.countUnordered(left, right, 8);
 
-      bigram += dirichlet(od_tf, length, mu, od_bg[i]);
-      ubigram += dirichlet(uw_tf, length, mu, uw_bg[i]);
+      bigram += logDirichlet(od_tf, length, mu, od_bg[i]);
+      ubigram += logDirichlet(uw_tf, length, mu, uw_bg[i]);
     }
 
     return unigram * unigramWeight + bigram * bigramWeight + ubigram * ubigramWeight;
   }
 
-  public static double dirichlet(double count, double length, double mu, double background) {
+  public static double logDirichlet(double count, double length, double mu, double background) {
     double numerator = count + mu * background;
     double denominator = length + mu;
     return Math.log(numerator / denominator);
