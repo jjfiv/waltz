@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.map;
+package edu.umass.cs.ciir.waltz.coders.map;
 
 import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;

@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.map;
+package edu.umass.cs.ciir.waltz.coders.map;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 

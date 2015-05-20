@@ -5,8 +5,8 @@ import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.FileSink;
-import edu.umass.cs.ciir.waltz.io.coders.ListCoder;
-import edu.umass.cs.ciir.waltz.io.coders.StringC;
+import edu.umass.cs.ciir.waltz.galago.io.coders.ListCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class FileSinkTest {
 
   @Test
   public void testWrite() throws Exception {
-    Coder<String> coder = StringC.withVByteLength;
+    Coder<String> coder = CharsetCoders.withVByteLength;
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", "tmp")) {
       try(FileSink sink = new FileSink(tmpFile.getPath())) {
         sink.write(coder, "Hello World!");
@@ -37,7 +37,7 @@ public class FileSinkTest {
 
   @Test
   public void testWriteList() throws Exception {
-    ListCoder<String> coder = new ListCoder<>(StringC.withVByteLength);
+    ListCoder<String> coder = new ListCoder<>(CharsetCoders.withVByteLength);
     List<String> data = Sample.strings(new Random(), 100);
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", "tmp")) {
       try(FileSink sink = new FileSink(tmpFile.getPath())) {
@@ -51,7 +51,7 @@ public class FileSinkTest {
 
   @Test
   public void testGZipList() throws IOException {
-    ListCoder<String> coder = new ListCoder<>(StringC.withVByteLength);
+    ListCoder<String> coder = new ListCoder<>(CharsetCoders.withVByteLength);
     List<String> data = Sample.strings(new Random(), 10000);
     assertEquals(10000, data.size());
     try (TemporaryFile tmpFile = new TemporaryFile("filesink", ".tmp.gz")) {

@@ -1,11 +1,9 @@
-package edu.umass.cs.ciir.waltz.io.galago;
+package edu.umass.cs.ciir.waltz.coders.map;
 
 import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
-import edu.umass.cs.ciir.waltz.io.map.IOMap;
-import edu.umass.cs.ciir.waltz.io.map.RawIOMap;
 
 import java.io.IOException;
 import java.util.ArrayList;

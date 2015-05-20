@@ -1,18 +1,19 @@
-package edu.umass.cs.ciir.waltz.io.coders;
+package edu.umass.cs.ciir.waltz.coders.kinds;
 
+import ciir.jfoley.chai.io.StreamFns;
+import ciir.jfoley.chai.lang.Module;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
-import org.lemurproject.galago.utility.compression.VByte;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * @author jfoley
  */
-public class VByteCoders {
+public class FixedSize extends Module {
   public static final Coder<Integer> ints = new Coder<Integer>() {
     @Override
     public boolean knowsOwnSize() {
@@ -21,16 +22,16 @@ public class VByteCoders {
 
     @Override
     public DataChunk writeImpl(Integer obj) throws IOException {
-      assert(obj != null);
-      return ByteBufferDataChunk.of(VByte.compressInt(obj));
+      ByteBuffer ofInt = ByteBuffer.allocate(4);
+      ofInt.putInt(0, obj);
+      return ByteBufferDataChunk.of(ofInt);
     }
 
     @Override
     public Integer readImpl(InputStream inputStream) throws IOException {
-      return VByte.uncompressInt(new DataInputStream(inputStream));
+      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 4)).getInt();
     }
   };
-
   public static final Coder<Long> longs = new Coder<Long>() {
     @Override
     public boolean knowsOwnSize() {
@@ -39,13 +40,14 @@ public class VByteCoders {
 
     @Override
     public DataChunk writeImpl(Long obj) throws IOException {
-      assert(obj != null);
-      return ByteBufferDataChunk.of(VByte.compressLong(obj));
+      ByteBuffer tmp = ByteBuffer.allocate(8);
+      tmp.putLong(0, obj);
+      return ByteBufferDataChunk.of(tmp);
     }
 
     @Override
     public Long readImpl(InputStream inputStream) throws IOException {
-      return VByte.uncompressLong(new DataInputStream(inputStream));
+      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 8)).getLong();
     }
   };
 }

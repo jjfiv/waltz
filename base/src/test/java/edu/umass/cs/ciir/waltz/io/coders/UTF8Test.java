@@ -4,6 +4,7 @@ import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
 import org.junit.Test;
 
 import java.io.EOFException;
@@ -16,7 +17,7 @@ public class UTF8Test {
 
   @Test
   public void testWithoutLengthPrefix() {
-    Coder<String> c = StringC.withoutLengthPrefix;
+    Coder<String> c = CharsetCoders.withoutLengthPrefix;
     assertFalse(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -29,7 +30,7 @@ public class UTF8Test {
 
   @Test
   public void testWithLengthPrefix() throws IOException {
-    Coder<java.lang.String> c = StringC.withVByteLength;
+    Coder<java.lang.String> c = CharsetCoders.withVByteLength;
     assertTrue(c.knowsOwnSize());
 
     BufferList output = new BufferList();

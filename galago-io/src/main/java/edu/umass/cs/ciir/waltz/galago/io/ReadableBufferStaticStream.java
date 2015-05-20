@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.galago;
+package edu.umass.cs.ciir.waltz.galago.io;
 
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;

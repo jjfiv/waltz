@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.galago.io.coders.InterleavedMapCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
 import org.junit.Test;
 
 import java.util.HashMap;

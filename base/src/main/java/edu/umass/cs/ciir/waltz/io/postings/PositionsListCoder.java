@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.io.postings;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.io.coders.DeltaIntListCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 

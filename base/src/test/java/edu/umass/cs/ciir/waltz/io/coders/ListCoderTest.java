@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
+import edu.umass.cs.ciir.waltz.galago.io.coders.ListCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ public class ListCoderTest {
 
   @Test
   public void testKnownStrings() throws Exception {
-    ListCoder<java.lang.String> strs = new ListCoder<>(StringC.withVByteLength);
+    ListCoder<String> strs = new ListCoder<>(CharsetCoders.withVByteLength);
     assertTrue(strs.knowsOwnSize());
 
     List<java.lang.String> testData = new ArrayList<>();

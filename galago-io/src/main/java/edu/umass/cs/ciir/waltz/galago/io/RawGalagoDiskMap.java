@@ -1,13 +1,11 @@
-package edu.umass.cs.ciir.waltz.io.galago;
+package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
-import edu.umass.cs.ciir.waltz.io.map.IOMap;
-import edu.umass.cs.ciir.waltz.io.map.RawIOMap;
-import edu.umass.cs.ciir.waltz.io.map.RawIOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.map.*;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeReader;

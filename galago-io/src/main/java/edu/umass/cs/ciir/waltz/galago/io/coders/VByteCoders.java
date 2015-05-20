@@ -1,18 +1,19 @@
-package edu.umass.cs.ciir.waltz.io.coders;
+package edu.umass.cs.ciir.waltz.galago.io.coders;
 
-import ciir.jfoley.chai.io.StreamFns;
+import ciir.jfoley.chai.lang.Module;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import org.lemurproject.galago.utility.compression.VByte;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * @author jfoley
  */
-public class FixedSize {
+public class VByteCoders extends Module {
   public static final Coder<Integer> ints = new Coder<Integer>() {
     @Override
     public boolean knowsOwnSize() {
@@ -21,16 +22,16 @@ public class FixedSize {
 
     @Override
     public DataChunk writeImpl(Integer obj) throws IOException {
-      ByteBuffer ofInt = ByteBuffer.allocate(4);
-      ofInt.putInt(0, obj);
-      return ByteBufferDataChunk.of(ofInt);
+      assert(obj != null);
+      return ByteBufferDataChunk.of(VByte.compressInt(obj));
     }
 
     @Override
     public Integer readImpl(InputStream inputStream) throws IOException {
-      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 4)).getInt();
+      return VByte.uncompressInt(new DataInputStream(inputStream));
     }
   };
+
   public static final Coder<Long> longs = new Coder<Long>() {
     @Override
     public boolean knowsOwnSize() {
@@ -39,14 +40,13 @@ public class FixedSize {
 
     @Override
     public DataChunk writeImpl(Long obj) throws IOException {
-      ByteBuffer tmp = ByteBuffer.allocate(8);
-      tmp.putLong(0, obj);
-      return ByteBufferDataChunk.of(tmp);
+      assert(obj != null);
+      return ByteBufferDataChunk.of(VByte.compressLong(obj));
     }
 
     @Override
     public Long readImpl(InputStream inputStream) throws IOException {
-      return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 8)).getLong();
+      return VByte.uncompressLong(new DataInputStream(inputStream));
     }
   };
 }

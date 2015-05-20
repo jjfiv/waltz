@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.galago.io.coders.DeltaIntListCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.ListCoder;
+import edu.umass.cs.ciir.waltz.galago.io.coders.VByteCoders;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

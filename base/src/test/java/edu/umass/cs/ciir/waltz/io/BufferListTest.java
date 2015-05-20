@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.io;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.io.coders.StringC;
+import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class BufferListTest {
 
   @Test
   public void testWithStringCodec() {
-    Coder<String> str = StringC.withoutLengthPrefix;
+    Coder<String> str = CharsetCoders.withoutLengthPrefix;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");

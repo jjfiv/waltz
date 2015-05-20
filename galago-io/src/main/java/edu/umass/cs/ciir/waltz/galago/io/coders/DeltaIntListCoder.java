@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.io.coders;
+package edu.umass.cs.ciir.waltz.galago.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;

@@ -1,9 +1,10 @@
-package edu.umass.cs.ciir.waltz.io.coders;
+package edu.umass.cs.ciir.waltz.galago.io.coders;
 
 import ciir.jfoley.chai.io.IO;
+import ciir.jfoley.chai.lang.Module;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +15,7 @@ import java.nio.charset.Charset;
 /**
  * @author jfoley
  */
-public class StringC {
+public class CharsetCoders extends Module {
   public static final Charset charset = Charset.forName("UTF-8");
 
   public static final Coder<String> withoutLengthPrefix = new Coder<java.lang.String>() {
