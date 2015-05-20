@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.io;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

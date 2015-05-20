@@ -1,11 +1,10 @@
-package edu.umass.cs.ciir.waltz.galago.io.coders;
+package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.lang.Module;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 
 import java.io.IOException;
 import java.io.InputStream;

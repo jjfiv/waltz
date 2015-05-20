@@ -4,6 +4,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -77,7 +78,9 @@ public class VarInt extends Coder<Integer> {
 
     for (int position = 0; true; position++) {
       assert position < 6;
-      int b = inputStream.read() & 0xff;
+      int x= inputStream.read();
+      if (x == -1) throw new EOFException();
+      int b = x & 0xff;
       if ((b & DONE_BIT) != 0) {
         // done
         result |= ((b & LAST_DATA) << (position * 7));

@@ -4,7 +4,7 @@ import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import org.junit.Test;
 
 import java.io.EOFException;

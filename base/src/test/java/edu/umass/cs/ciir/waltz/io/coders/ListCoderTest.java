@@ -1,9 +1,9 @@
 package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
-import edu.umass.cs.ciir.waltz.galago.io.coders.CharsetCoders;
-import edu.umass.cs.ciir.waltz.galago.io.coders.ListCoder;
+import edu.umass.cs.ciir.waltz.coders.kinds.ListCoder;
 import org.junit.Test;
 
 import java.util.ArrayList;

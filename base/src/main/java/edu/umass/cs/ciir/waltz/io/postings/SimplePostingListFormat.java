@@ -2,7 +2,11 @@ package edu.umass.cs.ciir.waltz.io.postings;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
+import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
@@ -10,11 +14,7 @@ import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.galago.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
-import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

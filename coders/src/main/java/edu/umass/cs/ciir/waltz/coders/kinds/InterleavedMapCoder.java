@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.galago.io.coders;
+package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
