@@ -1,11 +1,10 @@
-package edu.umass.cs.ciir.waltz.io;
+package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.io.TemporaryFile;
-import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
-import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
-import edu.umass.cs.ciir.waltz.galago.io.RawGalagoDiskMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
+import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
+import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 

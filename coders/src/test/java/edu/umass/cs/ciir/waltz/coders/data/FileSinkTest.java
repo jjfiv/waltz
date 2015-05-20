@@ -1,10 +1,9 @@
-package edu.umass.cs.ciir.waltz.io.util;
+package edu.umass.cs.ciir.waltz.coders.data;
 
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.FileSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.kinds.ListCoder;
 import org.junit.Test;

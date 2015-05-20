@@ -1,7 +1,6 @@
-package edu.umass.cs.ciir.waltz.io;
+package edu.umass.cs.ciir.waltz.coders.data;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import org.junit.Test;
 
