@@ -1,7 +1,6 @@
-package edu.umass.cs.ciir.waltz.io.util;
+package edu.umass.cs.ciir.waltz.coders.data;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.nio.ByteBuffer;
 

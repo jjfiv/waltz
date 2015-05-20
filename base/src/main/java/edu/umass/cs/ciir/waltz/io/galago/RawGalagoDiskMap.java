@@ -7,7 +7,7 @@ import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.io.map.IOMap;
 import edu.umass.cs.ciir.waltz.io.map.RawIOMap;
 import edu.umass.cs.ciir.waltz.io.map.RawIOMapWriter;
-import edu.umass.cs.ciir.waltz.io.util.ByteArray;
+import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeReader;

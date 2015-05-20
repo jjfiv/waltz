@@ -1,7 +1,6 @@
-package edu.umass.cs.ciir.waltz.io.util;
+package edu.umass.cs.ciir.waltz.coders.data;
 
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import org.lemurproject.galago.utility.CmpUtil;
+import ciir.jfoley.chai.collections.util.ArrayFns;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class ByteArray implements DataChunk, Comparable<ByteArray> {
 
   @Override
   public int compareTo(ByteArray o) {
-    return CmpUtil.compare(this.data, o.data);
+    return ArrayFns.compare(this.data, o.data);
   }
 
   @Override

@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.io.coders;
 
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.io.util.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import org.junit.Test;
 
 import java.io.InputStream;

@@ -12,9 +12,9 @@ import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.io.coders.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.io.coders.VByteCoders;
-import edu.umass.cs.ciir.waltz.io.util.BufferList;
-import edu.umass.cs.ciir.waltz.io.util.MutableDataChunk;
-import edu.umass.cs.ciir.waltz.io.util.TmpFileDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
