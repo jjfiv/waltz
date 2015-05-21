@@ -28,6 +28,10 @@ public class FileSink implements Closeable {
     channel.write(buf);
   }
 
+  public long tell() throws IOException {
+    return channel.position();
+  }
+
   @Override
   public void close() throws IOException {
     channel.close();
