@@ -23,6 +23,7 @@ public class DBConfig {
   public String getPassword() { return password; }
 
   public static DBConfig h2File(File file) {
+    assert(!file.getName().endsWith(".mv.db"));
     return new DBConfig("jdbc:h2:file:"+file.getAbsolutePath()+";DB_CLOSE_DELAY=-1");
   }
 }
