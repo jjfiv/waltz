@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.dbindex;
 
+import java.io.File;
+
 /**
  * @author jfoley
  */
@@ -19,4 +21,8 @@ public class DBConfig {
   public String getJDBCURL() { return jdbcURL; }
   public String getUser() { return user; }
   public String getPassword() { return password; }
+
+  public static DBConfig h2File(File file) {
+    return new DBConfig("jdbc:h2:file:"+file.getAbsolutePath()+";DB_CLOSE_DELAY=-1");
+  }
 }
