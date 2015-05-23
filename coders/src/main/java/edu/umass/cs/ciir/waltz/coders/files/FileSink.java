@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.coders.data;
+package edu.umass.cs.ciir.waltz.coders.files;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
