@@ -37,7 +37,7 @@ public class FileSink implements Closeable {
     channel.close();
   }
 
-  public <T> void write(Coder<T> coder, T termStats) throws IOException {
-    channel.write(coder.write(termStats));
+  public <T> void write(Coder<T> coder, T obj) throws IOException {
+    channel.write(coder.write(obj));
   }
 }
