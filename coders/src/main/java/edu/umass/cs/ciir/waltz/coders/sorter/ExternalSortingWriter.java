@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
+import ciir.jfoley.chai.collections.util.Comparing;
 import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
@@ -34,6 +35,13 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
 
+  public ExternalSortingWriter(File dir, Coder<T> coder) {
+    this(dir, coder, Comparing.defaultComparator());
+  }
+  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<T> comparator) {
+    // Leverage some defaults from Galago, because why not?
+    this(dir, coder, comparator, 50 * 1024 * 1024, 10);
+  }
   public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<T> comparator, int maxItemsInMemory, int mergeFactor) {
     assert(dir.isDirectory());
     this.dir = dir;
