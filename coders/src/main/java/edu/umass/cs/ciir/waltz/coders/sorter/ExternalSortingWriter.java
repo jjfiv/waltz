@@ -24,9 +24,9 @@ import java.util.*;
  */
 public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T> {
   private final File dir;
-  private final Coder<Long> countCoder;
-  private final Coder<T> objCoder;
-  private final Comparator<T> cmp;
+  final Coder<Long> countCoder;
+  final Coder<T> objCoder;
+  final Comparator<T> cmp;
   private final int maxItemsInMemory;
   private final int mergeFactor;
   private final ArrayList<T> buffer;
