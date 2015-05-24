@@ -3,15 +3,20 @@ package edu.umass.cs.ciir.waltz.coders.sorter;
 import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.Comparing;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.io.TemporaryDirectory;
+import ciir.jfoley.chai.random.Sample;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -70,4 +75,24 @@ public class ExternalSortingWriterTest {
     }
   }
 
+
+  @Test
+  public void testStrings() throws IOException {
+    List<String> rawData = Sample.strings(new Random(), 1000);
+    List<String> sortedRaw = new ArrayList<>(rawData);
+    Collections.sort(sortedRaw);
+
+    try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
+      try (ExternalSortingWriter<String> sorter = new ExternalSortingWriter<>(tmpdir.get(), CharsetCoders.utf8LengthPrefixed)) {
+        for (String str : rawData) {
+          sorter.process(str);
+        }
+        sorter.close();
+
+        // Test collection wrapper of sorter.getOutput()
+        List<String> sortified = IterableFns.intoList(sorter.getOutput());
+        assertEquals(sortedRaw, sortified);
+      }
+    }
+  }
 }

@@ -25,6 +25,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
 
   @Override
   public boolean hasNext() {
+    if(queue.isEmpty()) return false;
     return queue.peek().hasNext();
   }
 
