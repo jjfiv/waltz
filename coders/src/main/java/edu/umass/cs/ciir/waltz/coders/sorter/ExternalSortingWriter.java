@@ -1,9 +1,11 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
+import ciir.jfoley.chai.collections.iters.ClosingIterator;
 import ciir.jfoley.chai.collections.util.Comparing;
 import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
+import ciir.jfoley.chai.io.FS;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
@@ -61,6 +63,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     flush();
   }
 
+  public SortDirectory<T> getOutput() throws IOException {
+    return new SortDirectory<>(dir, cmp, countCoder, objCoder);
+  }
+
   /**
    * Push items out of memory buffer and onto disk.
    * @throws IOException
@@ -84,6 +90,72 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     mergeRuns();
   }
 
+  public static class SortDirectory<T> implements Iterable<T> {
+    private final File dir;
+    private final Comparator<T> cmp;
+    private final Coder<Long> countCoder;
+    private final Coder<T> itemCoder;
+
+    public SortDirectory(File dir, Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
+      this.dir = dir;
+      this.cmp = cmp;
+      this.countCoder = countCoder;
+      this.itemCoder = itemCoder;
+    }
+
+    @Override
+    public MergingRunReader<T> iterator() {
+      try {
+        return MergingRunReader.openDirectory(dir, cmp, countCoder, itemCoder);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  public static class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
+    private final PriorityQueue<RunReader<T>> queue;
+
+    public MergingRunReader(Collection<RunReader<T>> readers) {
+      this.queue = new PriorityQueue<>();
+      for (RunReader<T> reader : readers) {
+        queue.offer(reader);
+      }
+    }
+
+    @Override
+    public boolean hasNext() {
+      return queue.peek().hasNext();
+    }
+
+    @Override
+    public T next() {
+      RunReader<T> minimum = queue.poll();
+      T obj = minimum.next();
+      if(minimum.hasNext()) {
+        queue.offer(minimum);
+      } else {
+        IO.close(minimum);
+      }
+      return obj;
+    }
+
+    @Override
+    public void close() throws IOException {
+      for (RunReader<T> tRunReader : queue) {
+        tRunReader.close();
+      }
+      queue.clear();
+    }
+
+    public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
+      List<RunReader<T>> readers = new ArrayList<>();
+      for (File file : FS.listDirectory(dir)) {
+        readers.add(new RunReader<T>(cmp, countCoder, itemCoder, IO.openInputStream(file)));
+      }
+      return new MergingRunReader<>(readers);
+    }
+  }
 
   public static class RunReader<T> implements Closeable, Comparable<RunReader<T>> {
     private final InputStream source;
