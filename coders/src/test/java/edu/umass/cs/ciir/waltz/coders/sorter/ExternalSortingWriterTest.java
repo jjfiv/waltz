@@ -39,13 +39,13 @@ public class ExternalSortingWriterTest {
           sorter.process(input);
         }
 
-        List<ExternalSortingWriter.RunReader<Integer>> readers = new ArrayList<>();
+        List<RunReader<Integer>> readers = new ArrayList<>();
         for (List<Integer> ids : sorter.runsByLevel.values()) {
           for (Integer id : ids) {
-            readers.add(new ExternalSortingWriter.RunReader<>(sorter.cmp, sorter.countCoder, sorter.objCoder, IO.openInputStream(sorter.nameForId(id))));
+            readers.add(new RunReader<>(sorter.cmp, sorter.countCoder, sorter.objCoder, IO.openInputStream(sorter.nameForId(id))));
           }
         }
-        for (ExternalSortingWriter.RunReader<Integer> reader : readers) {
+        for (RunReader<Integer> reader : readers) {
           List<Integer> run = new IntList();
           while(reader.hasNext()) {
             run.add(reader.next());
@@ -69,4 +69,5 @@ public class ExternalSortingWriterTest {
       }
     }
   }
+
 }
