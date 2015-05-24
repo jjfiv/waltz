@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.util.Comparing;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
@@ -8,7 +9,10 @@ import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.Flushable;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -72,13 +76,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   @Override
   public void flush() throws IOException {
     int currentId = nextId++;
-    try (OutputStream output = IO.openOutputStream(nameForId(currentId).getAbsolutePath())) {
+    try (RunWriter<T> writer = new RunWriter<T>(buffer.size(), countCoder, objCoder, nameForId(currentId))) {
       QuickSort.sort(cmp, buffer);
       // write run to file.
-      countCoder.write(output, (long) buffer.size());
-      for (T t : buffer) {
-        objCoder.write(output, t);
-      }
+      IterableFns.intoSink(buffer, writer);
       // ditch memory as soon as possible.
       buffer.clear();
       // add to lowest rung of runs collection.
@@ -111,35 +112,6 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   public File nameForId(int id) {
     return new File(dir, Integer.toString(id)+".sorted.gz");
-  }
-
-  public static class RunWriter<T> implements SinkFn<T>, Closeable {
-    private final OutputStream output;
-    private final Coder<T> itemCoder;
-
-    public RunWriter(long count, Coder<Long> countCoder, Coder<T> itemCoder, File output) throws IOException {
-      this(count, countCoder, itemCoder, IO.openOutputStream(output));
-    }
-
-    public RunWriter(long count, Coder<Long> countCoder, Coder<T> itemCoder, OutputStream output) throws IOException {
-      countCoder.write(output, count);
-      this.output = output;
-      this.itemCoder = itemCoder;
-    }
-
-    @Override
-    public void close() throws IOException {
-      output.close();
-    }
-
-    @Override
-    public void process(T input) {
-      try {
-        itemCoder.write(output, input);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   private Integer mergeRuns(List<Integer> runs) throws IOException {
