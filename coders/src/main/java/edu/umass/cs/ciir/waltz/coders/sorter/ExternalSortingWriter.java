@@ -113,9 +113,38 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     return new File(dir, Integer.toString(id)+".sorted.gz");
   }
 
+  public static class RunWriter<T> implements SinkFn<T>, Closeable {
+    private final OutputStream output;
+    private final Coder<T> itemCoder;
+
+    public RunWriter(long count, Coder<Long> countCoder, Coder<T> itemCoder, File output) throws IOException {
+      this(count, countCoder, itemCoder, IO.openOutputStream(output));
+    }
+
+    public RunWriter(long count, Coder<Long> countCoder, Coder<T> itemCoder, OutputStream output) throws IOException {
+      countCoder.write(output, count);
+      this.output = output;
+      this.itemCoder = itemCoder;
+    }
+
+    @Override
+    public void close() throws IOException {
+      output.close();
+    }
+
+    @Override
+    public void process(T input) {
+      try {
+        itemCoder.write(output, input);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
   private Integer mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
-    PriorityQueue<RunReader<T>> readers = new PriorityQueue<>();
+    List<RunReader<T>> readers = new ArrayList<>();
     long total = 0L;
     for (int run : runs) {
       RunReader<T> rdr = new RunReader<>(cmp, countCoder, objCoder, IO.openInputStream(nameForId(run)));
@@ -123,30 +152,9 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
       readers.add(rdr);
     }
 
-    try (OutputStream writer = IO.openOutputStream(nameForId(currentId).getAbsolutePath())) {
-      countCoder.write(writer, total);
-      while (readers.size() > 1) {
-        // find minimum, pull it out:
-        RunReader<T> minimum = readers.poll();
-        RunReader<T> nextBest = readers.peek();
-
-        while(minimum.hasNext() && minimum.compareTo(nextBest) <= 0) {
-          objCoder.write(writer, minimum.next());
-        }
-        if(minimum.hasNext()) {
-          readers.offer(minimum);
-        } else {
-          minimum.close();
-        }
-      }
-
-      if(readers.size() == 1) {
-        RunReader<T> last = readers.poll();
-        while(last.hasNext()) {
-          objCoder.write(writer, last.next());
-        }
-        last.close();
-      }
+    try (MergingRunReader<T> reader = new MergingRunReader<>(readers);
+         RunWriter<T> writer = new RunWriter<>(total, countCoder, objCoder, nameForId(currentId))) {
+      reader.forAll(writer);
     }
 
     // Delete the files associated with the old runs:

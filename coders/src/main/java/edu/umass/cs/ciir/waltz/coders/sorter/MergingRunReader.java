@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.iters.ClosingIterator;
+import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.io.FS;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
@@ -48,6 +49,37 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
       tRunReader.close();
     }
     queue.clear();
+  }
+
+  /**
+   * This is actually more efficient than iterating, since it adds and removes from the priority queue as minimally as possible, and assumes there's order within the runs.
+   * @param collector callback function that handles each item in turn.
+   * @throws IOException
+   */
+  public void forAll(SinkFn<T> collector) throws IOException {
+    while (queue.size() > 1) {
+      // find minimum, pull it out:
+      RunReader<T> minimum = queue.poll();
+      // go until nextBest needs to go.
+      RunReader<T> nextBest = queue.peek();
+
+      while(minimum.hasNext() && minimum.compareTo(nextBest) <= 0) {
+        collector.process(minimum.next());
+      }
+      if(minimum.hasNext()) {
+        queue.offer(minimum);
+      } else {
+        minimum.close();
+      }
+    }
+
+    if(queue.size() == 1) {
+      RunReader<T> last = queue.poll();
+      while(last.hasNext()) {
+        collector.process(last.next());
+      }
+      last.close();
+    }
   }
 
   public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
