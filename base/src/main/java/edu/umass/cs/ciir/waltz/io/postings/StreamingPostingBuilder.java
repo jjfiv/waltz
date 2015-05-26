@@ -61,13 +61,17 @@ public class StreamingPostingBuilder<K extends Comparable<K>,V> implements Close
         }
         if (!Objects.equals(lastKey, atom.getTerm())) {
           // flush old output, make new builder
-          writer.put(keyCoder.writeData(atom.getTerm()), valBuilder.getOutput());
-          valBuilder = makeValueBuilder();
+          writer.put(keyCoder.writeData(lastKey), valBuilder.getOutput());
 
           // update last key, continue;
           lastKey = atom.getTerm();
+          valBuilder = makeValueBuilder();
         }
         valBuilder.add(atom.getDocument(), atom.getValue());
+      }
+      // put the last one:
+      if (lastKey != null) {
+        writer.put(keyCoder.writeData(lastKey), valBuilder.getOutput());
       }
     }
 

@@ -30,7 +30,7 @@ public class ByteBufferDataChunk implements DataChunk {
 
   @Override
   public ByteBuffer asByteBuffer() {
-    return buffer;
+    return buffer.duplicate();
   }
 
   @Override

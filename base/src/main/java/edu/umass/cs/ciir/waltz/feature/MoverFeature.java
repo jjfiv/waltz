@@ -9,6 +9,7 @@ public class MoverFeature<X> implements Feature<X> {
   private final PostingMover<X> mover;
 
   public MoverFeature(PostingMover<X> mover) {
+    assert(mover != null);
     this.mover = mover;
   }
 

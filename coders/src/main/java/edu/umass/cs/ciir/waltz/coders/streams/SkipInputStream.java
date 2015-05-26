@@ -23,6 +23,7 @@ public abstract class SkipInputStream extends InputStream {
   public abstract void close() throws IOException;
 
   public static SkipInputStream wrap(InputStream stream) {
+    if(stream instanceof SkipInputStream) return (SkipInputStream) stream;
     return new NaiveSkipInputStream(stream);
   }
 }

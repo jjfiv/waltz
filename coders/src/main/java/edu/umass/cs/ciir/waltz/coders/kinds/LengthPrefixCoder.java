@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.kinds;
 
+import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
@@ -31,8 +32,7 @@ public class LengthPrefixCoder<T> extends Coder<T> {
   @Override
   public BufferList writeImpl(T obj) throws IOException {
     DataChunk payload = payloadCoder.writeImpl(obj);
-    assert(payload.byteCount() <= Integer.MAX_VALUE);
-    ByteBuffer length = lengthCoder.write((int) payload.byteCount());
+    ByteBuffer length = lengthCoder.write(IntMath.fromLong(payload.byteCount()));
     BufferList bl = new BufferList();
     bl.add(length);
     bl.add(payload);

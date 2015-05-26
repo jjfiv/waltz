@@ -86,11 +86,21 @@ public abstract class AMover implements Mover {
   @Override
   public void moveToAbsolute(int key) {
     int currentKey = currentKey();
+
+		// it's here:
     if(key == currentKey) return;
-    if(key >= currentKey) {
-      moveTo(key);
-      return;
+		// it's forward:
+    if(key > currentKey) {
+
+			// skipBlocksTo:
+			while(!isDone()) {
+				moveTo(key);
+				if(!isDoneWithBlock() && key >= currentKey()) { break; }
+				nextBlock();
+			};
     }
+
+		// Otherwise, check if it's in this block:
     rewindBlock(key);
     if(key < currentKey()) {
       // TODO log a warning about slow resets needed.

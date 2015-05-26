@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.data;
 
+import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
@@ -96,6 +97,15 @@ public class BufferList implements MutableDataChunk {
     for (DataChunk buf : bufs) {
       buf.write(out);
     }
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < IntMath.fromLong(byteCount()); i++) {
+      sb.append(String.format("%02x", 0xff & getByte(i))).append(' ');
+    }
+    return sb.toString();
   }
 
   @Override

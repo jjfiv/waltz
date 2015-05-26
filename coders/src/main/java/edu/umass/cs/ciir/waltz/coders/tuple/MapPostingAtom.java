@@ -29,6 +29,11 @@ public class MapPostingAtom<K extends Comparable<K>,V> implements Comparable<Map
   public V getValue() { return value; }
 
   @Override
+  public String toString() {
+    return "MapPostingAtom("+term+","+document+","+value+")";
+  }
+
+  @Override
   public int compareTo(MapPostingAtom<K, V> o) {
     int cmp = term.compareTo(o.term);
     if(cmp != 0) return cmp;

@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.data;
 
+import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
@@ -68,7 +69,7 @@ public class TmpFileDataChunk implements MutableDataChunk {
   @Override
   public ByteBuffer asByteBuffer() {
     try {
-      return channel.map(FileChannel.MapMode.READ_ONLY, 0, (int) size);
+      return channel.map(FileChannel.MapMode.READ_ONLY, 0, IntMath.fromLong(size)).duplicate();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
