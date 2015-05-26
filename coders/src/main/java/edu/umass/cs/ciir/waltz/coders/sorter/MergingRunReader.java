@@ -31,6 +31,11 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
     return queue.peek().hasNext();
   }
 
+  public T peek() {
+    if(queue.isEmpty()) return null;
+    return queue.peek().peek();
+  }
+
   @Override
   public T next() {
     RunReader<T> minimum = queue.poll();

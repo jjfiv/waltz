@@ -25,6 +25,8 @@ import java.util.List;
  * @author jfoley
  */
 public class SimplePostingListFormat {
+  public static int DEFAULT_BLOCKSIZE = 128;
+  public static Coder<List<Integer>> DEFAULT_INTSCODER = new DeltaIntListCoder();
 
   /**
    * This is a coder that reads and writes high level {:link PostingMover} objects.
@@ -36,7 +38,7 @@ public class SimplePostingListFormat {
     private final Coder<List<Integer>> intsCoder;
 
     public PostingCoder(Coder<V> valCoder) throws IOException {
-      this(128, new DeltaIntListCoder(), valCoder);
+      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder);
     }
     public PostingCoder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
       this.blockSize = blockSize;
@@ -71,6 +73,9 @@ public class SimplePostingListFormat {
     MutableDataChunk output;
     public int totalKeys = 0;
 
+    public PostingValueBuilder(Coder<V> valCoder) throws IOException {
+      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder);
+    }
     public PostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
       output = new TmpFileDataChunk();
       this.blockSize = blockSize;
