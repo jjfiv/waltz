@@ -48,11 +48,9 @@ public class SimplePostingListFormat {
 
     @Override
     public DataChunk writeImpl(PostingMover<V> obj) throws IOException {
-      Builder<V> writer = new Builder<>(blockSize, intsCoder, valCoder);
-      for(; !obj.isDone(); obj.next()) {
-        writer.add(obj.currentKey(), obj.getCurrentPosting());
-      }
-      return writer.getData();
+      ValueBuilder<V> writer = new PostingValueBuilder<>(blockSize, intsCoder, valCoder);
+      writer.add(obj);
+      return writer.getOutput();
     }
 
     @Override
@@ -66,19 +64,20 @@ public class SimplePostingListFormat {
    *
    * @param <V>
    */
-  public static class Builder<V> {
+  public static class PostingValueBuilder<V> extends ValueBuilder<V> {
     /** The number of items to put in each block by default. */
     private final int blockSize;
     public PostingListChunk<V> currentChunk;
     MutableDataChunk output;
     public int totalKeys = 0;
 
-    public Builder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
+    public PostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
       output = new TmpFileDataChunk();
       this.blockSize = blockSize;
       currentChunk = new PostingListChunk<>(intsCoder, valCoder);
     }
 
+    @Override
     public void add(int key, V value) throws IOException {
       if(currentChunk.count() >= blockSize) { writeCurrentBlock(); }
       currentChunk.add(key, value);
@@ -96,11 +95,15 @@ public class SimplePostingListFormat {
     /**
      * This is the output method of this builder, called when complete.
      * @return a DataChunk referencing the metadata, followed by the posting list itself, which is in a temporary file.
-     * @throws IOException
      */
-    public DataChunk getData() throws IOException {
+    @Override
+    public DataChunk getOutput() {
       if(currentChunk.count() > 0) {
-        writeCurrentBlock();
+        try {
+          writeCurrentBlock();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
       BufferList bl = new BufferList();
       bl.add(getMetadataChunk());
