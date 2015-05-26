@@ -21,9 +21,7 @@ public class UTF8Test {
 
     BufferList output = new BufferList();
     output.add(c, "this will ");
-    System.out.println(output.byteCount());
     output.add(c, "get concatenated on read!");
-    System.out.println(output.byteCount());
     assertEquals("this will get concatenated on read!", c.read(output.asByteBuffer()));
   }
 

@@ -82,7 +82,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
     }
   }
 
-  public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
+  public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<? super T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
     List<RunReader<T>> readers = new ArrayList<>();
     for (File file : FS.listDirectory(dir)) {
       readers.add(new RunReader<>(cmp, countCoder, itemCoder, IO.openInputStream(file)));

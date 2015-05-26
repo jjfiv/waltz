@@ -31,7 +31,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   private final File dir;
   final Coder<Long> countCoder;
   final Coder<T> objCoder;
-  final Comparator<T> cmp;
+  final Comparator<? super T> cmp;
   private final int maxItemsInMemory;
   private final int mergeFactor;
   private final ArrayList<T> buffer;
@@ -42,11 +42,11 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
   }
-  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<T> comparator) {
+  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<? super T> comparator) {
     // Leverage some defaults from Galago, because why not?
     this(dir, coder, comparator, 50 * 1024 * 1024, 10);
   }
-  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<T> comparator, int maxItemsInMemory, int mergeFactor) {
+  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;

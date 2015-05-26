@@ -11,11 +11,11 @@ import java.util.Comparator;
  */
 public class SortDirectory<T> implements Iterable<T> {
   private final File dir;
-  private final Comparator<T> cmp;
+  private final Comparator<? super T> cmp;
   private final Coder<Long> countCoder;
   private final Coder<T> itemCoder;
 
-  public SortDirectory(File dir, Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
+  public SortDirectory(File dir, Comparator<? super T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
     this.dir = dir;
     this.cmp = cmp;
     this.countCoder = countCoder;

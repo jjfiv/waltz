@@ -14,11 +14,11 @@ public class RunReader<T> implements Closeable, Comparable<RunReader<T>> {
   private final InputStream source;
   private final long count;
   private final Coder<T> itemCoder;
-  private final Comparator<T> cmp;
+  private final Comparator<? super T> cmp;
   private T nextItem;
   private int index;
 
-  public RunReader(Comparator<T> cmp, Coder<Long> countCoder, Coder<T> itemCoder, InputStream source) {
+  public RunReader(Comparator<? super T> cmp, Coder<Long> countCoder, Coder<T> itemCoder, InputStream source) {
     this.cmp = cmp;
     this.itemCoder = itemCoder;
     this.source = source;
