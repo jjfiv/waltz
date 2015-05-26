@@ -26,6 +26,10 @@ import java.util.List;
  */
 public class SimplePostingListFormat {
 
+  /**
+   * This is a coder that reads and writes high level {:link PostingMover} objects.
+   * @param <V> the type of value to put in the posting list.
+   */
   public static class PostingCoder<V> extends PostingListCoder<V> {
     private final int blockSize;
     private final Coder<V> valCoder;
@@ -57,6 +61,11 @@ public class SimplePostingListFormat {
     }
   }
 
+  /**
+   * This is a low-level builder that takes in sorted (key, value) pairs and writes them in chunks to a temporary file.
+   *
+   * @param <V>
+   */
   public static class Builder<V> {
     /** The number of items to put in each block by default. */
     private final int blockSize;
@@ -84,6 +93,11 @@ public class SimplePostingListFormat {
       currentChunk.clear();
     }
 
+    /**
+     * This is the output method of this builder, called when complete.
+     * @return a DataChunk referencing the metadata, followed by the posting list itself, which is in a temporary file.
+     * @throws IOException
+     */
     public DataChunk getData() throws IOException {
       if(currentChunk.count() > 0) {
         writeCurrentBlock();
@@ -100,6 +114,10 @@ public class SimplePostingListFormat {
     }
   }
 
+  /**
+   * A reader for postings with values of type V in this particular format.
+   * @param <V>
+   */
   public static class Reader<V> extends StaticStreamPostingsIterator<V> {
     private final Coder<List<Integer>> intsCoder;
     private final Coder<V> valCoder;
@@ -170,6 +188,10 @@ public class SimplePostingListFormat {
     }
   }
 
+  /**
+   * A builder that collects a keyed set of values for writing to a file.
+   * @param <V>
+   */
   public static class PostingListChunk<V> {
     public final IntList keys;
     public final List<V> vals;
@@ -193,6 +215,10 @@ public class SimplePostingListFormat {
       return keys.size();
     }
 
+    /**
+     * Encode this data as a chunk for writing to a file.
+     * @return the data in this chunk, keys first then values.
+     */
     public DataChunk encode() {
       BufferList bl = new BufferList();
       bl.add(intsCoder, keys);
