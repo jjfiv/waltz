@@ -1,8 +1,4 @@
-# Waltz
-
-A tool for low-level information retrieval research.
-
-## Non-Goals
+# Non-Goals
 
 - To be a useful search engine that you can drag and drop into another project.
 - To be the fastest implementation
@@ -15,7 +11,7 @@ A tool for low-level information retrieval research.
 - To implement all the algorithms
 - To include protocol buffers, thrift formats, tupleflow-typebuilder objects, or any other wacky serialization by default.
 
-## Goals
+# Goals
 
 - To enable storing and querying of your weird, wacky data in your weird, wacky format.
 - To be as minimally useful as possible.
