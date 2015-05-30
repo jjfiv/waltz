@@ -45,4 +45,12 @@ public class LengthPrefixCoder<T> extends Coder<T> {
     byte[] data = StreamFns.readBytes(inputStream, length);
     return payloadCoder.read(ByteBuffer.wrap(data));
   }
+
+  public static <V> Coder<V> wrap(Coder<V> inner) {
+    if(inner.knowsOwnSize()) {
+      return inner;
+    } else {
+      return new LengthPrefixCoder<>(VarUInt.instance, inner);
+    }
+  }
 }

@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders;
 
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.kinds.LengthPrefixCoder;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.ByteArrayInputStream;
@@ -78,5 +79,9 @@ public abstract class Coder<T> {
     DataChunk chunk = writeImpl(elem);
     chunk.write(out);
     out.flush();
+  }
+
+  public Coder<T> lengthSafe() {
+    return LengthPrefixCoder.wrap(this);
   }
 }

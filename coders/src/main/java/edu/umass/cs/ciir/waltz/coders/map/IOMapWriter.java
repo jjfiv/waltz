@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public class IOMapWriter<K,V> implements Closeable {
+public class IOMapWriter<K extends Comparable<K>,V> implements Closeable {
   final RawIOMapWriter rawWriter;
   final Coder<K> keyCoder;
   final Coder<V> valCoder;
@@ -26,6 +26,9 @@ public class IOMapWriter<K,V> implements Closeable {
     }
   }
 
+  public SortingIOMapWriter<K,V> getSorting() throws IOException {
+    return new SortingIOMapWriter<>(this);
+  }
 
   @Override
   public void close() throws IOException {

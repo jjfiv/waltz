@@ -46,12 +46,9 @@ public class MapPostingAtom<K extends Comparable<K>,V> implements Comparable<Map
     private final Coder<V> valCoder;
 
     public MPACoder(Coder<K> keyCoder, Coder<Integer> docCoder, Coder<V> valCoder) {
-      this.keyCoder = keyCoder;
-      this.docCoder = docCoder;
-      this.valCoder = valCoder;
-      assert(keyCoder.knowsOwnSize());
-      assert(docCoder.knowsOwnSize());
-      assert(valCoder.knowsOwnSize());
+      this.keyCoder = keyCoder.lengthSafe();
+      this.docCoder = docCoder.lengthSafe();
+      this.valCoder = valCoder.lengthSafe();
     }
     public MPACoder(Coder<K> keyCoder, Coder<V> valCoder) {
       this(keyCoder, VarUInt.instance, valCoder);

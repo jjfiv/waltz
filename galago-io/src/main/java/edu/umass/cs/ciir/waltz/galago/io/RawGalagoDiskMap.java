@@ -1,10 +1,9 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
-import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.map.*;
+import edu.umass.cs.ciir.waltz.coders.map.RawIOMap;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
@@ -22,32 +21,11 @@ import java.util.List;
 public class RawGalagoDiskMap implements RawIOMap {
   private final DiskBTreeReader reader;
 
-  private RawGalagoDiskMap(DiskBTreeReader reader) {
+  RawGalagoDiskMap(DiskBTreeReader reader) {
     this.reader = reader;
   }
-  private RawGalagoDiskMap(String path) throws IOException {
+  RawGalagoDiskMap(String path) throws IOException {
     this(new DiskBTreeReader(path));
-  }
-
-  public static <K,V> IOMap<K,V> createIOMap(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
-    return new IOMapImpl<>(create(path), keyCoder, valCoder);
-  }
-  public static RawIOMap create(String path) throws IOException {
-    return new RawGalagoDiskMap(path);
-  }
-  public static <K,V> IOMapWriter<K,V> getWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
-    return new IOMapWriter<>(getWriter(path, argp), keyCoder, valCoder);
-  }
-
-  public static RawIOMapWriter getWriter(String path, Parameters argp) throws IOException {
-    return new RawGalagoDiskMapWriter(path, argp);
-  }
-
-  public static <K,V> IOMapWriter<K,V> getWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
-    return new IOMapWriter<>(getWriter(path), keyCoder, valCoder);
-  }
-  public static RawIOMapWriter getWriter(String path) throws IOException {
-    return new RawGalagoDiskMapWriter(path);
   }
 
   @Override

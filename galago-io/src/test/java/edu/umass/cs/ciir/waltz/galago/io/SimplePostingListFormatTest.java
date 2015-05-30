@@ -43,7 +43,7 @@ public class SimplePostingListFormatTest {
 
     try (TemporaryFile tmpFile = new TemporaryFile("positions", "index")) {
       try (IOMapWriter<Integer, PostingMover<PositionsList>> postingsWriter =
-               RawGalagoDiskMap.getWriter(
+               GalagoIO.getIOMapWriter(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath(),
@@ -56,7 +56,7 @@ public class SimplePostingListFormatTest {
       } // close disk writer
 
       try (IOMap<Integer, PostingMover<PositionsList>> part =
-               RawGalagoDiskMap.createIOMap(
+               GalagoIO.openIOMap(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath())) {
