@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders;
 
 import ciir.jfoley.chai.IntMath;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSink;
@@ -65,17 +66,27 @@ public class GenKeyDiskMap {
      * @throws IOException
      */
     public long writeNextValue(V value) throws IOException {
-      long start = nextOffset();
-      valuesFile.write(valCoder, value);
-      offsetFile.write(offsetCoder, start);
-      return nextIdentifier++;
+      long currentId = nextIdentifier;
+      put(currentId, value);
+      return currentId;
     }
 
     @Override
     public void put(Long key, V val) throws IOException {
-      long currentId = nextIdentifier++;
-      assert(currentId == key) : "GenKeyDiskMap only supports pre-sorted, ";
+      putUnsafe(key, valCoder.writeData(val));
+    }
 
+    @Override
+    public void putUnsafe(Long key, DataChunk val) throws IOException {
+      long start = nextOffset();
+      // bump identifier.
+      long currentId = nextIdentifier++;
+      assert(currentId == key) : "GenKeyDiskMap only supports pre-sorted, in-order data.";
+
+      // write offset
+      offsetFile.write(offsetCoder, start);
+      // write value
+      valuesFile.write(val);
     }
 
     @Override

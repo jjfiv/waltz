@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.io.IOException;
 
@@ -24,6 +25,11 @@ public class IOMapWriterImpl<K extends Comparable<K>,V> implements IOMapWriter<K
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void putUnsafe(K key, DataChunk val) throws IOException {
+    rawWriter.put(keyCoder.writeData(key), val);
   }
 
   @Override

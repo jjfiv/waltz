@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.files;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.io.Closeable;
 import java.io.File;
@@ -27,6 +28,10 @@ public class FileSink implements Closeable, Flushable {
 
   public void write(ByteBuffer buf) throws IOException {
     channel.write(buf);
+  }
+
+  public void write(DataChunk data) throws IOException {
+    data.write(channel);
   }
 
   public long tell() throws IOException {

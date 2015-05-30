@@ -38,7 +38,7 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
 
     public DiskMapAtomCoder(Coder<K> keyCoder, Coder<V> valCoder) {
       this.keyCoder = keyCoder.lengthSafe();
-      this.valCoder = valCoder.lengthSafe();
+      this.valCoder = valCoder;
     }
 
     @Override

@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.map;
 
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
 import edu.umass.cs.ciir.waltz.coders.tuple.DiskMapAtom;
 
@@ -30,6 +31,11 @@ public class SortingIOMapWriter<K extends Comparable<K>,V> implements IOMapWrite
   @Override
   public void put(K key, V val) {
     add(key, val);
+  }
+
+  @Override
+  public void putUnsafe(K key, DataChunk val) throws IOException {
+    throw new UnsupportedOperationException("See bug #1; need Coder<DataChunk>...");
   }
 
   @Override

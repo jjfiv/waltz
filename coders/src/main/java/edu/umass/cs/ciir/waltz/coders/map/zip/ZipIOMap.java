@@ -5,6 +5,7 @@ import ciir.jfoley.chai.io.archive.ZipArchive;
 import ciir.jfoley.chai.io.archive.ZipArchiveEntry;
 import ciir.jfoley.chai.io.archive.ZipWriter;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
@@ -99,9 +100,20 @@ public class ZipIOMap<V> implements IOMap<String, V> {
 
     @Override
     public void put(String key, V val) throws IOException {
-      writer.write(key, input -> {
+      writer.write(key, outputStream -> {
         try {
-          valCoder.write(input, val);
+          valCoder.write(outputStream, val);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      });
+    }
+
+    @Override
+    public void putUnsafe(String key, DataChunk val) throws IOException {
+      writer.write(key, (out) -> {
+        try {
+          val.write(out);
         } catch (IOException e) {
           throw new RuntimeException(e);
         }
