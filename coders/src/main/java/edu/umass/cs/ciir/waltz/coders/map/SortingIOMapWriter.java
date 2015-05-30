@@ -11,12 +11,12 @@ import java.io.IOException;
 /**
  * @author jfoley.
  */
-public class SortingIOMapWriter<K extends Comparable<K>,V> implements Closeable ,Flushable {
+public class SortingIOMapWriter<K extends Comparable<K>,V> implements IOMapWriter<K,V>, Closeable ,Flushable {
   private final TemporaryDirectory tmpdir;
   private final ExternalSortingWriter<DiskMapAtom<K, V>> sorter;
-  private final IOMapWriter<K, V> inner;
+  private final IOMapWriterImpl<K, V> inner;
 
-  public SortingIOMapWriter(IOMapWriter<K,V> inner) throws IOException {
+  public SortingIOMapWriter(IOMapWriterImpl<K,V> inner) throws IOException {
     this.tmpdir = new TemporaryDirectory();
     this.sorter = new ExternalSortingWriter<>(tmpdir.get(), DiskMapAtom.getCoder(inner.keyCoder, inner.valCoder));
     this.inner = inner;
@@ -24,6 +24,16 @@ public class SortingIOMapWriter<K extends Comparable<K>,V> implements Closeable 
 
   public void add(K key, V value) {
     sorter.process(new DiskMapAtom<>(key, value));
+  }
+
+  @Override
+  public void put(K key, V val) {
+    add(key, val);
+  }
+
+  @Override
+  public IOMapWriter<K, V> getSorting() throws IOException {
+    return null;
   }
 
   @Override

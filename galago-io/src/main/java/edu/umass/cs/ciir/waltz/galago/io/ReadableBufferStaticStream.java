@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
+import ciir.jfoley.chai.lang.annotations.EmergencyUseOnly;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
@@ -17,6 +18,7 @@ class ReadableBufferStaticStream implements StaticStream {
   private final ReadableBuffer file;
 
   // Convenience method, probably shouldn't be here...
+  @EmergencyUseOnly
   public ReadableBufferStaticStream(DiskBTreeIterator iterator) throws IOException {
     this(iterator.input, iterator.getValueStart(), iterator.getValueEnd());
   }

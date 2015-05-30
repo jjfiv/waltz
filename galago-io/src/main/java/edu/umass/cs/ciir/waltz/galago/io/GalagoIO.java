@@ -14,12 +14,12 @@ public class GalagoIO {
     return new IOMapImpl<>(openRawIOMap(path), keyCoder, valCoder);
   }
 
-  public static <K extends Comparable<K>,V> IOMapWriter<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
-    return new IOMapWriter<>(getRawIOMapWriter(path, argp), keyCoder, valCoder);
+  public static <K extends Comparable<K>,V> IOMapWriterImpl<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
+    return new IOMapWriterImpl<>(getRawIOMapWriter(path, argp), keyCoder, valCoder);
   }
 
-  public static <K extends Comparable<K>,V> IOMapWriter<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
-    return new IOMapWriter<>(getRawIOMapWriter(path), keyCoder, valCoder);
+  public static <K extends Comparable<K>,V> IOMapWriterImpl<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
+    return new IOMapWriterImpl<>(getRawIOMapWriter(path), keyCoder, valCoder);
   }
 
   public static RawIOMap openRawIOMap(String path) throws IOException {
