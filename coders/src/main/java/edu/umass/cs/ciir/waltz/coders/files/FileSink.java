@@ -4,6 +4,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.Flushable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -13,7 +14,7 @@ import static java.nio.file.StandardOpenOption.*;
 /**
  * @author jfoley
  */
-public class FileSink implements Closeable {
+public class FileSink implements Closeable, Flushable {
   private final FileChannel channel;
 
   public FileSink(String outputPath) throws IOException {
@@ -39,5 +40,10 @@ public class FileSink implements Closeable {
 
   public <T> void write(Coder<T> coder, T obj) throws IOException {
     channel.write(coder.write(obj));
+  }
+
+  @Override
+  public void flush() throws IOException {
+    channel.force(false); // don't force changes to metadata
   }
 }

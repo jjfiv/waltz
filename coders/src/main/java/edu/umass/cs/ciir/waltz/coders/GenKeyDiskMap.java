@@ -5,6 +5,8 @@ import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
+import edu.umass.cs.ciir.waltz.coders.map.SortingIOMapWriter;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -21,20 +23,22 @@ import java.util.NoSuchElementException;
  * @author jfoley.
  */
 public class GenKeyDiskMap {
-  public static class Writer implements Closeable {
+  public static class Writer<V> implements IOMapWriter<Long, V>, Closeable {
     public final FileSink offsetFile;
     public final FileSink valuesFile;
     public static final Coder<Long> offsetCoder = FixedSize.longs;
     public long nextIdentifier = 0;
+    private final Coder<V> valCoder;
 
-    public Writer(FileSink offsetFile, FileSink valuesFile) {
+    public Writer(FileSink offsetFile, FileSink valuesFile, Coder<V> valCoder) {
       this.offsetFile = offsetFile;
       this.valuesFile = valuesFile;
+      this.valCoder = valCoder;
     }
-    public static Writer createNew(String basePath) throws IOException {
-      return new Writer(
+    public static <V> Writer<V> createNew(String basePath, Coder<V> valCoder) throws IOException {
+      return new Writer<>(
           new FileSink(basePath+".offset"),
-          new FileSink(basePath+".values"));
+          new FileSink(basePath+".values"), valCoder);
     }
 
     long nextOffset() throws IOException {
@@ -55,24 +59,54 @@ public class GenKeyDiskMap {
     }
 
     /**
-     * Writes the next value of type T using the given coder.
-     * @param coder a coder that can write values of type T like value.
+     * Writes the next value.
      * @param value the value itself.
-     * @param <T> the type of the value being encoded.
      * @return the identifier (int/long) key assigned to this value.
      * @throws IOException
      */
-    public <T> long writeNextValue(Coder<T> coder, T value) throws IOException {
+    public long writeNextValue(V value) throws IOException {
       long start = nextOffset();
-      valuesFile.write(coder, value);
+      valuesFile.write(valCoder, value);
       offsetFile.write(offsetCoder, start);
       return nextIdentifier++;
+    }
+
+    @Override
+    public void put(Long key, V val) throws IOException {
+      long currentId = nextIdentifier++;
+      assert(currentId == key) : "GenKeyDiskMap only supports pre-sorted, ";
+
+    }
+
+    @Override
+    public IOMapWriter<Long, V> getSorting() throws IOException {
+      return new SortingIOMapWriter<>(this);
     }
 
     @Override
     public void close() throws IOException {
       offsetFile.close();
       valuesFile.close();
+    }
+
+    /**
+     * Used by sorting wrapper, needs only be able to encode keys, not be exact implementation.
+     * @return a fixed size key coder for now
+     */
+    @Override
+    public Coder<Long> getKeyCoder() {
+      return FixedSize.longs;
+    }
+
+    @Override
+    public Coder<V> getValueCoder() {
+      return valCoder;
+    }
+
+    @Override
+    public void flush() throws IOException {
+      offsetFile.flush();
+      valuesFile.flush();
     }
   }
 

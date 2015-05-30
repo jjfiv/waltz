@@ -5,6 +5,7 @@ import ciir.jfoley.chai.io.archive.ZipArchive;
 import ciir.jfoley.chai.io.archive.ZipArchiveEntry;
 import ciir.jfoley.chai.io.archive.ZipWriter;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
@@ -115,6 +116,21 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     @Override
     public void close() throws IOException {
 
+    }
+
+    @Override
+    public Coder<String> getKeyCoder() {
+      return CharsetCoders.utf8LengthPrefixed;
+    }
+
+    @Override
+    public Coder<V> getValueCoder() {
+      return valCoder;
+    }
+
+    @Override
+    public void flush() throws IOException {
+      writer.flush();
     }
   }
 }

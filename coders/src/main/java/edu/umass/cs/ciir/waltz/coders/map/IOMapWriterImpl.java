@@ -35,4 +35,19 @@ public class IOMapWriterImpl<K extends Comparable<K>,V> implements IOMapWriter<K
   public void close() throws IOException {
     rawWriter.close();
   }
+
+  @Override
+  public Coder<K> getKeyCoder() {
+    return keyCoder;
+  }
+
+  @Override
+  public Coder<V> getValueCoder() {
+    return valCoder;
+  }
+
+  @Override
+  public void flush() throws IOException {
+    // nothing for now.
+  }
 }

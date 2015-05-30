@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map;
 
 import ciir.jfoley.chai.io.TemporaryDirectory;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
 import edu.umass.cs.ciir.waltz.coders.tuple.DiskMapAtom;
 
@@ -14,11 +15,11 @@ import java.io.IOException;
 public class SortingIOMapWriter<K extends Comparable<K>,V> implements IOMapWriter<K,V>, Closeable ,Flushable {
   private final TemporaryDirectory tmpdir;
   private final ExternalSortingWriter<DiskMapAtom<K, V>> sorter;
-  private final IOMapWriterImpl<K, V> inner;
+  private final IOMapWriter<K, V> inner;
 
-  public SortingIOMapWriter(IOMapWriterImpl<K,V> inner) throws IOException {
+  public SortingIOMapWriter(IOMapWriter<K,V> inner) throws IOException {
     this.tmpdir = new TemporaryDirectory();
-    this.sorter = new ExternalSortingWriter<>(tmpdir.get(), DiskMapAtom.getCoder(inner.keyCoder, inner.valCoder));
+    this.sorter = new ExternalSortingWriter<>(tmpdir.get(), DiskMapAtom.getCoder(inner.getKeyCoder(), inner.getValueCoder()));
     this.inner = inner;
   }
 
@@ -33,7 +34,7 @@ public class SortingIOMapWriter<K extends Comparable<K>,V> implements IOMapWrite
 
   @Override
   public IOMapWriter<K, V> getSorting() throws IOException {
-    return null;
+    return this;
   }
 
   @Override
@@ -47,6 +48,16 @@ public class SortingIOMapWriter<K extends Comparable<K>,V> implements IOMapWrite
 
     inner.close(); // flush
     tmpdir.close(); // delete temporary (sorted) data
+  }
+
+  @Override
+  public Coder<K> getKeyCoder() {
+    return inner.getKeyCoder();
+  }
+
+  @Override
+  public Coder<V> getValueCoder() {
+    return inner.getValueCoder();
   }
 
   @Override
