@@ -1,18 +1,24 @@
 package edu.umass.cs.ciir.waltz.coders;
 
 import ciir.jfoley.chai.IntMath;
+import ciir.jfoley.chai.collections.IntRange;
+import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.list.AChaiList;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.map.SortingIOMapWriter;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * This is a disk map that stores arbitrary values at long-valued keys.
@@ -121,12 +127,14 @@ public class GenKeyDiskMap {
     }
   }
 
-  public static class Reader implements Closeable {
+  public static class Reader<V> extends AChaiList<V> implements IOMap<Long, V>, Closeable {
     private final DataSource offsetFile;
     private final DataSource valuesFile;
     private final long count;
+    private final Coder<V> valCoder;
 
-    public Reader(DataSource offsetFile, DataSource valuesFile) throws IOException {
+    public Reader(Coder<V> valCoder, DataSource offsetFile, DataSource valuesFile) throws IOException {
+      this.valCoder = valCoder;
       this.offsetFile = offsetFile;
       this.valuesFile = valuesFile;
       this.count = offsetFile.size() / 8;
@@ -136,8 +144,9 @@ public class GenKeyDiskMap {
       return this.count;
     }
 
-    public static Reader openFiles(String basePath) throws IOException {
-      return new Reader(
+    public static <V> Reader<V> openFiles(Coder<V> valCoder, String basePath) throws IOException {
+      return new Reader<V>(
+          valCoder,
           new FileChannelSource(basePath+".offset"),
           new FileChannelSource(basePath+".values"));
     }
@@ -148,12 +157,68 @@ public class GenKeyDiskMap {
       valuesFile.close();
     }
 
-    public <T> T getValue(Coder<T> coder, long index) throws IOException {
+    public V getValue(long index) throws IOException {
       if(index >= count) throw new NoSuchElementException("Can't get item at index="+index+" where there are only "+count+" items!");
       long valueOffset = offsetFile.readLong(index*8);
       long nextValueOffset = (index+1 == count) ? valuesFile.size() : offsetFile.readLong((index+1)*8);
       int valueSize = IntMath.fromLong(nextValueOffset - valueOffset);
-      return coder.read(valuesFile.read(valueOffset, valueSize));
+      return valCoder.read(valuesFile.read(valueOffset, valueSize));
+    }
+
+    @Override
+    public long keyCount() {
+      return count();
+    }
+
+    @Override
+    public Map<String, Object> getConfig() {
+      return Collections.emptyMap();
+    }
+
+    @Override
+    public V get(Long key) throws IOException {
+      return getValue(key);
+    }
+
+    @Override
+    public StaticStream getSource(Long key) throws IOException {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Pair<Long, V>> getInBulk(List<Long> keys) throws IOException {
+      List<Pair<Long, V>> out = new ArrayList<>();
+      for (long key : keys) {
+        V vals = get(key);
+        if(vals != null) {
+          out.add(Pair.of(key, vals));
+        }
+      }
+      return out;
+    }
+
+    /**
+     * Todo, support long number of keys here.
+     * @return the list of keys -- no need to read any files for this one.
+     * @throws IOException
+     */
+    @Override
+    public Iterable<Long> keys() throws IOException {
+      return IterableFns.map(IntRange.exclusive(0, IntMath.fromLong(count)), Long::valueOf);
+    }
+
+    @Override
+    public V get(int index) {
+      try {
+        return getValue(index);
+      } catch (IOException e) {
+        throw new IndexOutOfBoundsException(e.getMessage());
+      }
+    }
+
+    @Override
+    public int size() {
+      return IntMath.fromLong(count());
     }
   }
 }
