@@ -17,4 +17,5 @@ public interface IOMap<K, V> extends Closeable {
   V get(K key) throws IOException;
   StaticStream getSource(K key) throws IOException;
   List<Pair<K,V>> getInBulk(List<K> keys) throws IOException;
+  Iterable<K> keys() throws IOException;
 }

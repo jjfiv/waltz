@@ -84,6 +84,11 @@ public class ZipIOMap<V> implements IOMap<String, V> {
   }
 
   @Override
+  public Iterable<String> keys() throws IOException {
+    return entries.keySet();
+  }
+
+  @Override
   public void close() throws IOException {
     archive.close();
     entries.clear();

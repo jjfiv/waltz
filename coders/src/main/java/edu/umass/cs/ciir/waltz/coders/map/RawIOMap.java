@@ -17,4 +17,5 @@ public interface RawIOMap extends Closeable {
   Map<String, Object> getConfig();
   StaticStream get(DataChunk key) throws IOException;
   List<Pair<DataChunk, StaticStream>> getInBulk(List<DataChunk> keys) throws IOException;
+  Iterable<DataChunk> keys() throws IOException;
 }

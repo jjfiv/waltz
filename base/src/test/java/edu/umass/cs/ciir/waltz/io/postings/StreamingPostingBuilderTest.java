@@ -14,14 +14,9 @@ import edu.umass.cs.ciir.waltz.feature.MoverFeature;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * @author jfoley
@@ -61,6 +56,11 @@ public class StreamingPostingBuilderTest {
       ByteArray val = data.get(ByteArray.of(key));
       if(val == null) return null;
       return new ByteArrayStaticStream(val.data);
+    }
+
+    @Override
+    public Iterable<DataChunk> keys() throws IOException {
+      return new ArrayList<>(data.keySet());
     }
   }
 

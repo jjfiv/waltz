@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map;
 
 import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
@@ -60,7 +61,12 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
   }
 
   @Override
-  public void close() throws IOException {
+  public Iterable<K> keys() throws IOException {
+    return IterableFns.map(inner.keys(), keyCoder::read);
+  }
 
+  @Override
+  public void close() throws IOException {
+    inner.close();
   }
 }

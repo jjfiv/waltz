@@ -6,14 +6,12 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.map.RawIOMap;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import org.lemurproject.galago.utility.Parameters;
+import org.lemurproject.galago.utility.btree.BTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeReader;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jfoley
@@ -72,6 +70,43 @@ public class RawGalagoDiskMap implements RawIOMap {
       output.add(Pair.of(new ByteArray(currentKey), new ReadableBufferStaticStream(iterator)));
     }
     return output;
+  }
+
+  private static class KeyIterator implements Iterator<DataChunk> {
+    private final BTreeIterator iter;
+    private KeyIterator(BTreeIterator iter) {
+      this.iter = iter;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return !iter.isDone();
+    }
+
+    @Override
+    public DataChunk next() {
+      if(iter.isDone()) return null;
+      byte[] data = iter.getKey();
+      assert(data != null) : "shouldn't be null unless the iterator is used up, I think";
+      DataChunk currentKey = new ByteArray(iter.getKey());
+      try {
+        iter.nextKey();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      return currentKey;
+    }
+  }
+
+  @Override
+  public Iterable<DataChunk> keys() throws IOException {
+    return () -> {
+      try {
+        return new KeyIterator(reader.getIterator());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 
   @Override
