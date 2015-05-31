@@ -5,17 +5,17 @@ import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.collections.util.MapFns;
 import edu.umass.cs.ciir.waltz.dociter.ListBlockPostingsIterator;
+import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.CompactLengthsFeature;
 import edu.umass.cs.ciir.waltz.feature.Feature;
+import edu.umass.cs.ciir.waltz.index.AbstractIndex;
 import edu.umass.cs.ciir.waltz.index.MutableIndex;
 import edu.umass.cs.ciir.waltz.index.intern.InternSpace;
-import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
-import edu.umass.cs.ciir.waltz.postings.SimplePosting;
-import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
-import edu.umass.cs.ciir.waltz.feature.MoverFeature;
 import edu.umass.cs.ciir.waltz.postings.Posting;
+import edu.umass.cs.ciir.waltz.postings.SimplePosting;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
+import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * @author jfoley.
  */
-public class MemoryPositionsIndex implements MutableIndex {
+public class MemoryPositionsIndex extends AbstractIndex implements MutableIndex {
 	public Map<Integer, List<Posting<PositionsList>>> positions;
 	public Map<Integer, int[]> corpus;
   public IntList lengths;
@@ -93,16 +93,6 @@ public class MemoryPositionsIndex implements MutableIndex {
     int termId = terms.getId(term);
     if(termId < 0) return null;
     return new BlockPostingsMover<>(new ListBlockPostingsIterator<>(positions.get(termId)));
-  }
-
-  @Override
-  public Feature<Integer> getCounts(String term) {
-    return new MoverFeature<>(getCountsMover(term));
-  }
-
-  @Override
-  public Feature<PositionsList> getPositions(String term) {
-    return new MoverFeature<>(getPositionsMover(term));
   }
 
   @Override
