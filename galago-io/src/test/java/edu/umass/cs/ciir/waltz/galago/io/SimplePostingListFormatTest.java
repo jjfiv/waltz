@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
-import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.chained.ChaiIterable;
 import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
@@ -18,6 +17,7 @@ import org.lemurproject.galago.utility.Parameters;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -50,7 +50,14 @@ public class SimplePostingListFormatTest {
                    argp
                )) {
         assertNotNull(postingsWriter);
-        for (Map.Entry<String, Integer> kv : ChaiIterable.create(memIndex.terms.getAllItems()).sorted(Pair.cmpRight())) {
+
+        // get & sort by values.
+        List<Map.Entry<String, Integer>> items = ChaiIterable
+            .create(memIndex.terms.getAllItems())
+            .sorted((a,b) -> Integer.compare(a.getValue(), b.getValue()))
+            .intoList();
+
+        for (Map.Entry<String, Integer> kv : items) {
           postingsWriter.put(kv.getValue(), memIndex.getPositionsMover(kv.getKey()));
         }
       } // close disk writer
@@ -60,8 +67,15 @@ public class SimplePostingListFormatTest {
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),
                    tmpFile.getPath())) {
+
+        // get & sort by values.
+        List<Map.Entry<String, Integer>> items = ChaiIterable
+            .create(memIndex.terms.getAllItems())
+            .sorted((a,b) -> Integer.compare(a.getValue(), b.getValue()))
+            .intoList();
+
         //part.get()
-        for (Map.Entry<String, Integer> kv : ChaiIterable.create(memIndex.terms.getAllItems()).sorted(Pair.cmpRight())) {
+        for (Map.Entry<String, Integer> kv : items) {
           PostingMover<PositionsList> fromMemIndex = memIndex.getPositionsMover(kv.getKey());
           PostingMover<PositionsList> fromDisk = part.get(kv.getValue());
 

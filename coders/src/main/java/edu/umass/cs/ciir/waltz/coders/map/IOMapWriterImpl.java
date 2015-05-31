@@ -23,6 +23,12 @@ public class IOMapWriterImpl<K extends Comparable<K>,V> implements IOMapWriter<K
     try {
       rawWriter.put(keyCoder.writeData(key), valCoder.writeData(val));
     } catch (IOException e) {
+      byte[] data = keyCoder.write(key).array();
+      for (int i = 0; i < data.length; i++) {
+        System.out.printf("%02x.", 0xff & i);
+      }
+      System.out.println();
+
       throw new RuntimeException(e);
     }
   }

@@ -101,11 +101,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     @Override
     public void put(String key, V val) throws IOException {
       writer.write(key, outputStream -> {
-        try {
-          valCoder.write(outputStream, val);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+        valCoder.write(outputStream, val);
       });
     }
 

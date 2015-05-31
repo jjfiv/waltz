@@ -75,10 +75,14 @@ public abstract class Coder<T> {
   /** Reading, abstract, may throw IOException. */
   public abstract T readImpl(InputStream inputStream) throws IOException;
 
-  public void write(OutputStream out, T elem) throws IOException {
-    DataChunk chunk = writeImpl(elem);
-    chunk.write(out);
-    out.flush();
+  public void write(OutputStream out, T elem) {
+    try {
+      DataChunk chunk = writeImpl(elem);
+      chunk.write(out);
+      out.flush();
+    } catch (IOException ioe) {
+      throw new CoderException(ioe, this.getClass());
+    }
   }
 
   public Coder<T> lengthSafe() {

@@ -36,6 +36,7 @@ public class VarUIntTest {
     // Check edge-case values:
     assertEquals(0, coder.read(coder.write(0)).intValue());
     assertEquals(1, coder.read(coder.write(1)).intValue());
+    assertEquals(2, coder.read(coder.write(2)).intValue());
     assertEquals(Integer.MAX_VALUE, coder.read(coder.write(Integer.MAX_VALUE)).intValue());
   }
 }

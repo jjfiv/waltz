@@ -8,7 +8,6 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
-import java.util.Map;
 
 /**
  * @author jfoley
@@ -18,7 +17,7 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
     super(left, right);
   }
 
-  public Comparator<? super Map.Entry<K,V>> getComparator() {
+  public Comparator<? super DiskMapAtom<K,V>> getComparator() {
     return Pair.cmpLeft();
   }
 
@@ -38,7 +37,7 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
 
     public DiskMapAtomCoder(Coder<K> keyCoder, Coder<V> valCoder) {
       this.keyCoder = keyCoder.lengthSafe();
-      this.valCoder = valCoder;
+      this.valCoder = valCoder.lengthSafe();
     }
 
     @Override
@@ -58,6 +57,8 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
     public DiskMapAtom<K, V> readImpl(InputStream inputStream) throws IOException {
       K key = keyCoder.readImpl(inputStream);
       V val = valCoder.readImpl(inputStream);
+      // super-verbose debugging:
+      //System.out.println("DiskMapAtom("+key+","+val+")");
       return new DiskMapAtom<>(key, val);
    }
   }

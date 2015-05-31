@@ -54,7 +54,7 @@ public class ListCoder<T> extends Coder<List<T>> {
   }
 
   @Override
-  public void write(OutputStream out, List<T> obj) throws IOException {
+  public void write(OutputStream out, List<T> obj) {
     int count = obj.size();
     countCoder.write(out, count);
     for (T t : obj) {

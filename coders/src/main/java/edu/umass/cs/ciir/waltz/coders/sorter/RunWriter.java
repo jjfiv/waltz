@@ -33,10 +33,6 @@ public class RunWriter<T> implements SinkFn<T>, Closeable {
 
   @Override
   public void process(T input) {
-    try {
-      itemCoder.write(output, input);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    itemCoder.write(output, input);
   }
 }
