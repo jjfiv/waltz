@@ -15,7 +15,7 @@ public class AllOfMover extends AChildrenMover {
 	public static AllOfMover of(Mover... childs) {
 		return new AllOfMover(Arrays.asList(childs));
 	}
-	public AllOfMover(List<Mover> children) {
+	public AllOfMover(List<? extends Mover> children) {
 		super(children);
 	}
 
