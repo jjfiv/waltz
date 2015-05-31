@@ -1,12 +1,13 @@
 package edu.umass.cs.ciir.waltz.compat.galago;
 
+import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.compat.galago.impl.GalagoCountMover;
-import edu.umass.cs.ciir.waltz.compat.galago.impl.GalagoPositionsMover;
-import edu.umass.cs.ciir.waltz.feature.Feature;
 import edu.umass.cs.ciir.waltz.compat.galago.impl.GalagoLengthsFeature;
+import edu.umass.cs.ciir.waltz.compat.galago.impl.GalagoPositionsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.feature.MoverFeature;
+import edu.umass.cs.ciir.waltz.feature.Feature;
+import edu.umass.cs.ciir.waltz.index.AbstractIndex;
 import edu.umass.cs.ciir.waltz.index.Index;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import org.lemurproject.galago.core.index.disk.*;
@@ -22,7 +23,7 @@ import java.util.List;
  * A wrapper around a Galago Index (doesn't support long docids yet) that should give us some nice backwards-compatibility.
  * @author jfoley
  */
-public class GalagoIndex implements Index, Closeable {
+public class GalagoIndex extends AbstractIndex implements Index, Closeable {
 
   private final DiskIndex inner;
   private final DiskNameReader names;
@@ -47,12 +48,12 @@ public class GalagoIndex implements Index, Closeable {
 
   @Override
   public int getCollectionLength() {
-    return (int) inner.getIndexPartStatistics("lengths").collectionLength;
+    return IntMath.fromLong(inner.getIndexPartStatistics("lengths").collectionLength);
   }
 
   @Override
   public int getDocumentCount() {
-    return (int) inner.getIndexPartStatistics("lengths").highestDocumentCount;
+    return IntMath.fromLong(inner.getIndexPartStatistics("lengths").highestDocumentCount);
   }
 
   @Override
@@ -98,16 +99,6 @@ public class GalagoIndex implements Index, Closeable {
   }
 
   @Override
-  public Feature<Integer> getCounts(String term) {
-    return new MoverFeature<>(getCountsMover(term));
-  }
-
-  @Override
-  public Feature<PositionsList> getPositions(String term) {
-    return new MoverFeature<>(getPositionsMover(term));
-  }
-
-  @Override
   public String getDocumentName(int id) {
     try {
       return names.getDocumentName(id);
@@ -119,7 +110,7 @@ public class GalagoIndex implements Index, Closeable {
   @Override
   public int getDocumentId(String documentName) {
     try {
-      return (int) namesRev.getDocumentIdentifier(documentName);
+      return IntMath.fromLong(namesRev.getDocumentIdentifier(documentName));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
