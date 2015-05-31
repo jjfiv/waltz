@@ -31,7 +31,9 @@ public class GenKeyDiskMapTest {
         }
       }
 
-      try (GenKeyDiskMap.Reader<String> rdr = GenKeyDiskMap.Reader.openFiles(coder, basePath)) {
+      try (GenKeyDiskMap.Reader<String> rdr = GenKeyDiskMap.Reader.openFiles(basePath, coder)) {
+        assertEquals(tmpdata, rdr);
+
         for (int i = 0; i < tmpdata.size(); i++) {
           assertEquals(tmpdata.get(i), rdr.getValue(i));
         }

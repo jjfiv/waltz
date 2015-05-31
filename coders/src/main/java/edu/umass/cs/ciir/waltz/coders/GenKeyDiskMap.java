@@ -144,7 +144,7 @@ public class GenKeyDiskMap {
       return this.count;
     }
 
-    public static <V> Reader<V> openFiles(Coder<V> valCoder, String basePath) throws IOException {
+    public static <V> Reader<V> openFiles(String basePath, Coder<V> valCoder) throws IOException {
       return new Reader<V>(
           valCoder,
           new FileChannelSource(basePath+".offset"),
