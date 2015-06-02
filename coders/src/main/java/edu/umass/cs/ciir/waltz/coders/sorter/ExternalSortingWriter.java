@@ -6,6 +6,7 @@ import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.io.IO;
+import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 
@@ -57,11 +58,14 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this.buffer = new ArrayList<>(maxItemsInMemory);
     this.nextId = 0;
     this.maxLevelRuns = 0;
+
+    MemoryNotifier.register(this);
   }
 
   @Override
-  public void close() throws IOException {
+  public synchronized void close() throws IOException {
     // push all runs to topmost level:
+    MemoryNotifier.unregister(this);
     flush();
   }
 
@@ -74,7 +78,9 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
    * @throws IOException
    */
   @Override
-  public void flush() throws IOException {
+  public synchronized void flush() throws IOException {
+    if(buffer.isEmpty()) return;
+
     int currentId = nextId++;
     try (RunWriter<T> writer = new RunWriter<T>(buffer.size(), countCoder, objCoder, nameForId(currentId))) {
       QuickSort.sort(cmp, buffer);
@@ -89,7 +95,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     mergeRuns();
   }
 
-  private void mergeRuns() throws IOException {
+  private synchronized void mergeRuns() throws IOException {
     while(true) {
       boolean changed = false;
 
@@ -114,7 +120,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     return new File(dir, Integer.toString(id)+".sorted.gz");
   }
 
-  private Integer mergeRuns(List<Integer> runs) throws IOException {
+  private synchronized Integer mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
     List<RunReader<T>> readers = new ArrayList<>();
     long total = 0L;
@@ -140,7 +146,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   }
 
   @Override
-  public void process(T input) {
+  public synchronized void process(T input) {
     buffer.add(input);
     if(buffer.size() >= maxItemsInMemory) {
       try {
