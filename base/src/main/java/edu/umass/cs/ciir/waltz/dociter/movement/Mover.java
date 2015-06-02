@@ -17,6 +17,9 @@ public interface Mover {
 	/** returns true if it is done */
 	boolean isDone();
 
+	/** Simply the opposite of isDone(), in case it helps you reason about your algorithm */
+	default boolean hasNext() { return !isDone(); }
+
 	/** Abstracts the block movement away from a user perspective */
 	void next();
 

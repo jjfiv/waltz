@@ -17,4 +17,6 @@ public abstract class AbstractIndex implements Index {
   public Feature<PositionsList> getPositions(String term) {
     return new MoverFeature<>(getPositionsMover(term));
   }
+
+
 }
