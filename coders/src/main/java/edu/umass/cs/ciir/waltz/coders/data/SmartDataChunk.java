@@ -31,27 +31,27 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public <T> void add(Coder<T> coder, T obj) {
+  public synchronized <T> void add(Coder<T> coder, T obj) {
     bufferList.add(coder, obj);
   }
 
   @Override
-  public void add(ByteBuffer data) {
+  public synchronized void add(ByteBuffer data) {
     bufferList.add(data);
   }
 
   @Override
-  public void add(byte[] data) {
+  public synchronized void add(byte[] data) {
     bufferList.add(data);
   }
 
   @Override
-  public void add(DataChunk data) {
+  public synchronized void add(DataChunk data) {
     bufferList.add(data);
   }
 
   @Override
-  public int getByte(int index) {
+  public synchronized int getByte(int index) {
     if(tmpFile != null) {
       if(index < tmpFile.byteCount()) {
         return tmpFile.getByte(index);
@@ -63,7 +63,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public long byteCount() {
+  public synchronized long byteCount() {
     long tfbc = (tmpFile == null) ? 0 : tmpFile.byteCount();
     return tfbc + bufferList.byteCount();
   }
@@ -76,7 +76,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
 
   @EmergencyUseOnly
   @Override
-  public byte[] asByteArray() {
+  public synchronized byte[] asByteArray() {
     if(tmpFile != null) {
       return ArrayFns.concat(tmpFile.asByteArray(), bufferList.asByteArray());
     } else {
@@ -85,7 +85,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public InputStream asInputStream() {
+  public synchronized InputStream asInputStream() {
     if(tmpFile!=null) {
       return new SequenceInputStream(tmpFile.asInputStream(), bufferList.asInputStream());
     } else {
@@ -94,7 +94,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public void write(OutputStream out) throws IOException {
+  public synchronized void write(OutputStream out) throws IOException {
     if(tmpFile != null) {
       tmpFile.write(out);
     }
@@ -102,7 +102,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public void write(WritableByteChannel out) throws IOException {
+  public synchronized void write(WritableByteChannel out) throws IOException {
     if(tmpFile != null) {
       tmpFile.write(out);
     }
@@ -117,7 +117,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
   }
 
   @Override
-  public void flush() throws IOException {
+  public synchronized void flush() throws IOException {
     if(tmpFile == null) {
       tmpFile = new TmpFileDataChunk();
     }
