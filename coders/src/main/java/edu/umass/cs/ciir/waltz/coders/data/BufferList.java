@@ -126,4 +126,9 @@ public class BufferList implements MutableDataChunk {
       buf.close();
     }
   }
+
+  public void clear() throws IOException {
+    close();
+    bufs.clear();
+  }
 }

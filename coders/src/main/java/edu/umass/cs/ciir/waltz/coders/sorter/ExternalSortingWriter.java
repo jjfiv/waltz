@@ -82,7 +82,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     if(buffer.isEmpty()) return;
 
     int currentId = nextId++;
-    try (RunWriter<T> writer = new RunWriter<T>(buffer.size(), countCoder, objCoder, nameForId(currentId))) {
+    try (RunWriter<T> writer = new RunWriter<>(buffer.size(), countCoder, objCoder, nameForId(currentId))) {
       QuickSort.sort(cmp, buffer);
       // write run to file.
       IterableFns.intoSink(buffer, writer);

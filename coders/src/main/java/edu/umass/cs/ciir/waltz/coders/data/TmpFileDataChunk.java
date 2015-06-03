@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.data;
 
 import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
+import ciir.jfoley.chai.lang.annotations.EmergencyUseOnly;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
 import java.io.File;
@@ -17,9 +18,12 @@ import static java.nio.file.StandardOpenOption.*;
 
 /**
  * This data chunk immediately starts using a temporary file for storage of other DataChunks written to it.
+ * Don't use this class directly; it's very slow that way. Use it through SmartDataChunk instead.
+ * @see SmartDataChunk
  * @author jfoley
  */
-public class TmpFileDataChunk implements MutableDataChunk {
+@EmergencyUseOnly
+class TmpFileDataChunk implements MutableDataChunk {
   private final File tmp;
   private final FileChannel channel;
   private long size;

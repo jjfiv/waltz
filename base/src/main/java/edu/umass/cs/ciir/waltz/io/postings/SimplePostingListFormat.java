@@ -2,10 +2,7 @@ package edu.umass.cs.ciir.waltz.io.postings;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
-import edu.umass.cs.ciir.waltz.coders.data.TmpFileDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.*;
 import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
@@ -77,7 +74,7 @@ public class SimplePostingListFormat {
       this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder);
     }
     public PostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
-      output = new TmpFileDataChunk();
+      output = new SmartDataChunk();
       this.blockSize = blockSize;
       currentChunk = new PostingListChunk<>(intsCoder, valCoder);
     }

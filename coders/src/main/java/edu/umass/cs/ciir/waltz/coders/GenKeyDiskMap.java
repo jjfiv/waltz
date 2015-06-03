@@ -122,8 +122,9 @@ public class GenKeyDiskMap {
 
     @Override
     public void flush() throws IOException {
-      offsetFile.flush();
-      valuesFile.flush();
+      // let's not actually do it. this will probably speed up index builds.
+      //offsetFile.flush();
+      //valuesFile.flush();
     }
   }
 
