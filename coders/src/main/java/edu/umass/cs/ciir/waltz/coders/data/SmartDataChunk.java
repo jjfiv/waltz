@@ -15,6 +15,9 @@ import java.nio.channels.WritableByteChannel;
  * The SmartDataChunk is either backed by a {@link BufferList} or a {@link TmpFileDataChunk}
  * If the size exceeds a given amount, it will move out of memory and onto disk.
  * Also, if you call flush(), or if the {@link MemoryNotifier} does, it forces the data to disk.
+ *
+ * Call flush() before you do any reading, or MemoryNotifier might do it for you while you're reading :(
+ *
  * @see BufferList
  * @see TmpFileDataChunk
  * @see MemoryNotifier
@@ -23,31 +26,56 @@ import java.nio.channels.WritableByteChannel;
 public class SmartDataChunk implements MutableDataChunk, Flushable {
   private BufferList bufferList;
   private TmpFileDataChunk tmpFile;
+  private final long minFlushAmount;
+  private final long defaultFlushAmount;
 
+  /**
+   * Default, don't flush if less than 16KiB, flush automatically when you reach 16MiB
+   */
   public SmartDataChunk() {
+    this(16L << 10, 16L << 20);
+  }
+  public SmartDataChunk(long minFlushAmount, long defaultFlushAmount) {
+    this.minFlushAmount = minFlushAmount;
+    this.defaultFlushAmount = defaultFlushAmount;
     MemoryNotifier.register(this);
     bufferList = new BufferList();
     tmpFile = null;
   }
 
+
   @Override
   public synchronized <T> void add(Coder<T> coder, T obj) {
     bufferList.add(coder, obj);
+    checkSize();
   }
 
   @Override
   public synchronized void add(ByteBuffer data) {
     bufferList.add(data);
+    checkSize();
   }
 
   @Override
   public synchronized void add(byte[] data) {
     bufferList.add(data);
+    checkSize();
   }
 
   @Override
   public synchronized void add(DataChunk data) {
     bufferList.add(data);
+    checkSize();
+  }
+
+  public synchronized void checkSize() {
+    if(bufferList.byteCount() >= defaultFlushAmount) {
+      try {
+        flush();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   @Override
@@ -118,10 +146,17 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
 
   @Override
   public synchronized void flush() throws IOException {
-    if(tmpFile == null) {
+    // Only flush if above a reasonable point.
+    if(bufferList.byteCount() < minFlushAmount) {
+      return;
+    }
+
+    if (tmpFile == null) {
       tmpFile = new TmpFileDataChunk();
     }
-    tmpFile.add(bufferList);
-    bufferList.clear();
+    if (!bufferList.isEmpty()) {
+      tmpFile.add(bufferList);
+      bufferList.clear();
+    }
   }
 }

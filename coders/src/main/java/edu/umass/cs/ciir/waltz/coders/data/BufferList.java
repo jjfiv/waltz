@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.data;
 
 import ciir.jfoley.chai.IntMath;
+import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
@@ -23,6 +24,7 @@ public class BufferList implements MutableDataChunk {
   public BufferList() {
     this.bufs = new ArrayList<>();
   }
+
   public BufferList(Collection<? extends DataChunk> data) {
     this.bufs = new ArrayList<>(data);
   }
@@ -127,8 +129,12 @@ public class BufferList implements MutableDataChunk {
     }
   }
 
-  public void clear() throws IOException {
-    close();
+  public void clear() {
+    IO.close(this);
     bufs.clear();
+  }
+
+  public boolean isEmpty() {
+    return bufs.isEmpty();
   }
 }
