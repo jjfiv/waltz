@@ -1,12 +1,14 @@
 package edu.umass.cs.ciir.waltz.postings.positions;
 
+import ciir.jfoley.chai.collections.list.AChaiList;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
  * @author jfoley
  */
-public class EmptyPositionsList implements PositionsList {
+public class EmptyPositionsList extends AChaiList<Integer> implements PositionsList {
   public static final PositionsList instance = new EmptyPositionsList();
 
   /** Private because you should use the singleton instance instead. */
@@ -15,8 +17,13 @@ public class EmptyPositionsList implements PositionsList {
   }
 
   @Override
+  public Integer get(int index) {
+    throw new IndexOutOfBoundsException();
+  }
+
+  @Override
   public int getPosition(int index) {
-    return 0;
+    throw new IndexOutOfBoundsException();
   }
 
   @Override
@@ -27,10 +34,5 @@ public class EmptyPositionsList implements PositionsList {
   @Override
   public PositionsIterator getExtentsIterator() {
     return new PositionsIterator(this);
-  }
-
-  @Override
-  public List<Integer> toList() {
-    return Collections.emptyList();
   }
 }

@@ -31,7 +31,7 @@ public class PositionsListCoder extends Coder<PositionsList> {
 
   @Override
   public DataChunk writeImpl(PositionsList obj) throws IOException {
-    return innerCoder.writeImpl(obj.toList());
+    return innerCoder.writeImpl(obj);
   }
 
   @Override

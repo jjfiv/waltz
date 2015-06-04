@@ -88,7 +88,7 @@ public class SimplePostingListFormatTest {
             lastId = fromMemIndex.currentKey();
 
             Assert.assertEquals(fromDisk.currentKey(), fromMemIndex.currentKey());
-            Assert.assertEquals(fromDisk.getCurrentPosting().toList(), fromMemIndex.getCurrentPosting().toList());
+            Assert.assertEquals(fromDisk.getCurrentPosting(), fromMemIndex.getCurrentPosting());
           }
           assertTrue(fromMemIndex.isDone());
           assertTrue(fromDisk.isDone());

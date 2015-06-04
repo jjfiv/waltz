@@ -1,15 +1,13 @@
 package edu.umass.cs.ciir.waltz.postings.extents;
 
-import ciir.jfoley.chai.collections.list.IntList;
+import ciir.jfoley.chai.collections.list.AChaiList;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
-
-import java.util.List;
 
 /**
 * @author jfoley
 */
-public class ExtentsAsPositions implements PositionsList {
+public class ExtentsAsPositions extends AChaiList<Integer> implements PositionsList {
   private final ExtentsList extents;
 
   public ExtentsAsPositions(ExtentsList extents) {
@@ -27,16 +25,12 @@ public class ExtentsAsPositions implements PositionsList {
   }
 
   @Override
-  public List<Integer> toList() {
-    IntList data = new IntList();
-    for (int i = 0; i < size(); i++) {
-      data.add(getPosition(i));
-    }
-    return data;
+  public int getPosition(int index) {
+    return extents.getBegin(index);
   }
 
   @Override
-  public int getPosition(int index) {
-    return extents.getBegin(index);
+  public Integer get(int index) {
+    return getPosition(index);
   }
 }

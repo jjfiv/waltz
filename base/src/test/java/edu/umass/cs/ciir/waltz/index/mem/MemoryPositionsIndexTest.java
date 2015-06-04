@@ -51,14 +51,14 @@ public class MemoryPositionsIndexTest {
       assertTrue(foxIter.matches(doc));
       PositionsList p = foxIter.getCurrentPosting();
       //System.err.println(p);
-      foxPos.addAll(p.toList());
+      foxPos.addAll(p);
       foxHits.add(p.size());
     }
     assertEquals(Arrays.asList(1,1), foxHits);
     assertEquals(Arrays.asList(1,3), foxPos);
 
-    Assert.assertEquals(Arrays.asList(3), index.getPositions("fox").getFeature(1).toList());
-    Assert.assertEquals(Arrays.asList(8), index.getPositions("dog").getFeature(1).toList());
+    Assert.assertEquals(Arrays.asList(3), index.getPositions("fox").getFeature(1));
+    Assert.assertEquals(Arrays.asList(8), index.getPositions("dog").getFeature(1));
   }
 
   @Test

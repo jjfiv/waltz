@@ -8,8 +8,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
 public class BigramTest {
 
@@ -31,9 +30,13 @@ public class BigramTest {
     PositionsList b = SimplePositionsList.of(   6,     14,     99);
     PositionsList c = new SimplePositionsList(IntRange.inclusive(0,100));
 
-    Assert.assertEquals(Collections.<Integer>emptyList(), Bigram.positions(a, b).toList());
-    Assert.assertEquals(b.toList(), Bigram.positions(b, a).toList());
-    Assert.assertEquals(Arrays.asList(0, 6, 10, 14, 29, 99), Bigram.positions(c, a).toList());
-    Assert.assertEquals(Arrays.asList(5, 13, 98), Bigram.positions(c, b).toList());
+    assertEquals(Collections.<Integer>emptyList(), Bigram.positions(a, b));
+    assertEquals(b, Bigram.positions(b, a));
+    assertEquals(Arrays.asList(0, 6, 10, 14, 29, 99), Bigram.positions(c, a));
+    assertEquals(Arrays.asList(5, 13, 98), Bigram.positions(c, b));
+  }
+
+  void assertEquals(List<Integer> expected, List<Integer> actual) {
+    Assert.assertEquals(expected, actual);
   }
 }

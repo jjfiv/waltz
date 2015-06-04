@@ -1,14 +1,14 @@
 package edu.umass.cs.ciir.waltz.postings.positions;
 
+import ciir.jfoley.chai.collections.list.AChaiList;
 import ciir.jfoley.chai.collections.util.ArrayFns;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @author jfoley
  */
-public class SimplePositionsList implements PositionsList {
+public class SimplePositionsList extends AChaiList<Integer> implements PositionsList {
   private final List<Integer> data;
 
   public SimplePositionsList(List<Integer> inner) {
@@ -31,12 +31,12 @@ public class SimplePositionsList implements PositionsList {
     return new PositionsIterator(this);
   }
 
-  @Override
-  public List<Integer> toList() {
-    return Collections.unmodifiableList(data);
-  }
-
   public static SimplePositionsList of(int... pos) {
     return new SimplePositionsList(ArrayFns.toList(pos));
+  }
+
+  @Override
+  public Integer get(int index) {
+    return getPosition(index);
   }
 }
