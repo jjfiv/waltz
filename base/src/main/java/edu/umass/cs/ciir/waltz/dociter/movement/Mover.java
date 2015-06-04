@@ -55,6 +55,10 @@ public interface Mover {
   /** The total number of hits, or an overestimate if not possible (AnyOf). */
 	int totalKeys();
 
+	/**
+	 * We can't be an iterator because of how state works, but we can be a Clojure-style reducer.
+	 * @param documentHandler the object to call into for each "hit" on this mover.
+	 */
 	default void execute(SinkFn<Integer> documentHandler) {
 		for( ; !isDone(); next()) documentHandler.process(currentKey());
 	}
