@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
+import ciir.jfoley.chai.fn.SinkFn;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
 
 /**
@@ -16,4 +17,10 @@ public interface PostingMover<X> extends Mover {
   default MoverFeature<X> getFeature() {
     return new MoverFeature<>(this);
   }
+
+  default void collectValues(SinkFn<X> collector) {
+    MoverFeature<X> feature = getFeature();
+    execute(input -> collector.process(feature.getFeature(input)));
+  }
+
 }
