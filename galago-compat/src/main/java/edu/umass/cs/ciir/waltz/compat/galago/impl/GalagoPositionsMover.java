@@ -40,7 +40,7 @@ public class GalagoPositionsMover extends AGalagoMover<ExtentIterator> implement
     }
 
     @Override
-    public PositionsIterator getExtentsIterator() {
+    public PositionsIterator getSpanIterator() {
       return new PositionsIterator(this);
     }
 

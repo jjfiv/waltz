@@ -32,7 +32,7 @@ public class EmptyPositionsList extends AChaiList<Integer> implements PositionsL
   }
 
   @Override
-  public PositionsIterator getExtentsIterator() {
+  public PositionsIterator getSpanIterator() {
     return new PositionsIterator(this);
   }
 }

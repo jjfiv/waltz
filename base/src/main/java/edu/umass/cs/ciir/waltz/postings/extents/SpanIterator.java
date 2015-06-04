@@ -3,7 +3,7 @@ package edu.umass.cs.ciir.waltz.postings.extents;
 /**
 * @author jfoley
 */
-public interface ExtentsIterator {
+public interface SpanIterator {
   /** returns true if there are no more elements to step over */
   boolean isDone();
   /** returns !isDone() after moving once */

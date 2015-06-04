@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.phrase;
 
-import edu.umass.cs.ciir.waltz.postings.extents.Extent;
+import edu.umass.cs.ciir.waltz.postings.extents.Span;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 import org.junit.Assert;
@@ -19,12 +19,12 @@ public class UnorderedWindowTest {
 
     Assert.assertEquals(4, UnorderedWindow.countPositions(Arrays.asList(a, b), 4));
     Assert.assertEquals(Arrays.asList(
-            Extent.of(6, 8),
-            Extent.of(11, 15),
-            Extent.of(14, 16),
-            Extent.of(99, 101)
+            Span.of(6, 8),
+            Span.of(11, 15),
+            Span.of(14, 16),
+            Span.of(99, 101)
         ),
-        UnorderedWindow.calculateExtents(
-            Arrays.asList(a.getExtentsIterator(), b.getExtentsIterator()), 4));
+        UnorderedWindow.calculateSpans(
+            Arrays.asList(a.getSpanIterator(), b.getSpanIterator()), 4));
   }
 }

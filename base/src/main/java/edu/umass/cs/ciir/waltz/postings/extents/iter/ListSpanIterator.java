@@ -1,6 +1,6 @@
 package edu.umass.cs.ciir.waltz.postings.extents.iter;
 
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentsList;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanList;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -8,10 +8,10 @@ import java.util.Objects;
 /**
 * @author jfoley
 */
-public class ListExtentsIterator extends AExtentsIterator {
-  private final ExtentsList extents;
+public class ListSpanIterator extends ASpanIterator {
+  private final SpanList extents;
 
-  public ListExtentsIterator(@Nonnull ExtentsList extents) {
+  public ListSpanIterator(@Nonnull SpanList extents) {
     super(extents.size());
     this.extents = Objects.requireNonNull(extents);
   }

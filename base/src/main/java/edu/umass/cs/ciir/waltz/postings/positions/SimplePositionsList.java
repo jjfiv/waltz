@@ -27,7 +27,7 @@ public class SimplePositionsList extends AChaiList<Integer> implements Positions
   }
 
   @Override
-  public PositionsIterator getExtentsIterator() {
+  public PositionsIterator getSpanIterator() {
     return new PositionsIterator(this);
   }
 

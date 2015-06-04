@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.phrase;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentIterable;
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentsIterator;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanIterable;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
 public class OrderedWindow {
 
   /** This is the equivalent of Galago and Indri's od:x(a, b, ...) operator */
-  public static int count(List<? extends ExtentIterable> positions, int spacingBetween) {
+  public static int count(List<? extends SpanIterable> positions, int spacingBetween) {
     // TODO, check for and call faster Bigram if applicable :)
     assert(positions.size() >= 2);
-    List<ExtentsIterator> arr = new ArrayList<>(positions.size());
-    for (ExtentIterable pl : positions) {
-      arr.add(pl.getExtentsIterator());
+    List<SpanIterator> arr = new ArrayList<>(positions.size());
+    for (SpanIterable pl : positions) {
+      arr.add(pl.getSpanIterator());
     }
     return countIter(arr, spacingBetween);
   }
 
-  public static int countIter(List<? extends ExtentsIterator> arrayIterators, int width) {
+  public static int countIter(List<? extends SpanIterator> arrayIterators, int width) {
     int hits = 0;
     boolean notDone = true;
     while(notDone) {
@@ -66,15 +66,15 @@ public class OrderedWindow {
     return hits;
   }
 
-  public static IntList find(List<? extends ExtentIterable> positions, int width) {
+  public static IntList find(List<? extends SpanIterable> positions, int width) {
     assert(positions.size() >= 2);
-    List<ExtentsIterator> arr = new ArrayList<>(positions.size());
-    for (ExtentIterable pl : positions) {
-      arr.add(pl.getExtentsIterator());
+    List<SpanIterator> arr = new ArrayList<>(positions.size());
+    for (SpanIterable pl : positions) {
+      arr.add(pl.getSpanIterator());
     }
     return findIter(arr, width);
   }
-  public static IntList findIter(List<? extends ExtentsIterator> arrayIterators, int width) {
+  public static IntList findIter(List<? extends SpanIterator> arrayIterators, int width) {
     IntList hits = new IntList();
     boolean notDone = true;
     while(notDone) {

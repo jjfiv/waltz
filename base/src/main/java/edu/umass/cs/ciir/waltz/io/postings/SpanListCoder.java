@@ -4,9 +4,9 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
-import edu.umass.cs.ciir.waltz.postings.extents.Extent;
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentsList;
-import edu.umass.cs.ciir.waltz.postings.extents.InterleavedExtents;
+import edu.umass.cs.ciir.waltz.postings.extents.Span;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanList;
+import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,14 +14,14 @@ import java.io.InputStream;
 /**
  * @author jfoley
  */
-public class ExtentListCoder extends Coder<ExtentsList> {
+public class SpanListCoder extends Coder<SpanList> {
   public final Coder<Integer> sizeCoder;
   public final Coder<Integer> intCoder;
 
-  public ExtentListCoder() {
+  public SpanListCoder() {
     this(VarUInt.instance, VarUInt.instance);
   }
-  public ExtentListCoder(Coder<Integer> sizeCoder, Coder<Integer> intCoder) {
+  public SpanListCoder(Coder<Integer> sizeCoder, Coder<Integer> intCoder) {
     this.sizeCoder = sizeCoder;
     this.intCoder = intCoder;
   }
@@ -32,11 +32,11 @@ public class ExtentListCoder extends Coder<ExtentsList> {
   }
 
   @Override
-  public DataChunk writeImpl(ExtentsList obj) throws IOException {
+  public DataChunk writeImpl(SpanList obj) throws IOException {
     BufferList output = new BufferList();
     output.add(sizeCoder, obj.size());
     int lastExtentStart = 0;
-    for (Extent extent : obj) {
+    for (Span extent : obj) {
       int delta = extent.begin - lastExtentStart;
       lastExtentStart = extent.begin;
       int endDelta = extent.end - extent.begin;
@@ -47,9 +47,9 @@ public class ExtentListCoder extends Coder<ExtentsList> {
   }
 
   @Override
-  public ExtentsList readImpl(InputStream inputStream) throws IOException {
+  public SpanList readImpl(InputStream inputStream) throws IOException {
     int size = sizeCoder.readImpl(inputStream);
-    InterleavedExtents results = new InterleavedExtents();
+    InterleavedSpans results = new InterleavedSpans();
     int lastExtentStart = 0;
     for (int i = 0; i < size; i++) {
       int begin = lastExtentStart + intCoder.readImpl(inputStream);

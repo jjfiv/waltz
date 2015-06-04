@@ -5,8 +5,8 @@ import ciir.jfoley.chai.collections.chained.ChaiIterable;
 import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentsList;
-import edu.umass.cs.ciir.waltz.postings.extents.InterleavedExtents;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanList;
+import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -17,12 +17,12 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author jfoley
  */
-public class ExtentListCoderTest {
+public class IntegerSpanListCoderTest {
 
   @Test
   public void testExtentListCoder() {
-    Coder<ExtentsList> coder = new ExtentListCoder();
-    InterleavedExtents extents = new InterleavedExtents();
+    Coder<SpanList> coder = new SpanListCoder();
+    InterleavedSpans extents = new InterleavedSpans();
     List<Integer> begins = ChaiIterable
         .create(Sample.randomIntegers(1000, 5000))
         .map(Math::abs)
@@ -42,7 +42,7 @@ public class ExtentListCoderTest {
     assertEquals(1000, extents.size());
 
     ByteBuffer data = coder.write(extents);
-    ExtentsList decoded = coder.read(data);
+    SpanList decoded = coder.read(data);
     assertEquals(extents, decoded);
   }
 

@@ -7,10 +7,10 @@ import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 /**
 * @author jfoley
 */
-public class ExtentsAsPositions extends AChaiList<Integer> implements PositionsList {
-  private final ExtentsList extents;
+public class SpanBeginAsPositions extends AChaiList<Integer> implements PositionsList {
+  private final SpanList extents;
 
-  public ExtentsAsPositions(ExtentsList extents) {
+  public SpanBeginAsPositions(SpanList extents) {
     this.extents = extents;
   }
 
@@ -20,7 +20,7 @@ public class ExtentsAsPositions extends AChaiList<Integer> implements PositionsL
   }
 
   @Override
-  public PositionsIterator getExtentsIterator() {
+  public PositionsIterator getSpanIterator() {
     return new PositionsIterator(this);
   }
 

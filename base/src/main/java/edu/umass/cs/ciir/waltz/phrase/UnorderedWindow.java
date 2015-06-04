@@ -1,8 +1,9 @@
 package edu.umass.cs.ciir.waltz.phrase;
 
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentIterable;
-import edu.umass.cs.ciir.waltz.postings.extents.Extent;
-import edu.umass.cs.ciir.waltz.postings.extents.ExtentsIterator;
+import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanIterable;
+import edu.umass.cs.ciir.waltz.postings.extents.Span;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +13,18 @@ import java.util.List;
  */
 public class UnorderedWindow {
   /** This is the equivalent of Galago and Indri's uw:x(a, b, ...) operator */
-  public static int countPositions(List<? extends ExtentIterable> positions, int totalSpacing) {
+  public static int countPositions(List<? extends SpanIterable> positions, int totalSpacing) {
     // TODO, check for and call faster Bigram if applicable :)
 
     assert(positions.size() >= 2);
-    List<ExtentsIterator> arr = new ArrayList<>(positions.size());
-    for (ExtentIterable position : positions) {
-      arr.add(position.getExtentsIterator());
+    List<SpanIterator> arr = new ArrayList<>(positions.size());
+    for (SpanIterable position : positions) {
+      arr.add(position.getSpanIterator());
     }
-    return countExtents(arr, totalSpacing);
+    return countSpans(arr, totalSpacing);
   }
 
-  public static int countExtents(List<ExtentsIterator> iters, int width) {
+  public static int countSpans(List<SpanIterator> iters, int width) {
     int hits = 0;
 
     int max = iters.get(0).currentEnd();
@@ -44,7 +45,7 @@ public class UnorderedWindow {
       // now, reset bounds
       max = Integer.MIN_VALUE;
       min = Integer.MAX_VALUE;
-      for (ExtentsIterator iter : iters) {
+      for (SpanIterator iter : iters) {
         if (iter.currentBegin() == oldMin) {
           boolean notDone = iter.next();
           if (!notDone) {
@@ -58,8 +59,8 @@ public class UnorderedWindow {
     }
   }
 
-  public static List<Extent> calculateExtents(List<ExtentsIterator> iters, int width) {
-    List<Extent> hits = new ArrayList<>();
+  public static List<Span> calculateSpans(List<SpanIterator> iters, int width) {
+    InterleavedSpans hits = new InterleavedSpans();
 
     int max = iters.get(0).currentEnd();
     int min = iters.get(0).currentBegin();
@@ -71,14 +72,14 @@ public class UnorderedWindow {
     while(true) {
       boolean match = (max - min <= width) || (width == -1);
       if (match) {
-        hits.add(new Extent(min, max));
+        hits.push(min, max);
       }
 
       int oldMin = min;
       // now, reset bounds
       max = Integer.MIN_VALUE;
       min = Integer.MAX_VALUE;
-      for (ExtentsIterator iter : iters) {
+      for (SpanIterator iter : iters) {
         if (iter.currentBegin() == oldMin) {
           boolean notDone = iter.next();
           if (!notDone) {

@@ -2,30 +2,30 @@ package edu.umass.cs.ciir.waltz.postings.extents;
 
 import ciir.jfoley.chai.collections.list.AChaiList;
 import ciir.jfoley.chai.collections.list.IntList;
-import edu.umass.cs.ciir.waltz.postings.extents.iter.ListExtentsIterator;
+import edu.umass.cs.ciir.waltz.postings.extents.iter.ListSpanIterator;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Hooray for premature optimization -- this only stores an int[], not a Object[] and a bunch of pointers.
  * @author jfoley
  */
-public class InterleavedExtents extends AChaiList<Extent> implements ExtentsList {
+public class InterleavedSpans extends AChaiList<Span> implements SpanList {
   private IntList data;
 
-  public InterleavedExtents() {
+  public InterleavedSpans() {
     this.data = new IntList();
   }
-  public InterleavedExtents(@Nonnull List<Extent> original) {
+  public InterleavedSpans(@Nonnull Collection<? extends Span> original) {
     this();
-    for (Extent extent : original) {
+    for (Span extent : original) {
       add(extent);
     }
   }
 
   @Override
-  public boolean add(@Nonnull Extent extent) {
+  public boolean add(@Nonnull Span extent) {
     assert(extent.begin >= 0);
     assert(extent.end >= 0);
     assert(extent.begin < extent.end);
@@ -34,6 +34,12 @@ public class InterleavedExtents extends AChaiList<Extent> implements ExtentsList
     return true;
   }
 
+  /**
+   * This is the same as add, but avoids boxing.
+   * @param begin integer begin.
+   * @param end integer end.
+   */
+  @Override
   public void push(int begin, int end) {
     assert(begin >= 0);
     assert(end >= 0);
@@ -44,9 +50,24 @@ public class InterleavedExtents extends AChaiList<Extent> implements ExtentsList
 
   @Nonnull
   @Override
-  public Extent get(int index) {
+  public Span get(int index) {
     int off = index * 2;
-    return new Extent(data.get(off), data.get(off+1));
+    return new Span(data.get(off), data.get(off+1));
+  }
+
+  @Override
+  public void set(int index, int begin, int end) {
+    int off = index * 2;
+    data.set(off, begin);
+    data.set(off+1, end);
+  }
+
+  @Override
+  public Span set(int index, Span extent) {
+    int off = index * 2;
+    int oldBegin = data.set(off, extent.begin);
+    int oldEnd = data.set(off+1, extent.end);
+    return new Span(oldBegin, oldEnd);
   }
 
   @Override
@@ -61,8 +82,8 @@ public class InterleavedExtents extends AChaiList<Extent> implements ExtentsList
 
   @Override
   @Nonnull
-  public ExtentsIterator getExtentsIterator() {
-    return new ListExtentsIterator(this);
+  public SpanIterator getSpanIterator() {
+    return new ListSpanIterator(this);
   }
 
   @Override

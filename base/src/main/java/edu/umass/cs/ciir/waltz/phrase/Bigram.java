@@ -56,8 +56,8 @@ public class Bigram {
   }
 
   public static int countUnordered(PositionsList left, PositionsList right, int width) {
-    PositionsIterator iterA = left.getExtentsIterator();
-    PositionsIterator iterB = right.getExtentsIterator();
+    PositionsIterator iterA = left.getSpanIterator();
+    PositionsIterator iterB = right.getSpanIterator();
 
     if(iterA.isDone() || iterB.isDone()) {
       return 0;
