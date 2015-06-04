@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
+import ciir.jfoley.chai.fn.SinkFn;
+
 /**
  * @author jfoley.
  */
@@ -52,4 +54,8 @@ public interface Mover {
 
   /** The total number of hits, or an overestimate if not possible (AnyOf). */
 	int totalKeys();
+
+	default void execute(SinkFn<Integer> documentHandler) {
+		for( ; !isDone(); next()) documentHandler.process(currentKey());
+	}
 }

@@ -15,6 +15,7 @@ public class MoverFeature<X> implements Feature<X> {
     this.mover = Objects.requireNonNull(mover);
   }
 
+
   @Override
   public boolean hasFeature(int key) {
     mover.moveToAbsolute(key);
