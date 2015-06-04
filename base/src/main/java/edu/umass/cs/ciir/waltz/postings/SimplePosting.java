@@ -19,6 +19,7 @@ public class SimplePosting<V> implements Posting<V> {
     return document;
   }
 
+  @Nonnull
   @Override
   public V getValue() {
     return value;

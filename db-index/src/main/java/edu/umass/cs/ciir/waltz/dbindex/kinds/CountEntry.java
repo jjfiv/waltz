@@ -9,6 +9,7 @@ import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.postings.Posting;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 
 /**
@@ -39,6 +40,7 @@ public class CountEntry implements Posting<Integer> {
 		return document;
 	}
 
+	@Nonnull
 	@Override
 	public Integer getValue() {
 		return count;
