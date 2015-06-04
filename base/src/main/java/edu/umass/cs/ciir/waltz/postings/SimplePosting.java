@@ -1,5 +1,7 @@
 package edu.umass.cs.ciir.waltz.postings;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author jfoley
  */
@@ -23,8 +25,7 @@ public class SimplePosting<V> implements Posting<V> {
   }
 
   @Override
-  public int compareTo(Posting<V> o) {
-    assert(o != null);
+  public int compareTo(@Nonnull Posting<V> o) {
     return Integer.compare(document, o.getKey());
   }
 
