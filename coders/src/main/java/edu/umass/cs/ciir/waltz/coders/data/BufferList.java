@@ -137,4 +137,8 @@ public class BufferList implements MutableDataChunk {
   public boolean isEmpty() {
     return bufs.isEmpty();
   }
+
+  public DataChunk compact() {
+    return ByteBufferDataChunk.of(asByteBuffer());
+  }
 }
