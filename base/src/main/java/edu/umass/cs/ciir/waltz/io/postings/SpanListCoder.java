@@ -8,6 +8,7 @@ import edu.umass.cs.ciir.waltz.postings.extents.Span;
 import edu.umass.cs.ciir.waltz.postings.extents.SpanList;
 import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -31,6 +32,7 @@ public class SpanListCoder extends Coder<SpanList> {
     return true;
   }
 
+  @Nonnull
   @Override
   public DataChunk writeImpl(SpanList obj) throws IOException {
     BufferList output = new BufferList();
@@ -46,6 +48,7 @@ public class SpanListCoder extends Coder<SpanList> {
     return output.compact();
   }
 
+  @Nonnull
   @Override
   public SpanList readImpl(InputStream inputStream) throws IOException {
     int size = sizeCoder.readImpl(inputStream);

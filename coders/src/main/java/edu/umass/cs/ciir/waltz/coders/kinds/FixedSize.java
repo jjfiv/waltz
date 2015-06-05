@@ -6,6 +6,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -20,6 +21,7 @@ public class FixedSize extends Module {
       return true;
     }
 
+    @Nonnull
     @Override
     public DataChunk writeImpl(Integer obj) throws IOException {
       ByteBuffer ofInt = ByteBuffer.allocate(4);
@@ -27,6 +29,7 @@ public class FixedSize extends Module {
       return ByteBufferDataChunk.of(ofInt);
     }
 
+    @Nonnull
     @Override
     public Integer readImpl(InputStream inputStream) throws IOException {
       return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 4)).getInt();
@@ -38,6 +41,7 @@ public class FixedSize extends Module {
       return true;
     }
 
+    @Nonnull
     @Override
     public DataChunk writeImpl(Long obj) throws IOException {
       ByteBuffer tmp = ByteBuffer.allocate(8);
@@ -45,6 +49,7 @@ public class FixedSize extends Module {
       return ByteBufferDataChunk.of(tmp);
     }
 
+    @Nonnull
     @Override
     public Long readImpl(InputStream inputStream) throws IOException {
       return ByteBuffer.wrap(StreamFns.readBytes(inputStream, 8)).getLong();

@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
     return true;
   }
 
+  @Nonnull
   @Override
   public BufferList writeImpl(Map<K, V> obj) throws IOException {
     BufferList output = new BufferList();
@@ -45,6 +47,7 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
     return output;
   }
 
+  @Nonnull
   @Override
   public Map<K, V> readImpl(InputStream inputStream) throws IOException {
     int count = countCoder.read(inputStream);

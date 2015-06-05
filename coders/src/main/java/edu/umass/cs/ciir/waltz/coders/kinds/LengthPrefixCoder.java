@@ -6,6 +6,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -17,7 +18,7 @@ public class LengthPrefixCoder<T> extends Coder<T> {
   private final Coder<Integer> lengthCoder;
   private final Coder<T> payloadCoder;
 
-  public LengthPrefixCoder(Coder<Integer> lengthCoder, Coder<T> payloadCoder) {
+  public LengthPrefixCoder(@Nonnull Coder<Integer> lengthCoder, @Nonnull Coder<T> payloadCoder) {
     assert lengthCoder.knowsOwnSize() : "Length prefix needs to be able to decode itself.";
     assert !payloadCoder.knowsOwnSize() : "Should only length-prefix things that need prefixing.";
     this.lengthCoder = lengthCoder;
@@ -29,6 +30,7 @@ public class LengthPrefixCoder<T> extends Coder<T> {
     return true;
   }
 
+  @Nonnull
   @Override
   public BufferList writeImpl(T obj) throws IOException {
     DataChunk payload = payloadCoder.writeImpl(obj);
@@ -39,14 +41,16 @@ public class LengthPrefixCoder<T> extends Coder<T> {
     return bl;
   }
 
+  @Nonnull
   @Override
-  public T readImpl(InputStream inputStream) throws IOException {
+  public T readImpl(@Nonnull InputStream inputStream) throws IOException {
     int length = lengthCoder.readImpl(inputStream);
     byte[] data = StreamFns.readBytes(inputStream, length);
     return payloadCoder.read(ByteBuffer.wrap(data));
   }
 
-  public static <V> Coder<V> wrap(Coder<V> inner) {
+  @Nonnull
+  public static <V> Coder<V> wrap(@Nonnull Coder<V> inner) {
     if(inner.knowsOwnSize()) {
       return inner;
     } else {

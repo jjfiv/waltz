@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.LengthPrefixCoder;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import java.nio.ByteBuffer;
  */
 public abstract class Coder<T> {
   /** Reading from a byte[] in memory. */
+  @Nonnull
   public T read(byte[] data) {
     try (ByteArrayInputStream bais = new ByteArrayInputStream(data)) {
       return readImpl(bais);
@@ -24,6 +26,7 @@ public abstract class Coder<T> {
     }
   }
   /** Reading from a ByteBuffer in memory. */
+  @Nonnull
   public T read(ByteBuffer buf) {
     try (InputStream bais = StreamFns.fromByteBuffer(buf)) {
       return readImpl(bais);
@@ -33,11 +36,13 @@ public abstract class Coder<T> {
   }
 
   /** Reading from a DataChunk. */
+  @Nonnull
   public T read(DataChunk data) {
     return read(data.asInputStream());
   }
 
   /** Reading from an InputStream. */
+  @Nonnull
   public T read(InputStream is) {
     try {
       return readImpl(is);
@@ -47,6 +52,7 @@ public abstract class Coder<T> {
   }
 
   /** Write to a new ByteBuffer in memory. */
+  @Nonnull
   public ByteBuffer write(T input) {
     try {
       return writeImpl(input).asByteBuffer();
@@ -55,6 +61,7 @@ public abstract class Coder<T> {
     }
   }
 
+  @Nonnull
   public DataChunk writeData(T input) {
     try {
       return writeImpl(input);
@@ -63,6 +70,7 @@ public abstract class Coder<T> {
     }
   }
   /** Reading of something that can be read again. */
+  @Nonnull
   public T read(StaticStream streamFn) throws IOException {
     return readImpl(streamFn.getNewStream());
   }
@@ -71,8 +79,10 @@ public abstract class Coder<T> {
   public abstract boolean knowsOwnSize();
 
   /** Writing, abstract, may throw IOException. */
+  @Nonnull
   public abstract DataChunk writeImpl(T obj) throws IOException;
   /** Reading, abstract, may throw IOException. */
+  @Nonnull
   public abstract T readImpl(InputStream inputStream) throws IOException;
 
   public void write(OutputStream out, T elem) {
@@ -85,6 +95,7 @@ public abstract class Coder<T> {
     }
   }
 
+  @Nonnull
   public Coder<T> lengthSafe() {
     return LengthPrefixCoder.wrap(this);
   }

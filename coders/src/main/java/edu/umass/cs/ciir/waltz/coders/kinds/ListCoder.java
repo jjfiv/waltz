@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,6 +33,7 @@ public class ListCoder<T> extends Coder<List<T>> {
     return true;
   }
 
+  @Nonnull
   @Override
   public BufferList writeImpl(List<T> obj) throws IOException {
     int count = obj.size();
@@ -43,6 +45,7 @@ public class ListCoder<T> extends Coder<List<T>> {
     return bl;
   }
 
+  @Nonnull
   @Override
   public List<T> readImpl(InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);

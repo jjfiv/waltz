@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,6 +30,7 @@ public class PairCoder<K, V> extends Coder<Pair<K, V>> {
     return true;
   }
 
+  @Nonnull
   @Override
   public DataChunk writeImpl(Pair<K, V> obj) throws IOException {
     BufferList output = new BufferList();
@@ -37,6 +39,7 @@ public class PairCoder<K, V> extends Coder<Pair<K, V>> {
     return output;
   }
 
+  @Nonnull
   @Override
   public Pair<K, V> readImpl(InputStream inputStream) throws IOException {
     K key = lhsCoder.readImpl(inputStream);

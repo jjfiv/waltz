@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -60,6 +61,7 @@ public class MapPostingAtom<K extends Comparable<K>,V> implements Comparable<Map
       return true;
     }
 
+    @Nonnull
     @Override
     public DataChunk writeImpl(MapPostingAtom<K, V> obj) throws IOException {
       BufferList output = new BufferList();
@@ -69,6 +71,7 @@ public class MapPostingAtom<K extends Comparable<K>,V> implements Comparable<Map
       return output;
     }
 
+    @Nonnull
     @Override
     public MapPostingAtom<K, V> readImpl(InputStream inputStream) throws IOException {
       K term = keyCoder.readImpl(inputStream);

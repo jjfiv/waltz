@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Comparator;
@@ -45,6 +46,7 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
       return true;
     }
 
+    @Nonnull
     @Override
     public DataChunk writeImpl(DiskMapAtom<K, V> obj) throws IOException {
       BufferList bl = new BufferList();
@@ -53,6 +55,7 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
       return bl;
     }
 
+    @Nonnull
     @Override
     public DiskMapAtom<K, V> readImpl(InputStream inputStream) throws IOException {
       K key = keyCoder.readImpl(inputStream);

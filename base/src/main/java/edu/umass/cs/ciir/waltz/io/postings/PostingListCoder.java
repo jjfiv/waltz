@@ -6,6 +6,7 @@ import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,9 +19,11 @@ public abstract class PostingListCoder<V> extends Coder<PostingMover<V>> {
     return true;
   }
 
+  @Nonnull
   @Override
   public abstract DataChunk writeImpl(PostingMover<V> obj) throws IOException;
 
+  @Nonnull
   @Override
   public PostingMover<V> readImpl(InputStream inputStream) throws IOException {
 		return read(new StaticStream() {
@@ -36,6 +39,7 @@ public abstract class PostingListCoder<V> extends Coder<PostingMover<V>> {
     });
   }
 
+  @Nonnull
   @Override
   public abstract PostingMover<V> read(StaticStream streamFn) throws IOException;
 }

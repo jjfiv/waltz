@@ -13,6 +13,7 @@ import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class SimplePostingListFormat {
       this.valCoder = valCoder;
     }
 
+    @Nonnull
     @Override
     public DataChunk writeImpl(PostingMover<V> obj) throws IOException {
       ValueBuilder<V> writer = new PostingValueBuilder<>(blockSize, intsCoder, valCoder);
@@ -52,6 +54,7 @@ public class SimplePostingListFormat {
       return writer.getOutput();
     }
 
+    @Nonnull
     @Override
     public PostingMover<V> read(StaticStream streamFn) throws IOException {
       return new BlockPostingsMover<>(new Reader<>(intsCoder, valCoder, streamFn));

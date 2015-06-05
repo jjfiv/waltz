@@ -6,6 +6,7 @@ import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,11 +30,13 @@ public class PositionsListCoder extends Coder<PositionsList> {
     return true;
   }
 
+  @Nonnull
   @Override
   public DataChunk writeImpl(PositionsList obj) throws IOException {
     return innerCoder.writeImpl(obj);
   }
 
+  @Nonnull
   @Override
   public PositionsList readImpl(InputStream inputStream) throws IOException {
     return new SimplePositionsList(innerCoder.readImpl(inputStream));

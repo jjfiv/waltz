@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -29,6 +30,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
     return true;
   }
 
+  @Nonnull
   @Override
   public BufferList writeImpl(List<Integer> obj) throws IOException {
     BufferList bl = new BufferList();
@@ -45,6 +47,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
     return bl;
   }
 
+  @Nonnull
   @Override
   public List<Integer> readImpl(InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);
