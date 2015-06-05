@@ -7,6 +7,10 @@ public final class Span {
   public final int begin;
   public final int end;
 
+  /** No-args constructor used only for reflection */
+  private Span() {
+    begin = end = -1;
+  }
   public Span(int begin, int end) {
     this.begin = begin;
     this.end = end;

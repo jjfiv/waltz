@@ -33,6 +33,7 @@ public class CharsetCoders extends Module {
       return IO.readAll(reader);
     }
 
+    @Nonnull
     @Override
     public java.lang.String read(ByteBuffer buf) {
       return new java.lang.String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
