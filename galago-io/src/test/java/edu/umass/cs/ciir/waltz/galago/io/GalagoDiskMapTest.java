@@ -1,11 +1,11 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
-import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriterRawWrapper;
@@ -52,33 +52,67 @@ public class GalagoDiskMapTest {
   public void testRandomStrings() throws IOException {
     List<String> keys = Sample.strings(new Random(), 1000);
     List<String> values = Sample.strings(new Random(), 1000);
+    Map<String,String> actualData = new HashMap<>();
+    for (int i = 0; i < keys.size(); i++) {
+      actualData.put(keys.get(i), values.get(i));
+    }
 
-    //List<String> keys = Arrays.asList("1", "2", "12", "13");
-    //List<String> values = Arrays.asList("11", "22", "1212", "1313");
     Coder<String> strCoder = CharsetCoders.utf8Raw;
 
     try (TemporaryFile tmpFile = new TemporaryFile("test", ".btree")) {
       // write:
       try (IOMapWriter<String, String> ioMapWriter = GalagoIO.getIOMapWriter(strCoder, strCoder, tmpFile.getPath())) {
-        for (int i = 0; i < keys.size(); i++) {
-          ioMapWriter.put(keys.get(i), values.get(i));
+        for (Map.Entry<String, String> kv : actualData.entrySet()) {
+          ioMapWriter.put(kv.getKey(), kv.getValue());
         }
       }
 
       // read:
       try (IOMap<String, String> ioMap = GalagoIO.openIOMap(strCoder, strCoder, tmpFile.getPath())) {
-        assertEquals(1000, ioMap.keyCount());
-        assertEquals(new HashSet<>(keys), new HashSet<>(IterableFns.intoList(ioMap.keys())));
+        assertEquals(actualData.size(), ioMap.keyCount());
 
-        for (int i = 0; i < keys.size(); i++) {
-          String fetchedValue = ioMap.get(keys.get(i));
+
+        for (Map.Entry<String, String> kv : actualData.entrySet()) {
+          String fetchedValue = ioMap.get(kv.getKey());
           assertNotNull(fetchedValue);
-          System.out.println(Arrays.toString(values.get(i).getBytes()));
-          System.out.println(Arrays.toString(fetchedValue.getBytes()));
-          assertEquals(values.get(i), fetchedValue);
+          assertEquals(kv.getValue(), fetchedValue);
         }
       }
 
     } // delete tmpFile
   }
+
+  @Test
+  public void testRandomInts() throws IOException {
+    Random rand = new Random(13);
+
+    Map<Integer,Integer> actualData = new HashMap<>();
+    List<Integer> keys = Sample.randomIntegers(rand, 1000, 50000);
+    List<Integer> values = Sample.randomIntegers(rand, 1000, 50000);
+    for (int i = 0; i < keys.size(); i++) {
+      actualData.put(keys.get(i), values.get(i));
+    }
+
+    Coder<Integer> itemCoder = VarInt.instance;
+
+    try (TemporaryFile tmpFile = new TemporaryFile("test", ".btree")) {
+      // write:
+      try (IOMapWriter<Integer, Integer> ioMapWriter = GalagoIO.getIOMapWriter(itemCoder, itemCoder, tmpFile.getPath())) {
+        for (Map.Entry<Integer, Integer> kv : actualData.entrySet()) {
+          ioMapWriter.put(kv.getKey(), kv.getValue());
+        }
+      }
+
+      // read:
+      try (IOMap<Integer, Integer> ioMap = GalagoIO.openIOMap(itemCoder, itemCoder, tmpFile.getPath())) {
+        assertEquals(actualData.size(), ioMap.keyCount());
+        for (Map.Entry<Integer, Integer> kv : actualData.entrySet()) {
+          int fetchedValue = ioMap.get(kv.getKey());
+          assertEquals(kv.getValue().intValue(), fetchedValue);
+        }
+      }
+
+    } // delete tmpFile
+  }
+
 }
