@@ -5,7 +5,7 @@ import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
-import edu.umass.cs.ciir.waltz.coders.map.IOMapWriterImpl;
+import edu.umass.cs.ciir.waltz.coders.map.IOMapWriterRawWrapper;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
 import edu.umass.cs.ciir.waltz.io.postings.PositionsListCoder;
@@ -42,7 +42,7 @@ public class SimplePostingListFormatTest {
     argp.put("keyCoder", FixedSize.ints.getClass().getName());
 
     try (TemporaryFile tmpFile = new TemporaryFile("positions", "index")) {
-      try (IOMapWriterImpl<Integer, PostingMover<PositionsList>> postingsWriter =
+      try (IOMapWriterRawWrapper<Integer, PostingMover<PositionsList>> postingsWriter =
                GalagoIO.getIOMapWriter(
                    FixedSize.ints,
                    new SimplePostingListFormat.PostingCoder<>(new PositionsListCoder()),

@@ -8,12 +8,12 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public class IOMapWriterImpl<K extends Comparable<K>,V> implements IOMapWriter<K,V> {
+public class IOMapWriterRawWrapper<K extends Comparable<K>,V> implements IOMapWriter<K,V> {
   final RawIOMapWriter rawWriter;
   final Coder<K> keyCoder;
   final Coder<V> valCoder;
-  public IOMapWriterImpl(RawIOMapWriter writer, Coder<K> keyCoder, Coder<V> valCoder) {
-    this.rawWriter = writer;
+  public IOMapWriterRawWrapper(RawIOMapWriter writer, Coder<K> keyCoder, Coder<V> valCoder) throws IOException {
+    this.rawWriter = writer.getSorting();
     this.keyCoder = keyCoder;
     this.valCoder = valCoder;
   }
@@ -40,7 +40,7 @@ public class IOMapWriterImpl<K extends Comparable<K>,V> implements IOMapWriter<K
 
   @Override
   public IOMapWriter<K,V> getSorting() throws IOException {
-    return new SortingIOMapWriter<>(this);
+    return this;
   }
 
   @Override

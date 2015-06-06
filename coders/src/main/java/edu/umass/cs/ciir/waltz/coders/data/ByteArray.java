@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.data;
 
 import ciir.jfoley.chai.collections.util.ArrayFns;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +62,7 @@ public class ByteArray implements DataChunk, Comparable<ByteArray> {
   }
 
   @Override
-  public int compareTo(ByteArray o) {
+  public int compareTo(@Nonnull ByteArray o) {
     return ArrayFns.compare(this.data, o.data);
   }
 
