@@ -22,10 +22,8 @@ public class ListCoder<T> extends Coder<List<T>> {
     this(VarUInt.instance, itemCoder);
   }
   public ListCoder(Coder<Integer> countCoder, Coder<T> itemCoder) {
-    assert(countCoder.knowsOwnSize());
-    assert(itemCoder.knowsOwnSize());
-    this.countCoder = countCoder;
-    this.itemCoder = itemCoder;
+    this.countCoder = countCoder.lengthSafe();
+    this.itemCoder = itemCoder.lengthSafe();
   }
 
   @Override

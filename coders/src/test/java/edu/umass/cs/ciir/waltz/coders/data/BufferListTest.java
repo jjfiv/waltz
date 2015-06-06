@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class BufferListTest {
   @Test
   public void testWithStringCodec() {
-    Coder<String> str = CharsetCoders.utf8Raw;
+    Coder<String> str = CharsetCoders.utf8;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");
@@ -25,7 +25,7 @@ public class BufferListTest {
 
   @Test
   public void testToByteArray() throws UnsupportedEncodingException {
-    Coder<String> str = CharsetCoders.utf8Raw;
+    Coder<String> str = CharsetCoders.utf8;
 
     BufferList bl = new BufferList();
     bl.add(str, "hello");

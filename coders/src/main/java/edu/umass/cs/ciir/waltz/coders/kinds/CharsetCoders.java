@@ -19,7 +19,10 @@ import java.nio.charset.Charset;
 public class CharsetCoders extends Module {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Coder<String> utf8Raw = new Coder<String>() {
+  /**
+   * This is a UTF-8 string coder. If you want a length-prefixed version, call .lengthSafe() on it.
+   */
+  public static final Coder<String> utf8 = new Coder<String>() {
     @Nonnull
     @Override
     public DataChunk writeImpl(String obj) throws IOException {
@@ -44,7 +47,4 @@ public class CharsetCoders extends Module {
       return false;
     }
   };
-
-  @Deprecated
-  public static final Coder<String> utf8LengthPrefixed = utf8Raw.lengthSafe();
 }

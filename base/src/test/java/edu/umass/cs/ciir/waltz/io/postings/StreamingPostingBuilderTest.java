@@ -37,7 +37,7 @@ public class StreamingPostingBuilderTest {
     public void put(DataChunk key, DataChunk val) throws IOException {
       ByteArray prev = data.put(new ByteArray(key.asByteArray().clone()), ByteArray.of(val));
       assertEquals(ByteArray.of(val), data.get(ByteArray.of(key)));
-      assertNotNull(get(CharsetCoders.utf8LengthPrefixed.writeImpl(CharsetCoders.utf8LengthPrefixed.read(ByteArray.of(key)))));
+      assertNotNull(get(CharsetCoders.utf8.writeImpl(CharsetCoders.utf8.read(ByteArray.of(key)))));
       assert(prev == null);
     }
 
@@ -68,7 +68,7 @@ public class StreamingPostingBuilderTest {
   public void testIndex() throws IOException {
     FakeRawIOMapRW map = FakeRawIOMapRW.hashMap();
     try (StreamingPostingBuilder<String, Integer> builder = new StreamingPostingBuilder<>(
-        CharsetCoders.utf8LengthPrefixed,
+        CharsetCoders.utf8,
         VarUInt.instance,
         map)) {
       builder.add("the", 11, 11);
@@ -78,22 +78,23 @@ public class StreamingPostingBuilderTest {
         builder.add("many", i, i*2);
       }
     }
-    assertNotNull(map.get(CharsetCoders.utf8LengthPrefixed.writeImpl("the")));
+    assertNotNull(map.get(CharsetCoders.utf8.writeImpl("the")));
 
     assertEquals(3, map.keyCount());
 
     IOMapImpl<String, PostingMover<Integer>> converted = new IOMapImpl<>(
         map,
-        CharsetCoders.utf8LengthPrefixed,
+        CharsetCoders.utf8,
         new SimplePostingListFormat.PostingCoder<>(VarUInt.instance));
 
-    assertNotNull(map.get(CharsetCoders.utf8LengthPrefixed.writeImpl("the")));
+    assertNotNull(map.get(CharsetCoders.utf8.writeImpl("the")));
 
     Set<String> keys = new HashSet<>();
     for (ByteArray byteArray : map.data.keySet()) {
-      keys.add(CharsetCoders.utf8LengthPrefixed.read(byteArray));
+      keys.add(CharsetCoders.utf8.read(byteArray));
     }
     assertNotNull(converted.get("the"));
+    assertNotNull(keys);
 
     MoverFeature<Integer> theCounts = new MoverFeature<>(converted.get("the"));
     assertEquals(20, theCounts.getFeature(2).intValue());

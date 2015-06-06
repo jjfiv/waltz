@@ -51,7 +51,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;
-    this.objCoder = coder;
+    this.objCoder = coder.lengthSafe();
     this.cmp = comparator;
     this.maxItemsInMemory = maxItemsInMemory;
     this.mergeFactor = mergeFactor;

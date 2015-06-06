@@ -14,7 +14,7 @@ public class ListCoderTest {
 
   @Test
   public void testKnownStrings() throws Exception {
-    ListCoder<String> strs = new ListCoder<>(CharsetCoders.utf8LengthPrefixed);
+    ListCoder<String> strs = new ListCoder<>(CharsetCoders.utf8);
     assertTrue(strs.knowsOwnSize());
 
     List<java.lang.String> testData = new ArrayList<>();

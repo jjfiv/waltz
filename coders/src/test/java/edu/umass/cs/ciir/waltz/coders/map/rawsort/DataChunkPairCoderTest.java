@@ -20,7 +20,7 @@ public class DataChunkPairCoderTest {
   public void testDataChunkPairCoder() {
     List<String> keys = Sample.strings(new Random(), 1000);
     List<String> values = Sample.strings(new Random(), 1000);
-    Coder<String> strCoder = CharsetCoders.utf8Raw;
+    Coder<String> strCoder = CharsetCoders.utf8;
     DataChunkPairCoder coder = new DataChunkPairCoder();
 
     for (int i = 0; i < keys.size(); i++) {

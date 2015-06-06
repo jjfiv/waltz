@@ -16,7 +16,7 @@ public class UTF8Test {
 
   @Test
   public void testWithoutLengthPrefix() {
-    Coder<String> c = CharsetCoders.utf8Raw;
+    Coder<String> c = CharsetCoders.utf8;
     assertFalse(c.knowsOwnSize());
 
     BufferList output = new BufferList();
@@ -27,7 +27,7 @@ public class UTF8Test {
 
   @Test
   public void testWithLengthPrefix() throws IOException {
-    Coder<java.lang.String> c = CharsetCoders.utf8LengthPrefixed;
+    Coder<java.lang.String> c = CharsetCoders.utf8.lengthSafe();
     assertTrue(c.knowsOwnSize());
 
     BufferList output = new BufferList();

@@ -133,7 +133,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
 
     @Override
     public Coder<String> getKeyCoder() {
-      return CharsetCoders.utf8LengthPrefixed;
+      return CharsetCoders.utf8;
     }
 
     @Override

@@ -83,7 +83,7 @@ public class ExternalSortingWriterTest {
     Collections.sort(sortedRaw);
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<String> sorter = new ExternalSortingWriter<>(tmpdir.get(), CharsetCoders.utf8LengthPrefixed)) {
+      try (ExternalSortingWriter<String> sorter = new ExternalSortingWriter<>(tmpdir.get(), CharsetCoders.utf8)) {
         for (String str : rawData) {
           sorter.process(str);
         }

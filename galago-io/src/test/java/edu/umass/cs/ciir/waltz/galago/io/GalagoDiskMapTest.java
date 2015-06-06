@@ -57,7 +57,7 @@ public class GalagoDiskMapTest {
       actualData.put(keys.get(i), values.get(i));
     }
 
-    Coder<String> strCoder = CharsetCoders.utf8Raw;
+    Coder<String> strCoder = CharsetCoders.utf8;
 
     try (TemporaryFile tmpFile = new TemporaryFile("test", ".btree")) {
       // write:

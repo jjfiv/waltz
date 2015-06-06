@@ -23,7 +23,7 @@ public class GenKeyDiskMapTest {
 
       List<String> tmpdata = Sample.strings(new Random(), 1000);
 
-      Coder<String> coder = CharsetCoders.utf8LengthPrefixed;
+      Coder<String> coder = CharsetCoders.utf8;
       try (GenKeyDiskMap.Writer<String> wr = GenKeyDiskMap.Writer.createNew(basePath, coder)) {
         for (int i = 0; i < tmpdata.size(); i++) {
           String str = tmpdata.get(i);

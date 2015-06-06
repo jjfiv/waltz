@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 public class CharsetCodersTest {
   @Test
   public void testStrings() throws IOException {
-    Coder<String> utf8 = CharsetCoders.utf8LengthPrefixed;
+    Coder<String> utf8 = CharsetCoders.utf8;
     for (String str : Sample.strings(new Random(), 1000)) {
       assertEquals(str, utf8.read(utf8.writeImpl(str)));
     }
