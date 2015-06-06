@@ -2,15 +2,22 @@ package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.io.TemporaryFile;
+import ciir.jfoley.chai.random.Sample;
+import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
+import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriterRawWrapper;
 import edu.umass.cs.ciir.waltz.galago.io.coders.GalagoVByteCoders;
 import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class GalagoDiskMapTest {
 
@@ -39,5 +46,35 @@ public class GalagoDiskMapTest {
       }
     } // delete tmpFile
 
+  }
+
+  @Test
+  public void testRandomStrings() throws IOException {
+    List<String> keys = Sample.strings(new Random(), 1000);
+    List<String> values = Sample.strings(new Random(), 1000);
+
+    //List<String> keys = Arrays.asList("1", "2", "12", "13");
+    //List<String> values = Arrays.asList("11", "22", "1212", "1313");
+
+    try (TemporaryFile tmpFile = new TemporaryFile("test", ".btree")) {
+      // write:
+      try (IOMapWriter<String, String> ioMapWriter = GalagoIO.getIOMapWriter(CharsetCoders.utf8Raw.lengthSafe(), CharsetCoders.utf8Raw.lengthSafe(), tmpFile.getPath())) {
+        for (int i = 0; i < keys.size(); i++) {
+          ioMapWriter.put(keys.get(i), values.get(i));
+        }
+      }
+
+      // read:
+      try (IOMap<String, String> ioMap = GalagoIO.openIOMap(CharsetCoders.utf8Raw.lengthSafe(), CharsetCoders.utf8Raw.lengthSafe(), tmpFile.getPath())) {
+        for (int i = 0; i < keys.size(); i++) {
+          String fetchedValue = ioMap.get(keys.get(i));
+          assertNotNull(fetchedValue);
+          System.out.println(Arrays.toString(values.get(i).getBytes()));
+          System.out.println(Arrays.toString(fetchedValue.getBytes()));
+          assertEquals(values.get(i), fetchedValue);
+        }
+      }
+
+    } // delete tmpFile
   }
 }

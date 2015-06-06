@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map;
 
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.map.rawsort.SortingRawIOMapWriter;
 
 import java.io.Closeable;
 import java.io.IOException;

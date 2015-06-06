@@ -15,7 +15,7 @@ public class IOMapWriterRawWrapper<K extends Comparable<K>,V> implements IOMapWr
   public IOMapWriterRawWrapper(RawIOMapWriter writer, Coder<K> keyCoder, Coder<V> valCoder) throws IOException {
     this.rawWriter = writer.getSorting();
     this.keyCoder = keyCoder;
-    this.valCoder = valCoder;
+    this.valCoder = valCoder.lengthSafe();
   }
 
   @Override
