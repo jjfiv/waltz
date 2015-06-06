@@ -84,11 +84,9 @@ public class GalagoDiskMapTest {
 
   @Test
   public void testRandomInts() throws IOException {
-    Random rand = new Random(13);
-
     Map<Integer,Integer> actualData = new HashMap<>();
-    List<Integer> keys = Sample.randomIntegers(rand, 1000, 50000);
-    List<Integer> values = Sample.randomIntegers(rand, 1000, 50000);
+    List<Integer> keys = Sample.randomIntegers(1000, 50000);
+    List<Integer> values = Sample.randomIntegers(1000, 50000);
     for (int i = 0; i < keys.size(); i++) {
       actualData.put(keys.get(i), values.get(i));
     }

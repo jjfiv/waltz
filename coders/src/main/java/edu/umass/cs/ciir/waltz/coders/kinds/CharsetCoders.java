@@ -19,24 +19,24 @@ import java.nio.charset.Charset;
 public class CharsetCoders extends Module {
   public static final Charset charset = Charset.forName("UTF-8");
 
-  public static final Coder<String> utf8Raw = new Coder<java.lang.String>() {
+  public static final Coder<String> utf8Raw = new Coder<String>() {
     @Nonnull
     @Override
-    public DataChunk writeImpl(java.lang.String obj) throws IOException {
+    public DataChunk writeImpl(String obj) throws IOException {
       return ByteBufferDataChunk.of(obj.getBytes(charset));
     }
 
     @Nonnull
     @Override
-    public java.lang.String readImpl(InputStream inputStream) throws IOException {
+    public String readImpl(InputStream inputStream) throws IOException {
       InputStreamReader reader = new InputStreamReader(inputStream, charset);
       return IO.readAll(reader);
     }
 
     @Nonnull
     @Override
-    public java.lang.String read(ByteBuffer buf) {
-      return new java.lang.String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
+    public String read(ByteBuffer buf) {
+      return new String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
     }
 
     @Override
@@ -45,5 +45,6 @@ public class CharsetCoders extends Module {
     }
   };
 
-  public static final Coder<java.lang.String> utf8LengthPrefixed = new LengthPrefixCoder<>(VarUInt.instance, utf8Raw);
+  @Deprecated
+  public static final Coder<String> utf8LengthPrefixed = utf8Raw.lengthSafe();
 }
