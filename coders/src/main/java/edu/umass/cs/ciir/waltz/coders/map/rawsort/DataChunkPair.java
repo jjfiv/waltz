@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map.rawsort;
 
 import ciir.jfoley.chai.collections.Pair;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
@@ -17,5 +18,9 @@ public class DataChunkPair extends Pair<ByteArray, DataChunk> implements Compara
   @Override
   public int compareTo(@Nonnull DataChunkPair o) {
     return getKey().compareTo(o.getKey());
+  }
+
+  public <A,B> Pair<A,B> decode(Coder<A> keyCoder, Coder<B> valCoder) {
+    return Pair.of(keyCoder.read(left), valCoder.read(right));
   }
 }

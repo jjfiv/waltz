@@ -1,8 +1,10 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
 import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.io.TemporaryFile;
 import ciir.jfoley.chai.random.Sample;
+import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
@@ -12,9 +14,7 @@ import org.junit.Test;
 import org.lemurproject.galago.utility.Parameters;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +41,7 @@ public class GalagoDiskMapTest {
             Arrays.asList(Pair.of(1,10), Pair.of(3, 30)),
             reader.getInBulk(Arrays.asList(1,3)));
         assertEquals(
-            Arrays.asList(Pair.of(3, 30)),
+            Collections.singletonList(Pair.of(3, 30)),
             reader.getInBulk(Arrays.asList(3,700)));
       }
     } // delete tmpFile
@@ -55,17 +55,21 @@ public class GalagoDiskMapTest {
 
     //List<String> keys = Arrays.asList("1", "2", "12", "13");
     //List<String> values = Arrays.asList("11", "22", "1212", "1313");
+    Coder<String> strCoder = CharsetCoders.utf8Raw;
 
     try (TemporaryFile tmpFile = new TemporaryFile("test", ".btree")) {
       // write:
-      try (IOMapWriter<String, String> ioMapWriter = GalagoIO.getIOMapWriter(CharsetCoders.utf8Raw.lengthSafe(), CharsetCoders.utf8Raw.lengthSafe(), tmpFile.getPath())) {
+      try (IOMapWriter<String, String> ioMapWriter = GalagoIO.getIOMapWriter(strCoder, strCoder, tmpFile.getPath())) {
         for (int i = 0; i < keys.size(); i++) {
           ioMapWriter.put(keys.get(i), values.get(i));
         }
       }
 
       // read:
-      try (IOMap<String, String> ioMap = GalagoIO.openIOMap(CharsetCoders.utf8Raw.lengthSafe(), CharsetCoders.utf8Raw.lengthSafe(), tmpFile.getPath())) {
+      try (IOMap<String, String> ioMap = GalagoIO.openIOMap(strCoder, strCoder, tmpFile.getPath())) {
+        assertEquals(1000, ioMap.keyCount());
+        assertEquals(new HashSet<>(keys), new HashSet<>(IterableFns.intoList(ioMap.keys())));
+
         for (int i = 0; i < keys.size(); i++) {
           String fetchedValue = ioMap.get(keys.get(i));
           assertNotNull(fetchedValue);

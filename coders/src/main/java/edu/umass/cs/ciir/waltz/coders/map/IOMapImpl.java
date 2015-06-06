@@ -22,7 +22,7 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
   public IOMapImpl(RawIOMap inner, Coder<K> keyCoder, Coder<V> valCoder) {
     this.inner = inner;
     this.keyCoder = keyCoder;
-    this.valCoder = valCoder.lengthSafe();
+    this.valCoder = valCoder;
   }
 
   @Override
