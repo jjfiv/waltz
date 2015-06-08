@@ -1,10 +1,8 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
-import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +10,7 @@ import java.io.OutputStream;
 /**
  * @author jfoley.
  */
-public class RunWriter<T> implements SinkFn<T>, Closeable {
+public class RunWriter<T> implements ClosingSinkFn<T> {
   private final OutputStream output;
   private final Coder<T> itemCoder;
 

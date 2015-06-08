@@ -1,7 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.iters.ClosingIterator;
-import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.io.FS;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
@@ -61,7 +60,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
    * @param collector callback function that handles each item in turn.
    * @throws IOException
    */
-  public void forAll(SinkFn<T> collector) throws IOException {
+  public void forAll(ClosingSinkFn<T> collector) throws IOException {
     while (queue.size() > 1) {
       // find minimum, pull it out:
       RunReader<T> minimum = queue.poll();
@@ -85,6 +84,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
       }
       last.close();
     }
+    collector.close();
   }
 
   public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<? super T> cmp, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {

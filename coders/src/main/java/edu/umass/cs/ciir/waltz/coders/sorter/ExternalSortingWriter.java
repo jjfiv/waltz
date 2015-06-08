@@ -139,7 +139,11 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
     try (MergingRunReader<T> reader = new MergingRunReader<>(readers);
          RunWriter<T> writer = new RunWriter<>(total, countCoder, objCoder, nameForId(currentId))) {
-      reader.forAll(writer);
+      //if(reducer instanceof Reducer.NullReducer) {
+        //reader.forAll(writer);
+      //} else {
+        reader.forAll(new SinkReducer<>(reducer, writer));
+      //}
     }
 
     // Delete the files associated with the old runs:
