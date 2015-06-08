@@ -39,6 +39,8 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   private int nextId;
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
+  private Reducer<T> reducer = new Reducer.NullReducer<>();
+  private T previous;
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
@@ -58,6 +60,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this.buffer = new ArrayList<>(maxItemsInMemory);
     this.nextId = 0;
     this.maxLevelRuns = 0;
+    this.previous = null;
 
     MemoryNotifier.register(this);
   }
@@ -79,6 +82,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
    */
   @Override
   public synchronized void flush() throws IOException {
+    if(previous != null) {
+      buffer.add(previous);
+      previous = null;
+    }
     if(buffer.isEmpty()) return;
 
     int currentId = nextId++;
@@ -147,7 +154,16 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   @Override
   public synchronized void process(T input) {
-    buffer.add(input);
+    if(previous == null) {
+      previous = input;
+    } else {
+      if(reducer.shouldMerge(previous, input)) {
+        previous = reducer.merge(previous, input);
+      } else {
+        buffer.add(previous);
+        previous = input;
+      }
+    }
     if(buffer.size() >= maxItemsInMemory) {
       try {
         flush();

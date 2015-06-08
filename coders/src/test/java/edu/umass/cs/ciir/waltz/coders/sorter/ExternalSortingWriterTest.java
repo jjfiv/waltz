@@ -43,6 +43,7 @@ public class ExternalSortingWriterTest {
         for (int input : shuffled) {
           sorter.process(input);
         }
+        sorter.flush();
 
         List<RunReader<Integer>> readers = new ArrayList<>();
         for (List<Integer> ids : sorter.runsByLevel.values()) {
