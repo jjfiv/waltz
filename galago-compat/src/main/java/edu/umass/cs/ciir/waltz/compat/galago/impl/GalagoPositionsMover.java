@@ -25,12 +25,6 @@ public class GalagoPositionsMover extends AGalagoMover<ExtentIterator> implement
     return new GalagoExtentsAsPositionsList(arr);
   }
 
-  @Nullable
-  @Override
-  public PostingListStatistics<PositionsList> getStatistics() {
-    return null;
-  }
-
   public static class GalagoExtentsAsPositionsList extends AChaiList<Integer> implements PositionsList {
     private final ExtentArray arr;
 

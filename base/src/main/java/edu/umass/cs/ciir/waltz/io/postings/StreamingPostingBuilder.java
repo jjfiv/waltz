@@ -5,7 +5,6 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.map.RawIOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
 import edu.umass.cs.ciir.waltz.coders.tuple.MapPostingAtom;
-import edu.umass.cs.ciir.waltz.statistics.DefaultPostingListStatistics;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -43,7 +42,7 @@ public class StreamingPostingBuilder<K extends Comparable<K>,V> implements Close
   }
 
   public ValueBuilder<V> makeValueBuilder() throws IOException {
-    return new SimplePostingListFormat.PostingValueBuilder<>(valCoder, new DefaultPostingListStatistics<>());
+    return new SimplePostingListFormat.PostingValueBuilder<>(valCoder);
   }
 
   @Override

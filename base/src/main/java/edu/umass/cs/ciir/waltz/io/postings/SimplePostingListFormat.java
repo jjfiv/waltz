@@ -15,12 +15,9 @@ import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.statistics.DefaultPostingListStatistics;
-import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,27 +36,22 @@ public class SimplePostingListFormat {
     private final int blockSize;
     private final Coder<V> valCoder;
     private final Coder<List<Integer>> intsCoder;
-    private final PostingListStatistics<V> combinedStats;
 
     public PostingCoder(Coder<V> valCoder) throws IOException {
-      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder, new DefaultPostingListStatistics<>());
+      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder);
     }
-    public PostingCoder(Coder<V> valCoder, PostingListStatistics<V> stats) throws IOException {
-      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder, stats);
-    }
-    public PostingCoder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder, PostingListStatistics<V> stats) {
+    public PostingCoder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
       this.blockSize = blockSize;
       assert(intsCoder.knowsOwnSize());
       assert(valCoder.knowsOwnSize());
       this.intsCoder = intsCoder;
       this.valCoder = valCoder;
-      combinedStats = stats;
     }
 
     @Nonnull
     @Override
     public DataChunk writeImpl(PostingMover<V> obj) throws IOException {
-      ValueBuilder<V> writer = new PostingValueBuilder<>(blockSize, intsCoder, valCoder, combinedStats);
+      ValueBuilder<V> writer = new PostingValueBuilder<>(blockSize, intsCoder, valCoder);
       writer.add(obj);
       return writer.getOutput();
     }
@@ -82,23 +74,23 @@ public class SimplePostingListFormat {
     public PostingListChunk<V> currentChunk;
     MutableDataChunk output;
     public int totalKeys = 0;
+    public int maxKey = 0;
 
-    public PostingValueBuilder(Coder<V> valCoder, PostingListStatistics<V> stats) throws IOException {
-      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder, stats);
+    public PostingValueBuilder(Coder<V> valCoder) throws IOException {
+      this(DEFAULT_BLOCKSIZE, DEFAULT_INTSCODER, valCoder);
     }
-    public PostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder, PostingListStatistics<V> stats) throws IOException {
+    public PostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
       output = new SmartDataChunk();
       this.blockSize = blockSize;
       currentChunk = new PostingListChunk<>(intsCoder, valCoder);
-      this.stats = stats;
     }
 
     @Override
     public void add(int key, V value) throws IOException {
       if(currentChunk.count() >= blockSize) { writeCurrentBlock(); }
       currentChunk.add(key, value);
-      stats.add(value);
       totalKeys++;
+      maxKey = Math.max(maxKey, key);
     }
 
     private void writeCurrentBlock() throws IOException {
@@ -128,9 +120,9 @@ public class SimplePostingListFormat {
       return bl;
     }
 
-    public ByteBuffer getMetadataChunk() {
+    public DataChunk getMetadataChunk() {
       // No matter what posting it is, it knows it's df.
-      return VarUInt.instance.write(totalKeys);
+      return VarUInt.instance.writeData(totalKeys);
     }
   }
 

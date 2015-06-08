@@ -17,9 +17,4 @@ public class CountsOfPositionsMover extends MappingMover<PositionsList, Integer>
   public Integer getCurrentPosting() {
     return inner.getCurrentPosting().size();
   }
-
-  @Override
-  public PostingListStatistics<Integer> getStatistics() {
-    return null;
-  }
 }

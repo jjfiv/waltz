@@ -26,14 +26,7 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
     if(valueBlock == null) {
       valueBlock = iterator.nextValueBlock();
     }
-    X val = valueBlock.getValue(index);
-    return val;
-  }
-
-  @Nullable
-  @Override
-  public PostingListStatistics<X> getStatistics() {
-    return null;
+    return valueBlock.getValue(index);
   }
 
   @Override

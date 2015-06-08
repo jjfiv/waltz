@@ -19,10 +19,4 @@ public class GalagoCountMover extends AGalagoMover<CountIterator> implements Pos
     ctx.document = currentKey();
     return iter.count(ctx);
   }
-
-  @Nullable
-  @Override
-  public PostingListStatistics<Integer> getStatistics() {
-    return null;
-  }
 }
