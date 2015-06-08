@@ -10,13 +10,13 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public class AnyOfMover extends AChildrenMover {
-	public AnyOfMover(List<? extends Mover> children) {
+public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
+	public AnyOfMover(List<T> children) {
 		super(children);
 	}
 
-	public static AnyOfMover of(Mover... childs) {
-		return new AnyOfMover(Arrays.asList(childs));
+	public static <T extends Mover> AnyOfMover<T> of(T... childs) {
+		return new AnyOfMover<>(Arrays.asList(childs));
 	}
 
 	protected IKeyBlock loadKeysFromChildren() {

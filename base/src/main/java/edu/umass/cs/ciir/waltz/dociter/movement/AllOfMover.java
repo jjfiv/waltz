@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * @author jfoley.
  */
-public class AllOfMover extends AChildrenMover {
+public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 
-	public static AllOfMover of(Mover... childs) {
-		return new AllOfMover(Arrays.asList(childs));
+	public static <T extends Mover> AllOfMover of(T... childs) {
+		return new AllOfMover<>(Arrays.asList(childs));
 	}
-	public AllOfMover(List<? extends Mover> children) {
+	public AllOfMover(List<T> children) {
 		super(children);
 	}
 

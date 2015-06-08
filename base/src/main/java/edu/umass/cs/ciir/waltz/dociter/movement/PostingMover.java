@@ -2,6 +2,9 @@ package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.fn.SinkFn;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
+import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley
@@ -23,4 +26,6 @@ public interface PostingMover<X> extends Mover {
     execute(input -> collector.process(feature.getFeature(input)));
   }
 
+  @Nullable
+  PostingListStatistics<X> getStatistics();
 }

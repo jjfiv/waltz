@@ -4,6 +4,9 @@ import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.IterableBlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.postings.Posting;
+import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley
@@ -25,6 +28,12 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
     }
     X val = valueBlock.getValue(index);
     return val;
+  }
+
+  @Nullable
+  @Override
+  public PostingListStatistics<X> getStatistics() {
+    return null;
   }
 
   @Override
