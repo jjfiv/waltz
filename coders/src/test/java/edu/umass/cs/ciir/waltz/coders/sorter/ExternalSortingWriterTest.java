@@ -14,7 +14,6 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
 import org.junit.Test;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,36 +96,12 @@ public class ExternalSortingWriterTest {
     }
   }
 
-  static class WordCount implements Comparable<WordCount> {
-    public String word;
-    @Nonnegative
-    public int count;
-
+  static class WordCount extends Pair<String,Integer> {
     public WordCount(String word, int count) {
-      this.word = word;
-      this.count = count;
+      super(word, count);
     }
-
-    @Override
-    public int compareTo(@Nonnull WordCount o) {
-      int cmp = word.compareTo(o.word);
-      if(cmp != 0) return cmp;
-      return Integer.compare(count, o.count);
-    }
-
-    @Override
-    public String toString() {
-      return "["+word+" "+count+"]";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if(o instanceof WordCount) {
-        WordCount other = (WordCount) o;
-        return this.count == other.count && this.word.equals(other.word);
-      }
-      return false;
-    }
+    public int getCount() { return right; }
+    public String getWord() { return left; }
   }
 
   static class WordCountCoder extends Coder<WordCount> {
@@ -136,8 +111,8 @@ public class ExternalSortingWriterTest {
     @Override
     public DataChunk writeImpl(WordCount obj) throws IOException {
       BufferList bl = new BufferList();
-      bl.add(CharsetCoders.utf8.lengthSafe(), obj.word);
-      bl.add(VarUInt.instance, obj.count);
+      bl.add(CharsetCoders.utf8.lengthSafe(), obj.getWord());
+      bl.add(VarUInt.instance, obj.getCount());
       return bl;
     }
 
@@ -153,12 +128,12 @@ public class ExternalSortingWriterTest {
   static class WordCountReducer extends Reducer<WordCount> {
     @Override
     public boolean shouldMerge(WordCount lhs, WordCount rhs) {
-      return lhs.word.equals(rhs.word);
+      return lhs.getWord().equals(rhs.getWord());
     }
 
     @Override
     public WordCount merge(WordCount lhs, WordCount rhs) {
-      return new WordCount(lhs.word, lhs.count + rhs.count);
+      return new WordCount(lhs.getWord(), lhs.getCount() + rhs.getCount());
     }
   }
 
@@ -179,7 +154,7 @@ public class ExternalSortingWriterTest {
 
     Map<String,Integer> frequencies = new HashMap<>(testData.size());
     for (WordCount wordCount : testData) {
-      MapFns.addOrIncrement(frequencies, wordCount.word, wordCount.count);
+      MapFns.addOrIncrement(frequencies, wordCount.getWord(), wordCount.getCount());
     }
 
     // Make sure we can sort this type:
@@ -217,7 +192,7 @@ public class ExternalSortingWriterTest {
         sorter.flush();
 
         for (WordCount wordCount : sorter.getOutput()) {
-          assertEquals(frequencies.get(wordCount.word).intValue(), wordCount.count);
+          assertEquals(frequencies.get(wordCount.getWord()).intValue(), wordCount.getCount());
         }
       }
     }

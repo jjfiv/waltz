@@ -13,7 +13,7 @@ import java.util.Comparator;
 /**
  * @author jfoley
  */
-public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements Comparable<DiskMapAtom<K,V>> {
+public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> {
   public DiskMapAtom(K left, V right) {
     super(left, right);
   }
@@ -22,14 +22,8 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
     return Pair.cmpLeft();
   }
 
-
   public static <K extends Comparable<K>, V> Coder<DiskMapAtom<K, V>> getCoder(Coder<K> keyCoder, Coder<V> valCoder) {
     return new DiskMapAtomCoder<>(keyCoder, valCoder);
-  }
-
-  @Override
-  public int compareTo(DiskMapAtom<K, V> o) {
-    return left.compareTo(o.left);
   }
 
   private static class DiskMapAtomCoder<K extends Comparable<K>, V> extends Coder<DiskMapAtom<K, V>> {
