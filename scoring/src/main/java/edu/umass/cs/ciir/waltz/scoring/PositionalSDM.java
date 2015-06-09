@@ -67,7 +67,7 @@ public class PositionalSDM {
   }
 
   public Mover getMover() {
-    return new AnyOfMover(iters);
+    return new AnyOfMover<>(iters);
   }
 
   private void calculateStats() {
@@ -125,7 +125,7 @@ public class PositionalSDM {
   }
 
   public double score(int doc) {
-    long length = lengths.getFeature(doc);
+    long length = lengths.getFeature(doc, 0);
 
     double unigram = 0.0;
     // collect extent arrays

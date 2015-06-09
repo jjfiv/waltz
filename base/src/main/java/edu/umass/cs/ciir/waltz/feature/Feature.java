@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.feature;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -15,4 +16,11 @@ public interface Feature<X> {
    */
   @Nullable
   X getFeature(int key);
+
+  @Nonnull
+  default X getFeature(int key, @Nonnull X orElse) {
+    X found = getFeature(key);
+    if(found == null) return orElse;
+    return found;
+  }
 }

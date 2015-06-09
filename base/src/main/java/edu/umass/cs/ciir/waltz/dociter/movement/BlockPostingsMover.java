@@ -4,9 +4,6 @@ import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.IterableBlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.postings.Posting;
-import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
-
-import javax.annotation.Nullable;
 
 /**
  * @author jfoley

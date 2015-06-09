@@ -4,11 +4,8 @@ import ciir.jfoley.chai.collections.list.AChaiList;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
-import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
 import org.lemurproject.galago.core.retrieval.iterator.ExtentIterator;
 import org.lemurproject.galago.core.util.ExtentArray;
-
-import javax.annotation.Nullable;
 
 /**
  * @author jfoley

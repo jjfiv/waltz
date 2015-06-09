@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 /**
  * @author jfoley.
  */
-public class DataChunkPair extends Pair<ByteArray, DataChunk> {
+public class DataChunkPair extends Pair<ByteArray, DataChunk> implements Comparable<DataChunkPair> {
   public DataChunkPair(DataChunk left, DataChunk right) {
     super(ByteArray.of(left), right);
   }
@@ -22,7 +22,7 @@ public class DataChunkPair extends Pair<ByteArray, DataChunk> {
    * @return a comparison integer.
    */
   @Override
-  public int compareTo(@Nonnull Pair<ByteArray, DataChunk> o) {
+  public int compareTo(@Nonnull DataChunkPair o) {
     return getKey().compareTo(o.getKey());
   }
 

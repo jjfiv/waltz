@@ -96,12 +96,17 @@ public class ExternalSortingWriterTest {
     }
   }
 
-  static class WordCount extends Pair<String,Integer> {
+  static class WordCount extends Pair<String,Integer> implements Comparable<WordCount> {
     public WordCount(String word, int count) {
       super(word, count);
     }
     public int getCount() { return right; }
     public String getWord() { return left; }
+
+    @Override
+    public int compareTo(@Nonnull WordCount o) {
+      return getBestComparator().compare(this, o);
+    }
   }
 
   static class WordCountCoder extends Coder<WordCount> {

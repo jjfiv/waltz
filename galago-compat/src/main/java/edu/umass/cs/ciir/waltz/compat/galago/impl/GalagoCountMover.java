@@ -1,10 +1,7 @@
 package edu.umass.cs.ciir.waltz.compat.galago.impl;
 
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.statistics.PostingListStatistics;
 import org.lemurproject.galago.core.retrieval.iterator.CountIterator;
-
-import javax.annotation.Nullable;
 
 /**
  * @author jfoley
