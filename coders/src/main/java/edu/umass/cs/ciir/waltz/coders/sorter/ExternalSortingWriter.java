@@ -8,6 +8,7 @@ import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 
+import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.io.File;
 import java.io.Flushable;
@@ -40,7 +41,6 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   private int nextId;
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
-  private T previous;
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
@@ -61,7 +61,6 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this.buffer = new ArrayList<>(maxItemsInMemory);
     this.nextId = 0;
     this.maxLevelRuns = 0;
-    this.previous = null;
 
     MemoryNotifier.register(this);
   }
@@ -87,25 +86,18 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
    */
   @Override
   public synchronized void flush() throws IOException {
-    if(previous != null) {
-      buffer.add(previous);
-      previous = null;
-    }
     if(buffer.isEmpty()) return;
 
     int currentId = nextId++;
-    try (RunWriter<T> writer = new RunWriter<>(objCoder, nameForId(currentId))) {
+    try (ClosingSinkFn<T> writer = getNewWriter(currentId)) {
       QuickSort.sort(cmp, buffer);
       // write run to file.
-      for (T t : buffer) {
-        writer.process(t);
-      }
-      writer.close();
-      // ditch memory as soon as possible.
-      buffer.clear();
-      // add to lowest rung of runs collection.
-      MapFns.extendListInMap(runsByLevel, 0, currentId);
+      buffer.forEach(writer::process);
     }
+    // ditch memory as soon as possible.
+    buffer.clear();
+    // add to lowest rung of runs collection.
+    MapFns.extendListInMap(runsByLevel, 0, currentId);
     // check and see if we need to mergeRuns()
     mergeRuns();
   }
@@ -135,7 +127,16 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     return new File(dir, Integer.toString(id)+".sorted");
   }
 
-  private synchronized Integer mergeRuns(List<Integer> runs) throws IOException {
+  @Nonnull
+  public synchronized ClosingSinkFn<T> getNewWriter(int currentId) throws IOException {
+    RunWriter<T> writer = new RunWriter<>(objCoder, nameForId(currentId));
+    if(reducer instanceof Reducer.NullReducer) {
+      return writer;
+    }
+    return new SinkReducer<>(reducer, writer);
+  }
+
+  private synchronized int mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
     List<RunReader<T>> readers = new ArrayList<>();
     for (int run : runs) {
@@ -144,12 +145,8 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     }
 
     try (MergingRunReader<T> reader = new MergingRunReader<>(readers);
-         RunWriter<T> writer = new RunWriter<>(objCoder, nameForId(currentId))) {
-      //if(reducer instanceof Reducer.NullReducer) {
-        //reader.forAll(writer);
-      //} else {
-        reader.forAll(new SinkReducer<>(reducer, writer));
-      //}
+         ClosingSinkFn<T> writer = getNewWriter(currentId)) {
+        reader.forAll(writer);
     }
 
     // Delete the files associated with the old runs:
@@ -164,16 +161,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   @Override
   public synchronized void process(T input) {
-    if(previous == null) {
-      previous = input;
-    } else {
-      if(reducer.shouldMerge(previous, input)) {
-        previous = reducer.merge(previous, input);
-      } else {
-        buffer.add(previous);
-        previous = input;
-      }
-    }
+    buffer.add(input);
     if(buffer.size() >= maxItemsInMemory) {
       try {
         flush();

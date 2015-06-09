@@ -84,7 +84,6 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
       }
       last.close();
     }
-    collector.close();
   }
 
   public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<? super T> cmp, Coder<T> itemCoder) throws IOException {
