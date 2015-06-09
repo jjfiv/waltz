@@ -3,11 +3,9 @@ package edu.umass.cs.ciir.waltz.coders.files;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.Flushable;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 
 import static java.nio.file.StandardOpenOption.*;
@@ -47,8 +45,16 @@ public class FileSink implements Closeable, Flushable {
     channel.write(coder.write(obj));
   }
 
+  public OutputStream getOutputStream() {
+    return Channels.newOutputStream(channel);
+  }
+
   @Override
   public void flush() throws IOException {
     channel.force(false); // don't force changes to metadata
+  }
+
+  public <T> void write(long offset, Coder<T> coder, T value) throws IOException {
+    channel.write(coder.write(value), offset);
   }
 }

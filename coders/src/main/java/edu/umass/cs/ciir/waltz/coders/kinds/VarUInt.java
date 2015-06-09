@@ -4,6 +4,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.io.EOFException;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class VarUInt extends Coder<Integer> {
 
   @Nonnull
   @Override
-  public DataChunk writeImpl(Integer obj) throws IOException {
+  public DataChunk writeImpl(@Nonnegative Integer obj) throws IOException {
     assert(obj != null);
     int x = obj;
     assert(x >= 0);
@@ -50,6 +51,7 @@ public class VarUInt extends Coder<Integer> {
     return new ByteArray(Arrays.copyOf(data, put));
   }
 
+  @Nonnegative
   @Nonnull
   @Override
   public Integer readImpl(InputStream inputStream) throws IOException {

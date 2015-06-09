@@ -14,21 +14,19 @@ public class SortDirectory<T> implements Iterable<T> {
   private final File dir;
   private final Comparator<? super T> cmp;
   private final Reducer<T> reducer;
-  private final Coder<Long> countCoder;
   private final Coder<T> itemCoder;
 
-  public SortDirectory(File dir, Comparator<? super T> cmp, Reducer<T> reducer, Coder<Long> countCoder, Coder<T> itemCoder) throws IOException {
+  public SortDirectory(File dir, Comparator<? super T> cmp, Reducer<T> reducer, Coder<T> itemCoder) throws IOException {
     this.dir = dir;
     this.cmp = cmp;
     this.reducer = reducer;
-    this.countCoder = countCoder;
     this.itemCoder = itemCoder;
   }
 
   @Override
   public ClosingIterator<T> iterator() {
     try {
-      ClosingIterator<T> rawIterator = MergingRunReader.openDirectory(dir, cmp, countCoder, itemCoder);
+      ClosingIterator<T> rawIterator = MergingRunReader.openDirectory(dir, cmp, itemCoder);
       return new ReducingIterator<>(reducer, rawIterator);
     } catch (IOException e) {
       throw new RuntimeException(e);

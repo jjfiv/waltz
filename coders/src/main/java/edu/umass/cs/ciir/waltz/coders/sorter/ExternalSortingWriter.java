@@ -1,11 +1,9 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.util.Comparing;
-import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
-import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
@@ -29,9 +27,12 @@ import java.util.*;
  * @author jfoley.
  */
 public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T> {
+  public static final int DEFAULT_MAX_ITEMS_IN_MEMORY = 50*1024*1024;
+  public static final int DEFAULT_MERGE_FACTOR = 10;
   private final File dir;
   final Coder<Long> countCoder;
   final Coder<T> objCoder;
+  private Reducer<T> reducer = new Reducer.NullReducer<>();
   final Comparator<? super T> cmp;
   private final int maxItemsInMemory;
   private final int mergeFactor;
@@ -39,7 +40,6 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   private int nextId;
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
-  private Reducer<T> reducer = new Reducer.NullReducer<>();
   private T previous;
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
@@ -47,13 +47,14 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<? super T> comparator) {
     // Leverage some defaults from Galago, because why not?
-    this(dir, coder, comparator, 50 * 1024 * 1024, 10);
+    this(dir, coder, new Reducer.NullReducer<T>(), comparator, DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
   }
-  public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
+  public ExternalSortingWriter(File dir, Coder<T> coder, Reducer<T> reducer, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;
     this.objCoder = coder.lengthSafe();
+    this.reducer = reducer == null ? new Reducer.NullReducer<>() : reducer;
     this.cmp = comparator;
     this.maxItemsInMemory = maxItemsInMemory;
     this.mergeFactor = mergeFactor;
@@ -65,6 +66,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     MemoryNotifier.register(this);
   }
 
+  public ExternalSortingWriter(File dir, Reducer<T> reducer, Coder<T> coder) {
+    this(dir, coder, reducer, Comparing.defaultComparator(), DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
+  }
+
   @Override
   public synchronized void close() throws IOException {
     // push all runs to topmost level:
@@ -73,7 +78,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   }
 
   public SortDirectory<T> getOutput() throws IOException {
-    return new SortDirectory<>(dir, cmp, reducer, countCoder, objCoder);
+    return new SortDirectory<>(dir, cmp, reducer, objCoder);
   }
 
   /**
@@ -89,10 +94,13 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     if(buffer.isEmpty()) return;
 
     int currentId = nextId++;
-    try (RunWriter<T> writer = new RunWriter<>(buffer.size(), countCoder, objCoder, nameForId(currentId))) {
+    try (RunWriter<T> writer = new RunWriter<>(objCoder, nameForId(currentId))) {
       QuickSort.sort(cmp, buffer);
       // write run to file.
-      IterableFns.intoSink(buffer, writer);
+      for (T t : buffer) {
+        writer.process(t);
+      }
+      writer.close();
       // ditch memory as soon as possible.
       buffer.clear();
       // add to lowest rung of runs collection.
@@ -124,21 +132,19 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   }
 
   public File nameForId(int id) {
-    return new File(dir, Integer.toString(id)+".sorted.gz");
+    return new File(dir, Integer.toString(id)+".sorted");
   }
 
   private synchronized Integer mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
     List<RunReader<T>> readers = new ArrayList<>();
-    long total = 0L;
     for (int run : runs) {
-      RunReader<T> rdr = new RunReader<>(cmp, countCoder, objCoder, IO.openInputStream(nameForId(run)));
-      total += rdr.getCount();
+      RunReader<T> rdr = new RunReader<>(cmp, objCoder, nameForId(run));
       readers.add(rdr);
     }
 
     try (MergingRunReader<T> reader = new MergingRunReader<>(readers);
-         RunWriter<T> writer = new RunWriter<>(total, countCoder, objCoder, nameForId(currentId))) {
+         RunWriter<T> writer = new RunWriter<>(objCoder, nameForId(currentId))) {
       //if(reducer instanceof Reducer.NullReducer) {
         //reader.forAll(writer);
       //} else {

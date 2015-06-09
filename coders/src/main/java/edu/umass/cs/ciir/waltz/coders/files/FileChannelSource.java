@@ -37,7 +37,6 @@ public class FileChannelSource extends DataSource {
     return dat;
   }
 
-
   /**
    * Return a subset of the current source as its own source.
    * @param position the starting position in the current source of the new source (will become 0)
