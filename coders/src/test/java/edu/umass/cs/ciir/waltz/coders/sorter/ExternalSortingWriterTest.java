@@ -7,17 +7,13 @@ import ciir.jfoley.chai.collections.util.*;
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
+import edu.umass.cs.ciir.waltz.coders.tuple.DiskMapAtom;
 import org.junit.Test;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -97,97 +93,32 @@ public class ExternalSortingWriterTest {
     }
   }
 
-  static class WordCount implements Comparable<WordCount> {
-    public String word;
-    @Nonnegative
-    public int count;
-
-    public WordCount(String word, int count) {
-      this.word = word;
-      this.count = count;
-    }
-
-    @Override
-    public int compareTo(@Nonnull WordCount o) {
-      int cmp = word.compareTo(o.word);
-      if(cmp != 0) return cmp;
-      return Integer.compare(count, o.count);
-    }
-
-    @Override
-    public String toString() {
-      return "["+word+" "+count+"]";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if(o instanceof WordCount) {
-        WordCount other = (WordCount) o;
-        return this.count == other.count && this.word.equals(other.word);
-      }
-      return false;
-    }
-  }
-
-  static class WordCountCoder extends Coder<WordCount> {
-    @Override public boolean knowsOwnSize() { return true; }
-
-    @Nonnull
-    @Override
-    public DataChunk writeImpl(WordCount obj) throws IOException {
-      BufferList bl = new BufferList();
-      bl.add(CharsetCoders.utf8.lengthSafe(), obj.word);
-      bl.add(VarUInt.instance, obj.count);
-      return bl;
-    }
-
-    @Nonnull
-    @Override
-    public WordCount readImpl(InputStream inputStream) throws IOException {
-      String word = CharsetCoders.utf8.lengthSafe().readImpl(inputStream);
-      int count = VarUInt.instance.readImpl(inputStream);
-      return new WordCount(word, count);
-    }
-  }
-
-  static class WordCountReducer extends Reducer<WordCount> {
-    @Override
-    public boolean shouldMerge(WordCount lhs, WordCount rhs) {
-      return lhs.word.equals(rhs.word);
-    }
-
-    @Override
-    public WordCount merge(WordCount lhs, WordCount rhs) {
-      return new WordCount(lhs.word, lhs.count + rhs.count);
-    }
-  }
-
   @Test
   public void testWordCountReduce() throws IOException {
     Random rand = new Random();
-    List<WordCount> testData = new ArrayList<>();
+    List<DiskMapAtom<String,Integer>> testData = new ArrayList<>();
     List<String> words = Sample.strings(rand, 1000);
     List<Integer> counts = Sample.randomIntegers(1000, 255);
-    WordCountCoder coder = new WordCountCoder();
+    Coder<DiskMapAtom<String,Integer>> coder = new DiskMapAtom.DiskMapAtomCoder<>(CharsetCoders.utf8, VarUInt.instance);
     for (Pair<String, Integer> kv : ListFns.zip(words, counts)) {
-      WordCount wc = new WordCount(kv.getKey(), Math.abs(kv.getValue()));
+      DiskMapAtom<String,Integer> wc = new DiskMapAtom<>(kv.getKey(), Math.abs(kv.getValue()));
       testData.add(wc);
-      WordCount recoded = coder.read(coder.write(wc));
+      DiskMapAtom<String,Integer> recoded = coder.read(coder.write(wc));
       assertEquals(wc, recoded);
 
     }
 
     Map<String,Integer> frequencies = new HashMap<>(testData.size());
-    for (WordCount wordCount : testData) {
-      MapFns.addOrIncrement(frequencies, wordCount.word, wordCount.count);
+    for (DiskMapAtom<String,Integer> wordCount : testData) {
+      MapFns.addOrIncrement(frequencies, wordCount.left, wordCount.right);
     }
 
     // Make sure we can sort this type:
-    List<WordCount> sortedExternally;
+    List<DiskMapAtom<String,Integer>> sortedExternally;
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
+      try (ExternalSortingWriter<DiskMapAtom<String,Integer>> sorter = new ExternalSortingWriter<>(
           tmpdir.get(),
-          new WordCountCoder(),
+          coder,
           null, // no reducer
           Comparing.defaultComparator(),
           25, // make sure some flushes actually happen in this test
@@ -199,15 +130,15 @@ public class ExternalSortingWriterTest {
         sortedExternally = IterableFns.intoList(sorter.getOutput());
       }
     }
-    List<WordCount> sortedInternally = new ArrayList<>(testData);
+    List<DiskMapAtom<String,Integer>> sortedInternally = new ArrayList<>(testData);
     Collections.sort(sortedInternally);
     assertEquals(sortedInternally, sortedExternally);
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
+      try (ExternalSortingWriter<DiskMapAtom<String,Integer>> sorter = new ExternalSortingWriter<>(
           tmpdir.get(),
-          new WordCountCoder(),
-          new WordCountReducer(),
+          coder,
+          new DiskMapAtom.DiskMapAtomReducer<>((x,y) -> x+y),
           Comparing.defaultComparator(),
           25, // make sure some flushes actually happen in this test
           2 // make sure merge factor is weird
@@ -216,8 +147,8 @@ public class ExternalSortingWriterTest {
 
         sorter.flush();
 
-        for (WordCount wordCount : sorter.getOutput()) {
-          assertEquals(frequencies.get(wordCount.word).intValue(), wordCount.count);
+        for (DiskMapAtom<String,Integer> wordCount : sorter.getOutput()) {
+          assertEquals(frequencies.get(wordCount.left), wordCount.right);
         }
       }
     }

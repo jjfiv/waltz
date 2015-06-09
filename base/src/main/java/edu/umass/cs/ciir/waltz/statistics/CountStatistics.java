@@ -33,11 +33,12 @@ public class CountStatistics {
     this.maxCount = Math.max(count, maxCount);
   }
 
-  public void add(CountStatistics other) {
+  public CountStatistics add(CountStatistics other) {
     documentFrequency += other.documentFrequency;
     termFrequency += other.termFrequency;
     this.minCount = Math.min(other.minCount, minCount);
     this.maxCount = Math.max(other.maxCount, maxCount);
+    return this;
   }
 
   @Nonnull

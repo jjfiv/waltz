@@ -4,6 +4,8 @@ import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.reduce.MergeFn;
+import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -28,11 +30,11 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
   }
 
   @Override
-  public int compareTo(DiskMapAtom<K, V> o) {
+  public int compareTo(@Nonnull DiskMapAtom<K, V> o) {
     return left.compareTo(o.left);
   }
 
-  private static class DiskMapAtomCoder<K extends Comparable<K>, V> extends Coder<DiskMapAtom<K, V>> {
+  public static class DiskMapAtomCoder<K extends Comparable<K>, V> extends Coder<DiskMapAtom<K, V>> {
     private final Coder<K> keyCoder;
     private final Coder<V> valCoder;
 
@@ -64,5 +66,22 @@ public class DiskMapAtom<K extends Comparable<K>,V> extends Pair<K,V> implements
       //System.out.println("DiskMapAtom("+key+","+val+")");
       return new DiskMapAtom<>(key, val);
    }
+  }
+
+  public static class DiskMapAtomReducer<K extends Comparable<K>, V> extends Reducer<DiskMapAtom<K,V>> {
+    private final MergeFn<V> mergeFn;
+    public DiskMapAtomReducer(MergeFn<V> mergeFn) {
+      this.mergeFn = mergeFn;
+    }
+
+    @Override
+    public boolean shouldMerge(DiskMapAtom<K, V> lhs, DiskMapAtom<K, V> rhs) {
+      return lhs.getKey().equals(rhs.getKey());
+    }
+
+    @Override
+    public DiskMapAtom<K, V> merge(DiskMapAtom<K, V> lhs, DiskMapAtom<K, V> rhs) {
+      return new DiskMapAtom<>(lhs.left, mergeFn.merge(lhs.getValue(), rhs.getValue()));
+    }
   }
 }
