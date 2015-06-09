@@ -73,7 +73,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   }
 
   public SortDirectory<T> getOutput() throws IOException {
-    return new SortDirectory<>(dir, cmp, countCoder, objCoder);
+    return new SortDirectory<>(dir, cmp, reducer, countCoder, objCoder);
   }
 
   /**
