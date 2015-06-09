@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.coders.sorter;
+package edu.umass.cs.ciir.waltz.coders.reduce;
 
 import ciir.jfoley.chai.collections.iters.ClosingIterator;
 import ciir.jfoley.chai.io.IO;

@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.iters.ClosingIterator;
 import ciir.jfoley.chai.io.FS;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
 
 import java.io.Closeable;
 import java.io.File;

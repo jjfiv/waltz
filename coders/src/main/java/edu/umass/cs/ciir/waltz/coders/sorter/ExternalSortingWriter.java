@@ -7,6 +7,9 @@ import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
+import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
+import edu.umass.cs.ciir.waltz.coders.reduce.SinkReducer;
 
 import javax.annotation.Nonnull;
 import java.io.Closeable;

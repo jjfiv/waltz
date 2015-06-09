@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.coders.sorter;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.FileSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
 
 import java.io.File;
 import java.io.IOException;

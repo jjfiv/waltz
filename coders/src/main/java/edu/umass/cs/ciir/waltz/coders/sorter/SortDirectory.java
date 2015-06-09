@@ -2,6 +2,8 @@ package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.iters.ClosingIterator;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
+import edu.umass.cs.ciir.waltz.coders.reduce.ReducingIterator;
 
 import java.io.File;
 import java.io.IOException;
