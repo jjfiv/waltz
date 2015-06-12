@@ -13,6 +13,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.nio.file.StandardOpenOption.*;
 
@@ -27,6 +29,8 @@ class TmpFileDataChunk implements MutableDataChunk {
   private final File tmp;
   private final FileChannel channel;
   private long size;
+  private boolean closed = false;
+  private Logger logger = Logger.getLogger(TmpFileDataChunk.class.getName());
 
   public TmpFileDataChunk() throws IOException {
     this.tmp = File.createTempFile("tfdc", "datachunk");
@@ -104,7 +108,15 @@ class TmpFileDataChunk implements MutableDataChunk {
   }
 
   @Override
+  public void finalize() throws Throwable {
+    super.finalize();
+    if(!closed) logger.log(Level.SEVERE, "Leaked TmpFileDataChunk!");
+    assert(closed);
+  }
+
+  @Override
   public void close() throws IOException {
+    closed = true;
     channel.close();
     boolean status = tmp.delete();
     assert(status) : "Couldn't delete temporary file!";

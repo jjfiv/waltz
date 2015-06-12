@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.util.Comparing;
 import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
+import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.RunWriter;
@@ -96,7 +97,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     try (ClosingSinkFn<T> writer = getNewWriter(currentId)) {
       QuickSort.sort(cmp, buffer);
       // write run to file.
-      buffer.forEach(writer::process);
+      for (T t : buffer) {
+        writer.process(t);
+        IO.close(t);
+      }
     }
     // ditch memory as soon as possible.
     buffer.clear();
