@@ -31,6 +31,8 @@ public class DataChunkPairCoder extends Coder<DataChunkPair> {
     output.add(sizeCoder, IntMath.fromLong(obj.getValue().byteCount()));
     output.add(obj.getKey());
     output.add(obj.getValue());
+    obj.getKey().close();
+    obj.getValue().close();
     return output;
   }
 

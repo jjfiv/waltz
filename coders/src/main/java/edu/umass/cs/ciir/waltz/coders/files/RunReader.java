@@ -59,7 +59,13 @@ public class RunReader<T> implements ClosingIterator<T> {
     source.close();
   }
 
+  public long getIndex() { return index; }
   public long getCount() {
     return count;
   }
+
+  public double getFraction() {
+    return getIndex() / (double) getCount();
+  }
+
 }

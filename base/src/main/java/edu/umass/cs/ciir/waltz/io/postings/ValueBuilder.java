@@ -4,12 +4,13 @@ import ciir.jfoley.chai.lang.Builder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
  * @author jfoley
  */
-public abstract class ValueBuilder<V> implements Builder<DataChunk> {
+public abstract class ValueBuilder<V> implements Builder<DataChunk>, Closeable {
   public abstract void add(int key, V value) throws IOException;
   @Override
   public abstract DataChunk getOutput();

@@ -124,6 +124,11 @@ public class SimplePostingListFormat {
       // No matter what posting it is, it knows it's df.
       return VarUInt.instance.writeData(totalKeys);
     }
+
+    @Override
+    public void close() throws IOException {
+      output.close();
+    }
   }
 
   /**

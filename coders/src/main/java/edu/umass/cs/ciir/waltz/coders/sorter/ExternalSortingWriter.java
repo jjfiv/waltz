@@ -142,7 +142,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   private synchronized int mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
-    List<SortingRunReader<T>> readers = new ArrayList<>();
+    List<SortedReader<T>> readers = new ArrayList<>();
     for (int run : runs) {
       SortingRunReader<T> rdr = new SortingRunReader<>(cmp, objCoder, nameForId(run));
       readers.add(rdr);
