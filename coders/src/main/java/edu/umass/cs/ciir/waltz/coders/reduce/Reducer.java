@@ -11,4 +11,5 @@ public abstract class Reducer<T> {
     @Override public boolean shouldMerge(T lhs, T rhs) { return false; }
     @Override public T merge(T lhs, T rhs) { throw new UnsupportedOperationException(); }
   }
+
 }

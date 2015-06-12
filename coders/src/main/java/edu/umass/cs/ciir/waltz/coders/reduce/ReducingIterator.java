@@ -55,4 +55,8 @@ public class ReducingIterator<T> implements ClosingIterator<T> {
     updateCurrentAndNext();
     return out;
   }
+
+  public static <T> Iterable<T> of(Iterable<T> input, Reducer<T> reducer) {
+    return () -> new ReducingIterator<>(reducer, input.iterator());
+  }
 }
