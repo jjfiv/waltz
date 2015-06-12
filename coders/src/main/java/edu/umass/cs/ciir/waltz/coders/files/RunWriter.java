@@ -31,6 +31,10 @@ public class RunWriter<T> implements ClosingSinkFn<T> {
     this.itemCoder = itemCoder;
   }
 
+  public long getCount() {
+    return count;
+  }
+
   @Override
   public void close() throws IOException {
     // close stream output.
