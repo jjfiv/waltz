@@ -15,11 +15,11 @@ import java.util.*;
  * @author jfoley.
  */
 public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
-  private final PriorityQueue<RunReader<T>> queue;
+  private final PriorityQueue<SortingRunReader<T>> queue;
 
-  public MergingRunReader(Collection<RunReader<T>> readers) {
+  public MergingRunReader(Collection<SortingRunReader<T>> readers) {
     this.queue = new PriorityQueue<>();
-    for (RunReader<T> reader : readers) {
+    for (SortingRunReader<T> reader : readers) {
       queue.offer(reader);
     }
   }
@@ -38,7 +38,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
 
   @Override
   public T next() {
-    RunReader<T> minimum = queue.poll();
+    SortingRunReader<T> minimum = queue.poll();
     T obj = minimum.next();
     if (minimum.hasNext()) {
       queue.offer(minimum);
@@ -50,7 +50,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
 
   @Override
   public void close() throws IOException {
-    for (RunReader<T> tRunReader : queue) {
+    for (SortingRunReader<T> tRunReader : queue) {
       tRunReader.close();
     }
     queue.clear();
@@ -64,9 +64,9 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
   public void forAll(ClosingSinkFn<T> collector) throws IOException {
     while (queue.size() > 1) {
       // find minimum, pull it out:
-      RunReader<T> minimum = queue.poll();
+      SortingRunReader<T> minimum = queue.poll();
       // go until nextBest needs to go.
-      RunReader<T> nextBest = queue.peek();
+      SortingRunReader<T> nextBest = queue.peek();
 
       while(minimum.hasNext() && minimum.compareTo(nextBest) <= 0) {
         collector.process(minimum.next());
@@ -79,7 +79,7 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
     }
 
     if(queue.size() == 1) {
-      RunReader<T> last = queue.poll();
+      SortingRunReader<T> last = queue.poll();
       while(last.hasNext()) {
         collector.process(last.next());
       }
@@ -88,9 +88,9 @@ public class MergingRunReader<T> implements Closeable, ClosingIterator<T> {
   }
 
   public static <T> MergingRunReader<T> openDirectory(File dir, Comparator<? super T> cmp, Coder<T> itemCoder) throws IOException {
-    List<RunReader<T>> readers = new ArrayList<>();
+    List<SortingRunReader<T>> readers = new ArrayList<>();
     for (File file : FS.listDirectory(dir)) {
-      readers.add(new RunReader<>(cmp, itemCoder, file));
+      readers.add(new SortingRunReader<>(cmp, itemCoder, file));
     }
     return new MergingRunReader<>(readers);
   }

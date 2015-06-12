@@ -1,7 +1,6 @@
-package edu.umass.cs.ciir.waltz.coders.sorter;
+package edu.umass.cs.ciir.waltz.coders.files;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.files.FileSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
 

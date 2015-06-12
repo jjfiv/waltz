@@ -6,6 +6,7 @@ import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.files.RunWriter;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
 import edu.umass.cs.ciir.waltz.coders.reduce.Reducer;
@@ -141,9 +142,9 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   private synchronized int mergeRuns(List<Integer> runs) throws IOException {
     int currentId = nextId++;
-    List<RunReader<T>> readers = new ArrayList<>();
+    List<SortingRunReader<T>> readers = new ArrayList<>();
     for (int run : runs) {
-      RunReader<T> rdr = new RunReader<>(cmp, objCoder, nameForId(run));
+      SortingRunReader<T> rdr = new SortingRunReader<>(cmp, objCoder, nameForId(run));
       readers.add(rdr);
     }
 

@@ -46,13 +46,13 @@ public class ExternalSortingWriterTest {
         }
         sorter.flush();
 
-        List<RunReader<Integer>> readers = new ArrayList<>();
+        List<SortingRunReader<Integer>> readers = new ArrayList<>();
         for (List<Integer> ids : sorter.runsByLevel.values()) {
           for (Integer id : ids) {
-            readers.add(new RunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
+            readers.add(new SortingRunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
           }
         }
-        for (RunReader<Integer> reader : readers) {
+        for (SortingRunReader<Integer> reader : readers) {
           List<Integer> run = new IntList();
           while(reader.hasNext()) {
             run.add(reader.next());
