@@ -95,7 +95,7 @@ public abstract class AMover implements Mover {
 			// skipBlocksTo:
 			while(!isDone()) {
 				moveTo(key);
-				if(!isDoneWithBlock() && key >= currentKey()) { break; }
+				if(!isDoneWithBlock() && key <= currentKey()) { break; }
 				nextBlock();
 			};
     }
