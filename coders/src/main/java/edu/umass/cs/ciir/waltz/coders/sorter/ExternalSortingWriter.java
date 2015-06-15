@@ -42,7 +42,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   final Comparator<? super T> cmp;
   private final int maxItemsInMemory;
   private final int mergeFactor;
-  private final ArrayList<T> buffer;
+  private ArrayList<T> buffer;
   private int nextId;
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
@@ -63,7 +63,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this.cmp = comparator;
     this.maxItemsInMemory = maxItemsInMemory;
     this.mergeFactor = mergeFactor;
-    this.buffer = new ArrayList<>(maxItemsInMemory);
+    this.buffer = new ArrayList<>();
     this.nextId = 0;
     this.maxLevelRuns = 0;
 
@@ -93,17 +93,20 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   public synchronized void flush() throws IOException {
     if(buffer.isEmpty()) return;
 
+    List<T> flushingBuffer;
+    flushingBuffer = buffer;
+    buffer = new ArrayList<>();
     int currentId = nextId++;
     try (ClosingSinkFn<T> writer = getNewWriter(currentId)) {
-      QuickSort.sort(cmp, buffer);
+      QuickSort.sort(cmp, flushingBuffer);
       // write run to file.
-      for (T t : buffer) {
+      for (T t : flushingBuffer) {
         writer.process(t);
         IO.close(t);
       }
     }
     // ditch memory as soon as possible.
-    buffer.clear();
+    flushingBuffer.clear();
     // add to lowest rung of runs collection.
     MapFns.extendListInMap(runsByLevel, 0, currentId);
     // check and see if we need to mergeRuns()
