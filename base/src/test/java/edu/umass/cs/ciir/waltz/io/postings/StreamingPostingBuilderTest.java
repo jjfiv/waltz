@@ -11,6 +11,8 @@ import edu.umass.cs.ciir.waltz.coders.streams.ByteArrayStaticStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
+import edu.umass.cs.ciir.waltz.io.postings.format.PostingCoder;
+import edu.umass.cs.ciir.waltz.io.postings.streaming.StreamingPostingBuilder;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -85,7 +87,7 @@ public class StreamingPostingBuilderTest {
     IOMapImpl<String, PostingMover<Integer>> converted = new IOMapImpl<>(
         map,
         CharsetCoders.utf8,
-        new SimplePostingListFormat.PostingCoder<>(VarUInt.instance));
+        new PostingCoder<>(VarUInt.instance));
 
     assertNotNull(map.get(CharsetCoders.utf8.writeImpl("the")));
 
