@@ -6,7 +6,7 @@
 
   <groupId>jfoley.waltz</groupId>
   <artifactId>waltz-full</artifactId>
-  <version>0.2</version>
+  <version>0.3-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,17 +43,17 @@
     <dependency>
       <groupId>jfoley.waltz</groupId>
       <artifactId>waltz-coders</artifactId>
-      <version>0.2</version>
+      <version>0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>jfoley.waltz</groupId>
       <artifactId>waltz-db-index</artifactId>
-      <version>0.2</version>
+      <version>0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>jfoley.waltz</groupId>
       <artifactId>waltz-scoring</artifactId>
-      <version>0.2</version>
+      <version>0.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
