@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public abstract class ValueBuilder<V> implements Builder<DataChunk>, Closeable {
+public abstract class AbstractValueBuilder<V> implements Builder<DataChunk>, Closeable {
   public abstract void add(int key, V value) throws IOException;
   @Override
   public abstract DataChunk getOutput();

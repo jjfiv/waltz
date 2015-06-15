@@ -8,8 +8,7 @@ import java.util.List;
 /**
  * @author jfoley
  */
-public class SimplePostingListFormat {
+public class BlockedPostingsFormat {
   public static int DEFAULT_BLOCKSIZE = 128;
   public static Coder<List<Integer>> DEFAULT_INTSCODER = new DeltaIntListCoder();
-
 }

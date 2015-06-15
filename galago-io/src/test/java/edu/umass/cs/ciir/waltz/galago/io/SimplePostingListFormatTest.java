@@ -9,7 +9,7 @@ import edu.umass.cs.ciir.waltz.coders.map.IOMapWriterRawWrapper;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.index.mem.MemoryPositionsIndex;
 import edu.umass.cs.ciir.waltz.io.postings.PositionsListCoder;
-import edu.umass.cs.ciir.waltz.io.postings.format.PostingCoder;
+import edu.umass.cs.ciir.waltz.io.postings.format.BlockedPostingsCoder;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class SimplePostingListFormatTest {
     }
 
     Parameters argp = Parameters.create();
-    argp.put("valCoder", PostingCoder.class.getName());
+    argp.put("valCoder", BlockedPostingsCoder.class.getName());
     argp.put("innerValCoder", PositionsListCoder.class.getName());
     argp.put("keyCoder", FixedSize.ints.getClass().getName());
 
@@ -45,7 +45,7 @@ public class SimplePostingListFormatTest {
       try (IOMapWriterRawWrapper<Integer, PostingMover<PositionsList>> postingsWriter =
                GalagoIO.getIOMapWriter(
                    FixedSize.ints,
-                   new PostingCoder<>(new PositionsListCoder()),
+                   new BlockedPostingsCoder<>(new PositionsListCoder()),
                    tmpFile.getPath(),
                    argp
                )) {
@@ -65,7 +65,7 @@ public class SimplePostingListFormatTest {
       try (IOMap<Integer, PostingMover<PositionsList>> part =
                GalagoIO.openIOMap(
                    FixedSize.ints,
-                   new PostingCoder<>(new PositionsListCoder()),
+                   new BlockedPostingsCoder<>(new PositionsListCoder()),
                    tmpFile.getPath())) {
 
         // get & sort by values.

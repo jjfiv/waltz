@@ -17,7 +17,7 @@ import java.util.List;
  * A reader for postings with values of type V in this particular format.
  * @param <V>
  */
-public class Reader<V> extends StaticStreamPostingsIterator<V> {
+public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
   private final Coder<List<Integer>> intsCoder;
   private final Coder<V> valCoder;
   private boolean haveReadCurrentValues;
@@ -27,7 +27,7 @@ public class Reader<V> extends StaticStreamPostingsIterator<V> {
   private int usedKeys = 0;
   private boolean done;
 
-  public Reader(Coder<List<Integer>> intsCoder, Coder<V> valCoder, StaticStream streamSource) {
+  public BlockedPostingsReader(Coder<List<Integer>> intsCoder, Coder<V> valCoder, StaticStream streamSource) {
     super(streamSource);
     this.intsCoder = intsCoder;
     this.valCoder = valCoder;

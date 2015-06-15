@@ -13,7 +13,7 @@ import java.io.InputStream;
 /**
  * @author jfoley
  */
-public abstract class PostingListCoder<V> extends Coder<PostingMover<V>> {
+public abstract class AbstractPostingListCoder<V> extends Coder<PostingMover<V>> {
   @Override
   public boolean knowsOwnSize() {
     return true;

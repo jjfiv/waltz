@@ -12,13 +12,13 @@ import java.util.List;
  * A builder that collects a keyed set of values for writing to a file.
  * @param <V>
  */
-public class PostingListChunk<V> {
+public class BlockedPostingListChunk<V> {
   public final IntList keys;
   public final List<V> vals;
   public final Coder<List<Integer>> intsCoder;
   public final Coder<V> valCoder;
 
-  public PostingListChunk(Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
+  public BlockedPostingListChunk(Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
     this.intsCoder = intsCoder;
     this.valCoder = valCoder;
     keys = new IntList();

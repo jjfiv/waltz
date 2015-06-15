@@ -5,8 +5,8 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.map.RawIOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
-import edu.umass.cs.ciir.waltz.io.postings.format.PostingValueBuilder;
-import edu.umass.cs.ciir.waltz.io.postings.ValueBuilder;
+import edu.umass.cs.ciir.waltz.io.postings.format.BlockedPostingValueBuilder;
+import edu.umass.cs.ciir.waltz.io.postings.AbstractValueBuilder;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -43,8 +43,8 @@ public class StreamingPostingBuilder<K, V> implements Closeable, Flushable {
     sortingWriter.process(atom);
   }
 
-  public ValueBuilder<V> makeValueBuilder() throws IOException {
-    return new PostingValueBuilder<>(valCoder);
+  public AbstractValueBuilder<V> makeValueBuilder() throws IOException {
+    return new BlockedPostingValueBuilder<>(valCoder);
   }
 
   @Override
@@ -55,7 +55,7 @@ public class StreamingPostingBuilder<K, V> implements Closeable, Flushable {
     // read sortingWriter into mapWriter
     try (RawIOMapWriter writer = this.rawMapWriter) {
       ByteArray lastKey = null;
-      ValueBuilder<V> valBuilder = makeValueBuilder();
+      AbstractValueBuilder<V> valBuilder = makeValueBuilder();
       for (ByteKeyPosting<V> atom : sortingWriter.getOutput()) {
         if (lastKey == null) {
           lastKey = atom.key;
