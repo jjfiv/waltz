@@ -22,7 +22,7 @@ import java.util.Objects;
  * Stores a V per K,document pair.. First sorts using a temporary directory, then collects data into a Map on close().
  * @author jfoley
  */
-public class StreamingPostingBuilder<K extends Comparable<K>,V> implements Closeable, Flushable {
+public class StreamingPostingBuilder<K, V> implements Closeable, Flushable {
   public final Coder<K> keyCoder;
   public final Coder<V> valCoder;
   private final RawIOMapWriter rawMapWriter;

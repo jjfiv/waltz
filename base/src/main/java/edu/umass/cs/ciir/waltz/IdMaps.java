@@ -11,7 +11,7 @@ import java.io.IOException;
  * @author jfoley.
  */
 public class IdMaps {
-  public static class Writer<V extends Comparable<V>> implements Flushable, Closeable {
+  public static class Writer<V> implements Flushable, Closeable {
     public final IOMapWriter<Integer, V> forwardWriter;
     public final IOMapWriter<V, Integer> reverseWriter;
 
@@ -39,7 +39,7 @@ public class IdMaps {
 
   }
 
-  public static class Reader<V extends Comparable<V>> implements Closeable {
+  public static class Reader<V> implements Closeable {
     public final IOMap<Integer, V> forwardReader;
     public final IOMap<V, Integer> reverseReader;
 

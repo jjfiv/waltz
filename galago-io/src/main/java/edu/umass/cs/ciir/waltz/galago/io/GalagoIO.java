@@ -15,11 +15,11 @@ public class GalagoIO {
     return new IOMapImpl<>(openRawIOMap(path), keyCoder, valCoder);
   }
 
-  public static <K extends Comparable<K>,V> IOMapWriterRawWrapper<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
+  public static <K, V> IOMapWriterRawWrapper<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path, Parameters argp) throws IOException {
     return new IOMapWriterRawWrapper<>(getRawIOMapWriter(path, argp), keyCoder, valCoder);
   }
 
-  public static <K extends Comparable<K>,V> IOMapWriterRawWrapper<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
+  public static <K, V> IOMapWriterRawWrapper<K,V> getIOMapWriter(Coder<K> keyCoder, Coder<V> valCoder, String path) throws IOException {
     return new IOMapWriterRawWrapper<>(getRawIOMapWriter(path), keyCoder, valCoder);
   }
 
@@ -35,14 +35,14 @@ public class GalagoIO {
     return new RawGalagoDiskMapWriter(path);
   }
 
-  public static <V extends Comparable<V>> IdMaps.Writer<V> openIdMapsWriter(String baseName, Coder<Integer> keyCoder, Coder<V> valCoder) throws IOException {
+  public static <V> IdMaps.Writer<V> openIdMapsWriter(String baseName, Coder<Integer> keyCoder, Coder<V> valCoder) throws IOException {
     return new IdMaps.Writer<>(
         getIOMapWriter(keyCoder, valCoder, baseName + ".fwd"),
-        getIOMapWriter(valCoder, keyCoder, baseName+".rev")
+        getIOMapWriter(valCoder, keyCoder, baseName + ".rev")
     );
   }
 
-  public static <V extends Comparable<V>> IdMaps.Reader<V> openIdMapsReader(String baseName, Coder<Integer> keyCoder, Coder<V> valCoder) throws IOException {
+  public static <V> IdMaps.Reader<V> openIdMapsReader(String baseName, Coder<Integer> keyCoder, Coder<V> valCoder) throws IOException {
     return new IdMaps.Reader<>(
         openIOMap(keyCoder, valCoder, baseName + ".fwd"),
         openIOMap(valCoder, keyCoder, baseName+".rev")

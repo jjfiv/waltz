@@ -20,7 +20,7 @@ import java.util.List;
  * This class is a memory hog for now.
  * @author jfoley
  */
-public class IOMapMerger<K extends Comparable<K>,V> implements Closeable {
+public class IOMapMerger<K, V> implements Closeable {
   public final List<IOMap<K,V>> inputs;
   public final TransformFn<List<V>, V> valueCombiner;
   public final IOMapWriter<K,V> writer;
@@ -34,7 +34,7 @@ public class IOMapMerger<K extends Comparable<K>,V> implements Closeable {
   public void merge() throws IOException {
     List<SortedReader<K>> keys = new ArrayList<>();
     for (IOMap<K, V> input : inputs) {
-      keys.add(new IterableSortedReader<K>(input.keys(), Comparing.defaultComparator()));
+      keys.add(new IterableSortedReader<>(input.keys(), Comparing.defaultComparator()));
     }
     MergingRunReader<K> mergedKeys = new MergingRunReader<>(keys);
 

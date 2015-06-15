@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author jfoley.
  */
-public interface IOMapWriter<K extends Comparable<K>, V> extends Closeable, Flushable {
+public interface IOMapWriter<K, V> extends Closeable, Flushable {
   void put(K key, V val) throws IOException;
   void putUnsafe(K key, DataChunk val) throws IOException;
   IOMapWriter<K, V> getSorting() throws IOException;

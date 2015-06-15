@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public class IOMapWriterRawWrapper<K extends Comparable<K>,V> implements IOMapWriter<K,V> {
+public class IOMapWriterRawWrapper<K,V> implements IOMapWriter<K,V> {
   final RawIOMapWriter rawWriter;
   final Coder<K> keyCoder;
   final Coder<V> valCoder;
