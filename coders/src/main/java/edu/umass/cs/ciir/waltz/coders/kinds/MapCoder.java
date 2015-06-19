@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.kinds;
 
+import ciir.jfoley.chai.collections.ArrayListMap;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
@@ -7,7 +8,6 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,12 +43,12 @@ public class MapCoder<K,V> extends Coder<Map<K,V>> {
   @Override
   public Map<K, V> readImpl(InputStream inputStream) throws IOException {
     int count = VarUInt.instance.readImpl(inputStream);
-    HashMap<K,V> hashMap = new HashMap<>(count);
+    ArrayListMap<K,V> data = new ArrayListMap<>(count);
     for (int i = 0; i < count; i++) {
       K key = keyCoder.readImpl(inputStream);
       V val = valCoder.readImpl(inputStream);
-      hashMap.put(key, val);
+      data.put(key, val);
     }
-    return hashMap;
+    return data;
   }
 }
