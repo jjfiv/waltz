@@ -1,12 +1,12 @@
 package edu.umass.cs.ciir.waltz.coders.kinds;
 
+import ciir.jfoley.chai.collections.ArrayListMap;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,12 +22,9 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
     this(VarUInt.instance, keyCoder, valCoder);
   }
   public InterleavedMapCoder(Coder<Integer> countCoder, Coder<K> keyCoder, Coder<V> valCoder) {
-    assert(countCoder.knowsOwnSize());
-    assert(keyCoder.knowsOwnSize());
-    assert(valCoder.knowsOwnSize());
-    this.countCoder = countCoder;
-    this.keyCoder = keyCoder;
-    this.valCoder = valCoder;
+    this.countCoder = countCoder.lengthSafe();
+    this.keyCoder = keyCoder.lengthSafe();
+    this.valCoder = valCoder.lengthSafe();
   }
 
   @Override
@@ -51,7 +48,7 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
   @Override
   public Map<K, V> readImpl(InputStream inputStream) throws IOException {
     int count = countCoder.read(inputStream);
-    Map<K,V> output = new HashMap<>(count);
+    Map<K,V> output = new ArrayListMap<>(count);
     for (int i = 0; i < count; i++) {
       K key = keyCoder.read(inputStream);
       V val = valCoder.read(inputStream);
