@@ -46,6 +46,8 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   private int nextId;
   Map<Integer, List<Integer>> runsByLevel = new HashMap<>();
   private int maxLevelRuns;
+  private long startTime = System.currentTimeMillis();
+  private long endTime = 0;
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
@@ -79,6 +81,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     // push all runs to topmost level:
     MemoryNotifier.unregister(this);
     flush();
+    endTime = System.currentTimeMillis();
   }
 
   public SortDirectory<T> getOutput() throws IOException {
@@ -180,5 +183,9 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
         throw new RuntimeException(e);
       }
     }
+  }
+
+  public long getTime() {
+    return endTime - startTime;
   }
 }
