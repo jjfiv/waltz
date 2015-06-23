@@ -28,8 +28,11 @@ public class ShardedRunWriter<T> implements ClosingSinkFn<T> {
   }
 
   void shiftToNextWriter() throws IOException {
+    System.err.println("ShardedTextWriter::shiftToNextWriter");
     int current = nextIdentifier++;
-    writer.close();
+    if(writer != null) {
+      writer.close();
+    }
     writer = new RunWriter<>(itemCoder, runDirectory.child(current+".run"));
   }
 
