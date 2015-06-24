@@ -11,7 +11,6 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>1.8</javaVersion>
-    <galagoVersion>3.8-SNAPSHOT</galagoVersion>
   </properties>
 
   <distributionManagement>
@@ -116,21 +115,6 @@
             <configuration>
               <outputDirectory>${project.build.directory}/lib</outputDirectory>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- tupleflow-typebuilder -->
-      <plugin>
-        <groupId>org.lemurproject.galago</groupId>
-        <artifactId>tupleflow-typebuilder</artifactId>
-        <version>${galagoVersion}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>typebuilder</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
