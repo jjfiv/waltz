@@ -4,7 +4,7 @@
 
   <groupId>jfoley.waltz</groupId>
   <artifactId>waltz-galago-compat</artifactId>
-  <version>0.3</version>
+  <version>0.4-SNAPSHOT</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>jfoley.waltz</groupId>
       <artifactId>waltz-base</artifactId>
-      <version>0.3</version>
+      <version>0.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
