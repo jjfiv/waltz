@@ -1,6 +1,10 @@
 package edu.umass.cs.ciir.waltz.dbindex;
 
+import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.support.ConnectionSource;
+
 import java.io.File;
+import java.sql.SQLException;
 
 /**
  * @author jfoley
@@ -25,5 +29,9 @@ public class DBConfig {
   public static DBConfig h2File(File file) {
     assert(!file.getName().endsWith(".mv.db"));
     return new DBConfig("jdbc:h2:file:"+file.getAbsolutePath()+";DB_CLOSE_DELAY=-1");
+  }
+
+  public ConnectionSource getConnectionSource() throws SQLException {
+    return new JdbcConnectionSource(getJDBCURL(), getUser(), getPassword());
   }
 }
