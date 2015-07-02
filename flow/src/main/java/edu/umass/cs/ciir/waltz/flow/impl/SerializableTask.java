@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.flow.impl;
 
-import ciir.jfoley.chai.lang.LazyPtr;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowTask;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowTaskState;
 
@@ -16,12 +15,13 @@ public abstract class SerializableTask<T extends Serializable, Input, Output> ex
     this.state = new SerializableTaskState<>(item);
   }
 
+  public T getItem() {
+    return this.state.get();
+  }
+
   @Override
   public FlowTaskState getState() {
     return state;
   }
 
-  @SuppressWarnings("unchecked")
-  public
-  LazyPtr<T> item = new LazyPtr<>(this.state::get);
 }

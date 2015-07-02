@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.flow.lang;
 
+import edu.umass.cs.ciir.waltz.flow.Flow;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowJob;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowNodeState;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowSink;
@@ -26,9 +27,15 @@ public abstract class FlowJobNode<Job extends FlowJob> implements FlowNode {
 
   protected FlowJobNode(@Nonnull String identifier, Job job) {
     this.identifier = identifier;
-    this.inputs = null;
+    this.inputs = new ArrayList<>();
     this.outputs = new ArrayList<>();
     this.job = job;
+    Flow.instance().register(this);
+  }
+
+  @Override
+  public Job getJob() {
+    return job;
   }
 
   @Nonnull
@@ -36,7 +43,9 @@ public abstract class FlowJobNode<Job extends FlowJob> implements FlowNode {
     return new FlowSourceNode<T>(name, new FlowSource<T>() {
       @Override
       public void run(FlowSink<T> output) throws Exception {
-
+        for (T item : items) {
+          output.process(item);
+        }
       }
     });
   }

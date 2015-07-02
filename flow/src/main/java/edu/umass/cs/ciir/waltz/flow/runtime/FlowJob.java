@@ -21,15 +21,6 @@ public abstract class FlowJob implements AutoCloseable {
     return null;
   }
 
-  /**
-   * Helper function: is this job stateful?
-   *
-   * @return true if this job is stateful.
-   */
-  public final boolean hasState() {
-    return getState() != null;
-  }
-
   public void initState(@Nonnull byte[] data) {
     initialState = getState();
     assert (initialState != null);
@@ -43,7 +34,7 @@ public abstract class FlowJob implements AutoCloseable {
 
   public byte[] saveState() {
     FlowTaskState state = getState();
-    assert (state != null);
+    if(state == null) return null;
     try {
       return state.encode();
     } catch (IOException e) {
@@ -57,6 +48,11 @@ public abstract class FlowJob implements AutoCloseable {
   public void connectOutput(FlowSink sink) {
     this.flowJobOutput = sink;
   }
+
+  /**
+   * @return this job as a sink object that accepts input and pipes output correctly to its flowJobOutput, if applicable.
+   */
+  public abstract FlowSink asSink();
 
   /**
    * Run this job.

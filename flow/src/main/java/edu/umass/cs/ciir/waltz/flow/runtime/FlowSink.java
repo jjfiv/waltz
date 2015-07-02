@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.flow.runtime;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -20,7 +21,7 @@ public abstract class FlowSink<Input> extends FlowJob {
    * @param xs the inputs elements to process.
    * @throws Exception so that you don't need to try/catch yourself for fatal things.
    */
-  protected void onInputs(Collection<? extends Input> xs) throws Exception {
+  protected void onInputs(@Nonnull Collection<? extends Input> xs) throws Exception {
     for (Input x : xs) {
       process(x);
     }
@@ -51,6 +52,9 @@ public abstract class FlowSink<Input> extends FlowJob {
       throw new FlowRuntimeError(x, e);
     }
   }
+
+  @Override
+  public FlowSink asSink() { return this; }
 
   @Override
   public void execute() {
