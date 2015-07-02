@@ -1,4 +1,6 @@
-package edu.umass.cs.ciir.waltz.flow;
+package edu.umass.cs.ciir.waltz.flow.runtime;
+
+import edu.umass.cs.ciir.waltz.flow.runtime.FlowRuntimeError;
 
 /**
  * @author jfoley

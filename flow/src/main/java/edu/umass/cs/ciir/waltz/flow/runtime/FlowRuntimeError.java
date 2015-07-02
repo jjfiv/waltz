@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.flow;
+package edu.umass.cs.ciir.waltz.flow.runtime;
 
 /**
  * @author jfoley
