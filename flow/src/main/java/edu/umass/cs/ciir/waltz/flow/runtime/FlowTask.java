@@ -54,4 +54,5 @@ public abstract class FlowTask<Input, Output> extends FlowJob {
   public void execute() {
     throw new FlowRuntimeError("Can't execute a \"Task\"");
   }
+
 }

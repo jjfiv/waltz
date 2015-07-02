@@ -11,6 +11,9 @@ import java.io.*;
 public class SerializableTaskState<T extends Serializable> implements FlowTaskState {
   private T object;
 
+  public SerializableTaskState() {
+    this.object = null;
+  }
   public SerializableTaskState(@Nonnull T object) {
     this.object = object;
   }

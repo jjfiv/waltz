@@ -18,7 +18,7 @@ public abstract class FlowJob implements AutoCloseable {
    */
   @Nullable
   public FlowTaskState getState() {
-    return null;
+    return initialState;
   }
 
   public void initState(@Nonnull byte[] data) {
@@ -80,5 +80,9 @@ public abstract class FlowJob implements AutoCloseable {
    */
   protected void onClose() throws Exception {
 
+  }
+
+  public void setState(FlowTaskState state) {
+    this.initialState = state;
   }
 }

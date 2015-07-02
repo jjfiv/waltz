@@ -2,7 +2,6 @@ package edu.umass.cs.ciir.waltz.flow.lang;
 
 import edu.umass.cs.ciir.waltz.flow.Flow;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowJob;
-import edu.umass.cs.ciir.waltz.flow.runtime.FlowNodeState;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowSink;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowSource;
 
@@ -10,7 +9,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author jfoley
@@ -48,21 +46,6 @@ public abstract class FlowJobNode<Job extends FlowJob> implements FlowNode {
         }
       }
     });
-  }
-
-  public FlowNodeState save() {
-    FlowNodeState nss = new FlowNodeState();
-    nss.id = Objects.requireNonNull(this.identifier);
-    for (FlowNode input : inputs) {
-      nss.inputIds.add(input.getIdentifier());
-    }
-    for (FlowNode output : outputs) {
-      nss.outputIds.add(output.getIdentifier());
-    }
-
-    nss.jobClass = job.getClass();
-    nss.jobState = job.saveState();
-    return nss;
   }
 
   @Override
