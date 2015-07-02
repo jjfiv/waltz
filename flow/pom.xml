@@ -51,6 +51,12 @@
       <artifactId>waltz-base</artifactId>
       <version>0.4-SNAPSHOT</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.lemurproject.galago</groupId>
+      <artifactId>utility</artifactId>
+      <version>3.8</version>
+    </dependency>
   </dependencies>
 
   <build>

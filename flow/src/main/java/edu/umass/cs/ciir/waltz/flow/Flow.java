@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.flow;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import ciir.jfoley.chai.io.Directory;
 import edu.umass.cs.ciir.waltz.flow.lang.FlowASTGraph;
 import edu.umass.cs.ciir.waltz.flow.lang.FlowJobNode;
 import edu.umass.cs.ciir.waltz.flow.lang.FlowNode;
@@ -16,6 +17,7 @@ import java.util.List;
  */
 public class Flow {
   FlowASTGraph graph;
+  Directory outputDir;
   private Flow() {
     graph = new FlowASTGraph();
   }
@@ -36,6 +38,8 @@ public class Flow {
   public static List<Integer> output = new IntList();
 
   public static void main(String[] args) {
+    Flow.instance().outputDir = new Directory("flow.out");
+
     FlowTask<Integer,Integer> x2 = new FlowMapTask<Integer, Integer>() {
       @Override
       protected Integer map(Integer x) throws Exception {
