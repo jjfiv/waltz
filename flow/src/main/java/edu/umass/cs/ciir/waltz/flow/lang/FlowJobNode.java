@@ -1,11 +1,11 @@
 package edu.umass.cs.ciir.waltz.flow.lang;
 
 import edu.umass.cs.ciir.waltz.flow.Flow;
+import edu.umass.cs.ciir.waltz.flow.impl.FlowCollectionSource;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowJob;
-import edu.umass.cs.ciir.waltz.flow.runtime.FlowSink;
-import edu.umass.cs.ciir.waltz.flow.runtime.FlowSource;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,15 +37,8 @@ public abstract class FlowJobNode<Job extends FlowJob> implements FlowNode {
   }
 
   @Nonnull
-  public static <T> FlowSourceNode<T> collection(String name, Collection<? extends T> items) {
-    return new FlowSourceNode<T>(name, new FlowSource<T>() {
-      @Override
-      public void run(FlowSink<T> output) throws Exception {
-        for (T item : items) {
-          output.process(item);
-        }
-      }
-    });
+  public static <T extends Serializable> FlowSourceNode<T> collection(String name, Collection<? extends T> items) {
+    return new FlowSourceNode<>(name, new FlowCollectionSource<>(items));
   }
 
   @Override

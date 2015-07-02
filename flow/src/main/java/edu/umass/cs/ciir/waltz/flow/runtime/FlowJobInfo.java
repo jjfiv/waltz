@@ -33,14 +33,12 @@ public class FlowJobInfo {
         job.initState(jobState);
       }
       return job;
-    } catch (InstantiationException | IllegalAccessException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       throw new FlowStartTaskException(id, e);
     } catch (NoSuchMethodException e) {
       System.err.println(jobClass);
       System.err.println(Arrays.toString(jobClass.getDeclaredConstructors()));
       throw new FlowStartTaskException("Couldn't find a zero-argument constructor in class: "+jobClass+" in id="+id, e);
-    } catch (InvocationTargetException e) {
-      throw new FlowStartTaskException(id, e);
     }
   }
 

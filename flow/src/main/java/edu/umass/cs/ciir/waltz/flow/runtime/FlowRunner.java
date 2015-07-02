@@ -20,6 +20,7 @@ public class FlowRunner implements Runnable {
     this.graph = new HashMap<>();
     this.jobs = new HashMap<>();
     this.states = new HashMap<>();
+    this.sources = new HashMap<>();
 
     for (FlowJobInfo desc : descriptions) {
       FlowJob job = desc.create();
@@ -33,6 +34,8 @@ public class FlowRunner implements Runnable {
         sources.put(desc.id, job);
       }
     }
+
+    linkOutputJobs();
   }
 
   public void linkOutputJobs() {

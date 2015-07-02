@@ -9,36 +9,26 @@ import java.io.IOException;
  */
 public abstract class FlowJob implements AutoCloseable {
   protected FlowSink flowJobOutput = null;
-  protected FlowTaskState initialState = null;
 
-  /**
-   * Implement this method if your job needs to save/restore from state.
-   *
-   * @return an object containing the state your job needs to run remotely or on a different JVM.
-   */
   @Nullable
-  public FlowTaskState getState() {
-    return initialState;
+  public byte[] saveState() {
+    if(this instanceof FlowStateful) {
+      try {
+        return ((FlowStateful) this).encode();
+      } catch (IOException e) {
+        throw new FlowRuntimeError("Couldn't encode: ", e);
+      }
+    }
+    return null;
   }
 
   public void initState(@Nonnull byte[] data) {
-    initialState = getState();
-    assert (initialState != null);
-    try {
-      initialState.decode(data);
-    } catch (IOException e) {
-      // TODO hexdump();
-      throw new FlowRuntimeError("Error while decoding state in " + this.getClass().getName(), e);
-    }
-  }
-
-  public byte[] saveState() {
-    FlowTaskState state = getState();
-    if(state == null) return null;
-    try {
-      return state.encode();
-    } catch (IOException e) {
-      throw new FlowRuntimeError("Could not save state in " + this.getClass().getName(), e);
+    if(this instanceof FlowStateful) {
+      try {
+        ((FlowStateful) this).decode(data);
+      } catch (IOException e) {
+        throw new FlowRuntimeError("Error while decoding state in " + this.getClass().getName(), e);
+      }
     }
   }
 
@@ -80,9 +70,5 @@ public abstract class FlowJob implements AutoCloseable {
    */
   protected void onClose() throws Exception {
 
-  }
-
-  public void setState(FlowTaskState state) {
-    this.initialState = state;
   }
 }

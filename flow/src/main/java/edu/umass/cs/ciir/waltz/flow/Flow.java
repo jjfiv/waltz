@@ -33,6 +33,8 @@ public class Flow {
   @Nonnull
   public static Flow instance() { return _flow; }
 
+  public static List<Integer> output = new IntList();
+
   public static void main(String[] args) {
     FlowTask<Integer,Integer> x2 = new FlowMapTask<Integer, Integer>() {
       @Override
@@ -41,7 +43,6 @@ public class Flow {
       }
     };
 
-    List<Integer> output = new IntList();
     FlowOpNode<Integer> program = FlowJobNode.collection("nums", Arrays.asList(1, 2, 3, 4, 5))
         .map("x2", (x) -> x * 2)
         .connect("x2again", x2)
