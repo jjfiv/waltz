@@ -4,7 +4,9 @@ package edu.umass.cs.ciir.waltz.postings.extents;
  * @author jfoley
  */
 public final class Span {
+  /** This is inclusive, so a span of <pre>[0,3)</pre> includes <pre>{0,1,2}</pre> (Calculus notation). */
   public final int begin;
+  /** This is exclusive, so a span of <pre>[0,3)</pre> includes <pre>{0,1,2}</pre> (Calculus notation). */
   public final int end;
 
   /** No-args constructor used only for reflection */
@@ -31,7 +33,7 @@ public final class Span {
 
   @Override
   public String toString() {
-    return "[" + begin + ',' + end + ']';
+    return "[" + begin + ',' + end + ')';
   }
 
   @Override

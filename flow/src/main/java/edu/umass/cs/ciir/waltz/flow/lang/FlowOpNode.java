@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.flow.lang;
 
 import edu.umass.cs.ciir.waltz.flow.impl.SerializableTaskFn;
 import edu.umass.cs.ciir.waltz.flow.lambda.FMapFn;
+import edu.umass.cs.ciir.waltz.flow.runtime.FlowJob;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowSink;
 import edu.umass.cs.ciir.waltz.flow.runtime.FlowTask;
 
@@ -33,4 +34,35 @@ public interface FlowOpNode<T> extends FlowNode {
     return this;
   }
 
+  default FlowOpNode<T> distribute(String name, int count) {
+    if(this instanceof FlowDistribNode) {
+      return this;
+    }
+    FlowDistribNode<T> out = new FlowDistribNode<>(name, count);
+    FlowNode.link(this, out);
+    return out;
+  }
+
+  class FlowDistribWriterJob<T> extends FlowJob {
+    public FlowDistribWriterJob(int count) {
+
+    }
+
+    @Override
+    public FlowSink asSink() {
+      return null;
+    }
+
+    @Override
+    public void execute() throws Exception {
+
+    }
+  }
+
+  class FlowDistribNode<T> extends FlowJobNode<FlowDistribWriterJob<T>> implements FlowOpNode<T> {
+
+    public FlowDistribNode(String name, int count) {
+      super(name, new FlowDistribWriterJob<T>(count));
+    }
+  }
 }
