@@ -40,4 +40,8 @@ public final class Span {
   public int hashCode() {
     return Integer.hashCode(begin) ^ Integer.hashCode(end);
   }
+
+  public boolean contains(int pos) {
+    return pos >= begin && pos < end;
+  }
 }

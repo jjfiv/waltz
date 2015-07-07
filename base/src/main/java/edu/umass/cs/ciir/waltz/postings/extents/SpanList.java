@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.postings.extents;
 import java.util.List;
 
 /**
+ * A sorted list of [begin,end) pairs.
  * @author jfoley
  */
 public interface SpanList extends List<Span>, SpanIterable {
@@ -22,4 +23,17 @@ public interface SpanList extends List<Span>, SpanIterable {
 
   int getBegin(int index);
   int getEnd(int index);
+
+  default boolean contains(int x) {
+    for (int i = 0; i < this.size(); i++) {
+      // optimization because it's sorted
+      if(x < this.getBegin(i)) {
+        return false;
+      }
+      if(x >= this.getBegin(i) && x < this.getEnd(i)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
