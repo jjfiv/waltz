@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.coders.map;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.util.IterableFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
@@ -55,7 +56,16 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
     }
     List<Pair<K, V>> output = new ArrayList<>(keys.size());
     for (Pair<DataChunk, StaticStream> kv : inner.getInBulk(encodedKeys)) {
-      output.add(Pair.of(keyCoder.read(kv.getKey()), valCoder.read(kv.getValue())));
+      K key = null;
+      V val = null;
+      try {
+        key = keyCoder.read(kv.getKey());
+        val = valCoder.read(kv.getValue());
+        output.add(Pair.of(key,val));
+      } catch (CoderException ex) {
+        // Use try catch to return as many results as possible:
+        System.err.println("Couldn't decode either key or value: "+Pair.of(key,val));
+      }
     }
     return output;
   }

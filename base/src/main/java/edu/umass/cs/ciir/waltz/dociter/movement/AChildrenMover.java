@@ -15,6 +15,7 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 
 	public AChildrenMover(List<T> children) {
 		this.children = ListFns.ensureRandomAccess(children);
+		assert(children.size() > 1);
 		assert(children.size() == new HashSet<>(children).size());
 		loadNewCurrentBlock();
 	}
