@@ -1,11 +1,14 @@
 package edu.umass.cs.ciir.waltz.coders.map.impl;
 
+import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.files.FileSlice;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Galago called this part the "vocab" so I will too.
@@ -18,4 +21,10 @@ public interface WaltzDiskMapVocabReader<K> extends Closeable {
   Iterable<K> keys() throws IOException;
 
   long count();
+
+  Comparator<K> keyComparator();
+
+  List<Pair<K,FileSlice>> findInBulk(List<K> keys);
+
+  List<Pair<K,FileSlice>> slices();
 }

@@ -94,6 +94,12 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     return entries.keySet();
   }
 
+  @Nonnull
+  @Override
+  public Iterable<Pair<String, V>> items() throws IOException {
+    throw new UnsupportedOperationException("TODO");
+  }
+
   @Override
   public void close() throws IOException {
     archive.close();

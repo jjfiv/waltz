@@ -32,6 +32,10 @@ public class DocumentSetWriter<K> implements Closeable {
   }
 
   public void process(K item, int documentId) throws IOException {
+    // Be robust to terrible input:
+    if(item == null) {
+      return;
+    }
     sorter.process(new DocumentSetChunk<>(item, documentId));
   }
 

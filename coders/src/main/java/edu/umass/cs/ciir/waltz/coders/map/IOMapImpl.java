@@ -81,6 +81,12 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
     return IterableFns.map(inner.keys(), keyCoder::read);
   }
 
+  @Nonnull
+  @Override
+  public Iterable<Pair<K, V>> items() throws IOException {
+    throw new UnsupportedOperationException("TODO");
+  }
+
   @Override
   public void close() throws IOException {
     inner.close();

@@ -24,34 +24,34 @@ public abstract class WrappedIOMap<K,V> implements IOMap<K,V> {
     return inner.keyCount();
   }
 
-  @Nonnull
-  @Override
+  @Nonnull @Override
   public Map<String, Object> getConfig() {
     return inner.getConfig();
   }
 
-  @Nullable
-  @Override
+  @Nullable @Override
   public V get(K key) throws IOException {
     return inner.get(key);
   }
 
-  @Nullable
-  @Override
+  @Nullable @Override
   public StaticStream getSource(K key) throws IOException {
     return inner.getSource(key);
   }
 
-  @Nonnull
-  @Override
+  @Nonnull @Override
   public List<Pair<K, V>> getInBulk(List<K> keys) throws IOException {
     return inner.getInBulk(keys);
   }
 
-  @Nonnull
-  @Override
+  @Nonnull @Override
   public Iterable<K> keys() throws IOException {
     return inner.keys();
+  }
+
+  @Nonnull @Override
+  public Iterable<Pair<K,V>> items() throws IOException {
+    return inner.items();
   }
 
   @Override

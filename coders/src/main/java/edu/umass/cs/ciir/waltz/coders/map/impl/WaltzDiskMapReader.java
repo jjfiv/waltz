@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.map.impl;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.util.Comparing;
+import ciir.jfoley.chai.collections.util.ListFns;
 import ciir.jfoley.chai.io.Directory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
@@ -74,20 +75,39 @@ public class WaltzDiskMapReader<K, V> implements IOMap<K, V> {
   public List<Pair<K, V>> getInBulk(List<K> keys) throws IOException {
     List<Pair<K, V>> vals = new ArrayList<>();
 
-    for (K key : keys) {
-      V val = get(key);
-      if (val != null) {
-        vals.add(Pair.of(key, val));
-      }
+
+    List<Pair<K, FileSlice>> data = vocab.findInBulk(keys);
+
+    for (Pair<K, FileSlice> pr : data) {
+      K key = pr.left;
+      FileSlice slice = pr.right;
+      vals.add(Pair.of(key, get(slice)));
     }
 
     return vals;
   }
 
   @Nonnull
+  private V get(FileSlice slice) throws IOException {
+    return valCoder.read(valuesFile.getSource(slice.start, slice.size()));
+  }
+
+  @Nonnull
   @Override
   public Iterable<K> keys() throws IOException {
     return vocab.keys();
+  }
+
+  @Nonnull
+  @Override
+  public Iterable<Pair<K, V>> items() throws IOException {
+    return ListFns.lazyMap(vocab.slices(), (kv) -> {
+      try {
+        return Pair.of(kv.left, get(kv.right));
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
   }
 
   @Override

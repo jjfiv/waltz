@@ -20,4 +20,5 @@ public interface IOMap<K, V> extends Closeable {
   @Nullable StaticStream getSource(K key) throws IOException;
   @Nonnull List<Pair<K,V>> getInBulk(List<K> keys) throws IOException;
   @Nonnull Iterable<K> keys() throws IOException;
+  @Nonnull Iterable<Pair<K,V>> items() throws IOException;
 }

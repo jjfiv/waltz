@@ -214,6 +214,12 @@ public class GenKeyDiskMap {
       return IterableFns.map(IntRange.exclusive(0, IntMath.fromLong(count)), Long::valueOf);
     }
 
+    @Nonnull
+    @Override
+    public Iterable<Pair<Long, V>> items() throws IOException {
+      throw new UnsupportedOperationException("TODO");
+    }
+
     @Override
     public V get(int index) {
       try {
