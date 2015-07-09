@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.postings.docset;
 
-import edu.umass.cs.ciir.waltz.coders.WaltzDiskMap;
 import edu.umass.cs.ciir.waltz.coders.files.DataSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,11 +15,11 @@ public class StreamingDocumentSetChunkWriter<K> implements Closeable {
   public int previous;
   public long valueStartOffset;
   public K previousKey;
-  public final WaltzDiskMap.Writer<K, ?> writer;
+  public final WaltzDiskMapWriter<K, ?> writer;
   public DocumentSetWriter.DeltaGappingIntWriter intOutput;
   public DataSink valueWriter;
 
-  public StreamingDocumentSetChunkWriter(WaltzDiskMap.Writer<K, ?> writer) {
+  public StreamingDocumentSetChunkWriter(WaltzDiskMapWriter<K, ?> writer) {
     this.writer = writer;
     this.valueWriter = writer.valueWriter();
     this.intOutput = new DocumentSetWriter.DeltaGappingIntWriter(valueWriter);

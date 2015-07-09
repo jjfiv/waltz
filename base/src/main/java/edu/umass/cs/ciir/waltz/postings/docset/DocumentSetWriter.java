@@ -4,9 +4,9 @@ import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.WaltzDiskMap;
 import edu.umass.cs.ciir.waltz.coders.files.DataSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
 import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
 
 import java.io.Closeable;
@@ -27,7 +27,7 @@ public class DocumentSetWriter<K> implements Closeable {
         new DocumentSetChunkReducer<>(),
         new DocumentSetChunkCoder<>(keyCoder));
     this.writer = new StreamingDocumentSetChunkWriter<>(
-        new WaltzDiskMap.Writer<>(baseDir, baseName, keyCoder, null)
+        new WaltzDiskMapWriter<>(baseDir, baseName, keyCoder, null)
     );
   }
 
