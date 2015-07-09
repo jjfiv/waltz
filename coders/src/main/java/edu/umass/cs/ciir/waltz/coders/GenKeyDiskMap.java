@@ -15,6 +15,8 @@ import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.map.SortingIOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -146,10 +148,10 @@ public class GenKeyDiskMap {
     }
 
     public static <V> Reader<V> openFiles(String basePath, Coder<V> valCoder) throws IOException {
-      return new Reader<V>(
+      return new Reader<>(
           valCoder,
-          new FileChannelSource(basePath+".offset"),
-          new FileChannelSource(basePath+".values"));
+          new FileChannelSource(basePath + ".offset"),
+          new FileChannelSource(basePath + ".values"));
     }
 
     @Override
@@ -171,6 +173,7 @@ public class GenKeyDiskMap {
       return count();
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> getConfig() {
       return Collections.emptyMap();
@@ -181,11 +184,13 @@ public class GenKeyDiskMap {
       return getValue(key);
     }
 
+    @Nullable
     @Override
     public StaticStream getSource(Long key) throws IOException {
       throw new UnsupportedOperationException();
     }
 
+    @Nonnull
     @Override
     public List<Pair<Long, V>> getInBulk(List<Long> keys) throws IOException {
       List<Pair<Long, V>> out = new ArrayList<>();
@@ -203,6 +208,7 @@ public class GenKeyDiskMap {
      * @return the list of keys -- no need to read any files for this one.
      * @throws IOException
      */
+    @Nonnull
     @Override
     public Iterable<Long> keys() throws IOException {
       return IterableFns.map(IntRange.exclusive(0, IntMath.fromLong(count)), Long::valueOf);

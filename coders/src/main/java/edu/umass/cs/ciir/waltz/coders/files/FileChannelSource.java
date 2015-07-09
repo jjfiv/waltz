@@ -10,7 +10,7 @@ import static java.nio.file.StandardOpenOption.READ;
 /**
  * @author jfoley.
  */
-public class FileChannelSource extends DataSource {
+public class FileChannelSource implements DataSource {
   private final FileChannel channel;
 
   public FileChannelSource(String path) throws IOException {
@@ -49,6 +49,15 @@ public class FileChannelSource extends DataSource {
     if(position + size > size()) throw new IllegalArgumentException("Can't request that much!");
 
     return OffsetDataSource.FromPositionSize(this, position, size);
+  }
+
+  @Override
+  public int read(long position) throws IOException {
+    if(position < 0 || position >= size()) {
+      return -1;
+    }
+    ByteBuffer read = read(position, 1);
+    return (read.array()[0] & 0xff);
   }
 
   @Override

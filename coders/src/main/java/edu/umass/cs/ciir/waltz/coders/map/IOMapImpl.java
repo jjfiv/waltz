@@ -7,6 +7,8 @@ import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
     return inner.keyCount();
   }
 
+  @Nonnull
   @Override
   public Map<String, Object> getConfig() {
     return inner.getConfig();
@@ -43,11 +46,13 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
     return valCoder.read(result);
   }
 
+  @Nullable
   @Override
   public StaticStream getSource(K key) throws IOException {
     return inner.get(keyCoder.writeData(key));
   }
 
+  @Nonnull
   @Override
   public List<Pair<K, V>> getInBulk(List<K> keys) throws IOException {
     List<DataChunk> encodedKeys = new ArrayList<>(keys.size());
@@ -70,6 +75,7 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
     return output;
   }
 
+  @Nonnull
   @Override
   public Iterable<K> keys() throws IOException {
     return IterableFns.map(inner.keys(), keyCoder::read);

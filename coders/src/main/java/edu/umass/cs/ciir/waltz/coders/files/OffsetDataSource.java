@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 /**
  * @author jfoley.
  */
-public class OffsetDataSource extends DataSource {
+public class OffsetDataSource implements DataSource {
   public final DataSource parent;
   public final long offset;
   public final long size;
@@ -37,6 +37,11 @@ public class OffsetDataSource extends DataSource {
     if(position + size > size()) throw new IllegalArgumentException("Can't request that much!");
 
     return parent.view(position+offset, size);
+  }
+
+  @Override
+  public int read(long position) throws IOException {
+    return parent.read(position+offset);
   }
 
   @Override

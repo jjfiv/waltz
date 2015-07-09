@@ -1,6 +1,8 @@
 package edu.umass.cs.ciir.waltz.coders.files;
 
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -9,10 +11,13 @@ import java.nio.ByteBuffer;
 /**
  * @author jfoley.
  */
-public abstract class DataSource implements Closeable {
-  public abstract long size() throws IOException;
-  public abstract ByteBuffer read(long position, int size) throws IOException;
-  public abstract DataSource view(long position, long size) throws IOException;
+public interface DataSource extends Closeable {
+  long size() throws IOException;
+  ByteBuffer read(long position, int size) throws IOException;
+  DataSource view(long position, long size) throws IOException;
+  default DataSource view(long position) throws IOException {
+    return view(position, size() - position);
+  }
 
   /**
    * Read a long at the given position in this source.
@@ -20,8 +25,38 @@ public abstract class DataSource implements Closeable {
    * @return the long value.
    * @throws IOException on any sort of problems.
    */
-  public long readLong(long position) throws IOException {
+  default long readLong(long position) throws IOException {
     return FixedSize.longs.read(read(position, 8));
   }
 
+  /**
+   * Reads a byte from this source like its an InputStream:
+   * {@link java.io.InputStream#read}
+   * @param position the offset to read from
+   * @return the byte or -1 if you're not in a valid position.
+   * @throws IOException
+   */
+  int read(long position) throws IOException;
+
+  default DataSourceSkipInputStream stream(long position) throws IOException {
+    return view(position).stream();
+  }
+
+  default StaticStream getSource(long start, int size) {
+    return new StaticStream() {
+      @Override
+      public SkipInputStream getNewStream() throws IOException {
+        return new DataSourceSkipInputStream(view(start, size));
+      }
+
+      @Override
+      public long length() {
+        return size;
+      }
+    };
+  }
+
+  default DataSourceSkipInputStream stream() throws IOException {
+    return new DataSourceSkipInputStream(this);
+  }
 }

@@ -12,6 +12,8 @@ import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.*;
 
@@ -38,6 +40,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     return archive.listEntries().size();
   }
 
+  @Nonnull
   @Override
   public Map<String, Object> getConfig() {
     return Collections.emptyMap();
@@ -50,6 +53,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     return valCoder.read(entry.getInputStream());
   }
 
+  @Nullable
   @Override
   public StaticStream getSource(String key) throws IOException {
     ZipArchiveEntry entry = archive.getByName(key);
@@ -71,6 +75,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     };
   }
 
+  @Nonnull
   @Override
   public List<Pair<String, V>> getInBulk(List<String> keys) throws IOException {
     List<Pair<String, V>> out = new ArrayList<>();
@@ -83,6 +88,7 @@ public class ZipIOMap<V> implements IOMap<String, V> {
     return out;
   }
 
+  @Nonnull
   @Override
   public Iterable<String> keys() throws IOException {
     return entries.keySet();
