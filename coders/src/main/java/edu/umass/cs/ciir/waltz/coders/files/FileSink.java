@@ -13,7 +13,7 @@ import static java.nio.file.StandardOpenOption.*;
 /**
  * @author jfoley
  */
-public class FileSink implements Closeable, Flushable {
+public class FileSink implements DataSink, Closeable, Flushable {
   private final FileChannel channel;
 
   public FileSink(String outputPath) throws IOException {
@@ -24,14 +24,17 @@ public class FileSink implements Closeable, Flushable {
     this.channel = FileChannel.open(file.toPath(), CREATE, WRITE, READ);
   }
 
+  @Override
   public void write(ByteBuffer buf) throws IOException {
     channel.write(buf);
   }
 
+  @Override
   public void write(DataChunk data) throws IOException {
     data.write(channel);
   }
 
+  @Override
   public long tell() throws IOException {
     return channel.position();
   }
@@ -41,10 +44,12 @@ public class FileSink implements Closeable, Flushable {
     channel.close();
   }
 
+  @Override
   public <T> void write(Coder<T> coder, T obj) throws IOException {
     channel.write(coder.write(obj));
   }
 
+  @Override
   public OutputStream getOutputStream() {
     return Channels.newOutputStream(channel);
   }
@@ -54,6 +59,7 @@ public class FileSink implements Closeable, Flushable {
     channel.force(false); // don't force changes to metadata
   }
 
+  @Override
   public <T> void write(long offset, Coder<T> coder, T value) throws IOException {
     channel.write(coder.write(value), offset);
   }

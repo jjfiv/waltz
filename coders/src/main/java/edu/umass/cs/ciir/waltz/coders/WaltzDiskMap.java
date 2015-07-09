@@ -9,6 +9,7 @@ import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.files.DataSink;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSink;
@@ -102,15 +103,24 @@ public class WaltzDiskMap {
       this.sortDir = outputDir.childDir(baseName + ".ksort");
       this.keySorter = new ExternalSortingWriter<>(sortDir.get(), koffCoder);
       this.keyCoder = keyCoder.lengthSafe();
-      this.valCoder = valCoder.lengthSafe();
+      this.valCoder = valCoder; // valCoder need not be length-safe.
       keyCount = 0;
     }
 
     @Override
     public void put(K key, V val) throws IOException {
-      long startVal = valuesFile.tell();
+      beginWrite(key);
       valuesFile.write(valCoder, val);
       IO.close(val);
+    }
+
+    /**
+     * Allows streaming building of this map; values can be written to immediately through the DataSink interface.
+     * @param key the key to associate with the data being written.
+     * @throws IOException
+     */
+    public void beginWrite(K key) throws IOException {
+      long startVal = valuesFile.tell();
       keySorter.process(new KeyToValueOffset<>(key, startVal));
       keyCount++;
     }
@@ -162,6 +172,9 @@ public class WaltzDiskMap {
       valuesFile.flush();
     }
 
+    public DataSink valueWriter() {
+      return this.valuesFile;
+    }
   }
 
   public static class FileSlice {
@@ -185,7 +198,7 @@ public class WaltzDiskMap {
     final long count;
     final Coder<V> valCoder;
     final KeyToValueOffsetCoder<K> koffCoder;
-    List<KeyToValueOffset<K>> keysAndOffsets;
+    ArrayList<KeyToValueOffset<K>> keysAndOffsets;
     final Comparator<K> keyCmp;
 
     public Reader(Directory baseDir, String baseName, Coder<K> keyCoder, Coder<V> valCoder) throws IOException {
@@ -198,8 +211,10 @@ public class WaltzDiskMap {
       this.koffCoder = new KeyToValueOffsetCoder<>(keyCoder);
 
       // TODO, be less memory-lazy here:
+      keysAndOffsets = new ArrayList<>();
       try (InputStream is = new FileInputStream(baseDir.childPath(baseName+".keys"))) {
         count = FixedSize.longs.read(is);
+        keysAndOffsets.ensureCapacity(IntMath.fromLong(count));
         for (long i = 0; i < count; i++) {
           keysAndOffsets.add(koffCoder.read(is));
         }
@@ -245,11 +260,10 @@ public class WaltzDiskMap {
     public StaticStream getSource(K key) throws IOException {
       FileSlice kv = find(key);
       if(kv == null) return null;
-      return this.valuesFile.getSource(kv.start, kv.size());
+      return valuesFile.getSource(kv.start, kv.size());
     }
 
-    @Nonnull
-    @Override
+    @Nonnull @Override
     public List<Pair<K, V>> getInBulk(List<K> keys) throws IOException {
       List<Pair<K,V>> vals = new ArrayList<>();
 
@@ -263,8 +277,7 @@ public class WaltzDiskMap {
       return vals;
     }
 
-    @Nonnull
-    @Override
+    @Nonnull @Override
     public AChaiList<K> keys() throws IOException {
       return ListFns.lazyMap(keysAndOffsets, (x) -> x.key);
     }
