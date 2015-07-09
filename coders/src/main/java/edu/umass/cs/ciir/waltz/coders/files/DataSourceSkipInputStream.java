@@ -69,4 +69,8 @@ public class DataSourceSkipInputStream extends SkipInputStream {
   public void close() throws IOException {
     // actually nothing to do here.
   }
+
+  public DataSource sourceAtCurrentPosition() throws IOException {
+    return mySource.view(this.position);
+  }
 }
