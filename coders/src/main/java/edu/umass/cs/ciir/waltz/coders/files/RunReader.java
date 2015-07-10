@@ -3,12 +3,12 @@ package edu.umass.cs.ciir.waltz.coders.files;
 import ciir.jfoley.chai.collections.iters.ClosingIterator;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.io.StreamFns;
+import com.ning.compress.lzf.LZFInputStream;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
 
 /**
  * @author jfoley
@@ -24,7 +24,7 @@ public class RunReader<T> implements ClosingIterator<T> {
     this.itemCoder = itemCoder;
     // read prefixed, uncompressed length:
     this.count = RunWriter.countCoder.read(StreamFns.readBytes(rawInputStream, 8));
-    this.source = new GZIPInputStream(rawInputStream);
+    this.source = new LZFInputStream(rawInputStream);
     index = 0;
     next();
   }

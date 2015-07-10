@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.files;
 
+import com.ning.compress.lzf.LZFOutputStream;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.reduce.ClosingSinkFn;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Writes a stream of objects to a file and prefixes with a count.
@@ -27,7 +27,7 @@ public class RunWriter<T> implements ClosingSinkFn<T> {
     output.write(countCoder, 0L); // temporarily write a zero.
     this.count = 0;
     this.outputFile = outputFile;
-    this.outputStream = new GZIPOutputStream(output.getOutputStream());
+    this.outputStream = new LZFOutputStream(output.getOutputStream());
     this.itemCoder = itemCoder;
   }
 

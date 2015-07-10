@@ -89,7 +89,6 @@ public abstract class Coder<T> {
     try {
       DataChunk chunk = writeImpl(elem);
       chunk.write(out);
-      out.flush();
     } catch (IOException ioe) {
       throw new CoderException(ioe, this.getClass());
     }
