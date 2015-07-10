@@ -55,24 +55,16 @@ public class VarUInt extends Coder<Integer> {
 
   public void write(OutputStream out, @Nonnegative Integer obj) {
     try {
-      assert (obj != null);
       int x = obj;
-      assert (x >= 0);
-
-      int put = 0;
-      while ((x != 0) || (put == 0)) {
+      while(true) {
         if (x < DONE_BIT) { // fits in 7 bits:
           out.write((byte) (x | DONE_BIT));
-          put++;
           break;
         } else {
           out.write((byte) (x & REG_DATA));
-          put++;
           x >>>= 7;
         }
       }
-
-      assert (put >= 1 && put <= 6);
     } catch (IOException e) {
       throw new CoderException(e, this.getClass());
     }

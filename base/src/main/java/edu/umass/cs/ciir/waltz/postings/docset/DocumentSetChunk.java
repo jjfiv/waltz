@@ -16,7 +16,7 @@ public class DocumentSetChunk<K> implements Comparable<DocumentSetChunk<K>> {
 
   public DocumentSetChunk(K key, int doc) {
     this.key = key;
-    this.docs = new IntList();
+    this.docs = new IntList(1);
     this.docs.add(doc);
     this.cmp = Comparing.defaultComparator();
   }

@@ -10,7 +10,7 @@ import java.util.Objects;
 public class DocumentSetChunkReducer<K> extends Reducer<DocumentSetChunk<K>> {
   @Override
   public boolean shouldMerge(DocumentSetChunk<K> lhs, DocumentSetChunk<K> rhs) {
-    return lhs.docs.size() < 128 && Objects.equals(lhs.key, rhs.key);
+    return lhs.docs.size() < 4096 && Objects.equals(lhs.key, rhs.key);
   }
 
   @Override
