@@ -24,7 +24,7 @@ import java.nio.channels.WritableByteChannel;
  * @author jfoley
  */
 public class SmartDataChunk implements MutableDataChunk, Flushable {
-  private BufferList bufferList;
+  private ByteBuilder bufferList;
   private TmpFileDataChunk tmpFile;
   private final long minFlushAmount;
   private final long defaultFlushAmount;
@@ -39,7 +39,7 @@ public class SmartDataChunk implements MutableDataChunk, Flushable {
     this.minFlushAmount = minFlushAmount;
     this.defaultFlushAmount = defaultFlushAmount;
     MemoryNotifier.register(this);
-    bufferList = new BufferList();
+    bufferList = new ByteBuilder();
     tmpFile = null;
   }
 

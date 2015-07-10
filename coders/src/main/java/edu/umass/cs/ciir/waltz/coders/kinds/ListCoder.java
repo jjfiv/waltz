@@ -1,9 +1,11 @@
 package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,14 +35,15 @@ public class ListCoder<T> extends Coder<List<T>> {
 
   @Nonnull
   @Override
-  public BufferList writeImpl(List<T> obj) throws IOException {
+  public DataChunk writeImpl(List<T> obj) throws IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
     int count = obj.size();
-    BufferList bl = new BufferList();
-    bl.add(countCoder.writeImpl(count));
+    countCoder.write(baos, count);
     for (T t : obj) {
-      bl.add(itemCoder, t);
+      itemCoder.write(baos, t);
     }
-    return bl;
+    baos.close();
+    return new ByteArray(baos.toByteArray());
   }
 
   @Nonnull

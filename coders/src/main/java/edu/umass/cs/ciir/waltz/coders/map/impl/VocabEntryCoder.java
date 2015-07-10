@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.map.impl;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 
@@ -33,7 +33,7 @@ public class VocabEntryCoder<K> extends Coder<VocabEntry<K>> {
   @Nonnull
   @Override
   public DataChunk writeImpl(VocabEntry<K> obj) throws IOException {
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     output.add(keyCoder, obj.key);
     output.add(offsetCoder, obj.offset);
     return output;

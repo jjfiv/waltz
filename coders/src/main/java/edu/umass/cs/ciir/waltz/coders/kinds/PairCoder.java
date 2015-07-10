@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public class PairCoder<K, V> extends Coder<Pair<K, V>> {
   @Nonnull
   @Override
   public DataChunk writeImpl(Pair<K, V> obj) throws IOException {
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     output.add(lhsCoder, obj.getKey());
     output.add(rhsCoder, obj.getValue());
     return output;

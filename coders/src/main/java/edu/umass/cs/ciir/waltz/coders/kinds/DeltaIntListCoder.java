@@ -2,7 +2,8 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -32,8 +33,8 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
 
   @Nonnull
   @Override
-  public BufferList writeImpl(List<Integer> obj) throws IOException {
-    BufferList bl = new BufferList();
+  public DataChunk writeImpl(List<Integer> obj) throws IOException {
+    ByteBuilder bl = new ByteBuilder();
     int count = obj.size();
     int prev = 0;
     bl.add(countCoder.write(count));

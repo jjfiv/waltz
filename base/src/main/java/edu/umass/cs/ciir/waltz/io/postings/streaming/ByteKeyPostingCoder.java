@@ -3,8 +3,8 @@ package edu.umass.cs.ciir.waltz.io.postings.streaming;
 import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
@@ -30,7 +30,7 @@ class ByteKeyPostingCoder<V> extends Coder<ByteKeyPosting<V>> {
   @Nonnull
   @Override
   public DataChunk writeImpl(ByteKeyPosting<V> obj) throws IOException {
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     output.add(VarUInt.instance, IntMath.fromLong(obj.key.byteCount()));
     output.add(obj.key);
     output.add(VarUInt.instance, obj.document);

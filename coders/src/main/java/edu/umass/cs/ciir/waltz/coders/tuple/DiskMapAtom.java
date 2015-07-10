@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.tuple;
 
 import ciir.jfoley.chai.collections.Pair;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
@@ -43,7 +43,7 @@ public class DiskMapAtom<K, V> extends Pair<K,V> {
     @Nonnull
     @Override
     public DataChunk writeImpl(DiskMapAtom<K, V> obj) throws IOException {
-      BufferList bl = new BufferList();
+      ByteBuilder bl = new ByteBuilder();
       bl.add(keyCoder, obj.left);
       bl.add(valCoder, obj.right);
       return bl;

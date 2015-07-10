@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.postings.docset;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
@@ -36,20 +36,16 @@ public class DeltaIntListMoverCoder extends Coder<Mover> {
   @Nonnull
   @Override
   public DataChunk writeImpl(Mover obj) throws IOException {
-    BufferList bl = new BufferList();
+    ByteBuilder bl = new ByteBuilder();
     int total = obj.totalKeys();
     bl.add(countCoder, total);
     int prev = 0;
 
-    for (; !obj.isDone(); obj.nextBlock()) {
-      BufferList block = new BufferList();
-      for (; !obj.isDoneWithBlock(); obj.nextKey()) {
-        int x = obj.currentKey();
-        int delta = x - prev;
-        bl.add(itemCoder, delta);
-        prev = x;
-      }
-      bl.add(block.compact());
+    for (; !obj.isDone(); obj.next()) {
+      int x = obj.currentKey();
+      int delta = x - prev;
+      bl.add(itemCoder, delta);
+      prev = x;
     }
     return bl;
   }

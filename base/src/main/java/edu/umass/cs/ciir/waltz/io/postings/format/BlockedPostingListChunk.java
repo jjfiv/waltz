@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.io.postings.format;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class BlockedPostingListChunk<V> {
    * @return the data in this chunk, keys first then values.
    */
   public DataChunk encode() {
-    BufferList bl = new BufferList();
+    ByteBuilder bl = new ByteBuilder();
     bl.add(intsCoder, keys);
     for (V val : vals) {
       bl.add(valCoder, val);

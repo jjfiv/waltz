@@ -7,7 +7,7 @@ import ciir.jfoley.chai.collections.util.*;
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
@@ -115,7 +115,7 @@ public class ExternalSortingWriterTest {
     @Nonnull
     @Override
     public DataChunk writeImpl(WordCount obj) throws IOException {
-      BufferList bl = new BufferList();
+      ByteBuilder bl = new ByteBuilder();
       bl.add(CharsetCoders.utf8.lengthSafe(), obj.getWord());
       bl.add(VarUInt.instance, obj.getCount());
       return bl;

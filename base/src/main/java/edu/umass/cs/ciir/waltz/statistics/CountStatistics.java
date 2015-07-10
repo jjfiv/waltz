@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.statistics;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
@@ -54,7 +54,7 @@ public class CountStatistics {
     @Nonnull
     @Override
     public DataChunk writeImpl(CountStatistics obj) throws IOException {
-      BufferList output = new BufferList();
+      ByteBuilder output = new ByteBuilder();
       output.add(VarUInt.instance, obj.documentFrequency);
       output.add(VarUInt.instance, obj.termFrequency);
       output.add(VarUInt.instance, obj.minCount);

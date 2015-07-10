@@ -32,9 +32,11 @@ public class LengthPrefixCoder<T> extends Coder<T> {
 
   @Nonnull
   @Override
-  public BufferList writeImpl(T obj) throws IOException {
+  public DataChunk writeImpl(T obj) throws IOException {
     DataChunk payload = payloadCoder.writeImpl(obj);
     ByteBuffer length = lengthCoder.write(IntMath.fromLong(payload.byteCount()));
+
+    //TODO: ByteBuilder?
     BufferList bl = new BufferList();
     bl.add(length);
     bl.add(payload);

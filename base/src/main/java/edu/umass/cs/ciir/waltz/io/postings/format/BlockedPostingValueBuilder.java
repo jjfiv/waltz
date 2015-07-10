@@ -1,10 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.postings.format;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
-import edu.umass.cs.ciir.waltz.coders.data.SmartDataChunk;
+import edu.umass.cs.ciir.waltz.coders.data.*;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.io.postings.AbstractValueBuilder;
 

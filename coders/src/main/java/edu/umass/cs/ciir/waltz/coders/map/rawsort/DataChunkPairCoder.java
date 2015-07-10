@@ -3,8 +3,8 @@ package edu.umass.cs.ciir.waltz.coders.map.rawsort;
 import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
@@ -26,7 +26,7 @@ public class DataChunkPairCoder extends Coder<DataChunkPair> {
   @Nonnull
   @Override
   public DataChunk writeImpl(DataChunkPair obj) throws IOException {
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     output.add(sizeCoder, IntMath.fromLong(obj.getKey().byteCount()));
     output.add(sizeCoder, IntMath.fromLong(obj.getValue().byteCount()));
     output.add(obj.getKey());

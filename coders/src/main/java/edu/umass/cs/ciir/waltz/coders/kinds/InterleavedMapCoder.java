@@ -2,7 +2,8 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.collections.ArrayListMap;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
+import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -34,8 +35,8 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
 
   @Nonnull
   @Override
-  public BufferList writeImpl(Map<K, V> obj) throws IOException {
-    BufferList output = new BufferList();
+  public DataChunk writeImpl(Map<K, V> obj) throws IOException {
+    ByteBuilder output = new ByteBuilder();
     output.add(countCoder, obj.size());
     for (Map.Entry<K, V> kvEntry : obj.entrySet()) {
       output.add(keyCoder, kvEntry.getKey());

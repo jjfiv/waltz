@@ -16,6 +16,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * During an indexing operation, it turns out this is really inefficient because it hangs onto garbage, pushes things into deeper heaps, etc. Replacing with ByteBuilder in most places.
+ *
+ * It is helpful when you want to temporarily assemble a length-prefix of a large amount of data that might be stored in a temporary file.
+ *
+ * @see ByteBuilder
  * @author jfoley
  */
 public class BufferList implements MutableDataChunk {

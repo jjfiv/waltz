@@ -4,13 +4,15 @@ import ciir.jfoley.chai.io.StreamFns;
 import com.ning.compress.lzf.LZFDecoder;
 import com.ning.compress.lzf.LZFOutputStream;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * LZF is one of the fastest pure-java compression libraries.
@@ -41,11 +43,27 @@ public class LZFCoder<T> extends Coder<T> {
     }
 
     // length-prefix:
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     byte[] compressed = baos.toByteArray();
     output.add(sizeCoder, compressed.length);
     output.add(compressed);
     return output;
+  }
+
+  public void write(OutputStream out, T elem) {
+    try {
+      // compress:
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      try (LZFOutputStream lzfo = new LZFOutputStream(baos)) {
+        innerCoder.write(lzfo, elem);
+      }
+
+      // length-prefix:
+      sizeCoder.write(out, baos.size());
+      baos.writeTo(out);
+    } catch (IOException ioe) {
+      throw new CoderException(ioe, this.getClass());
+    }
   }
 
   @Nonnull

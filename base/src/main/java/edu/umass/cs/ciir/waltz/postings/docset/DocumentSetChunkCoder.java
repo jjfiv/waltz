@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.postings.docset;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.BufferList;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
 
@@ -35,10 +35,10 @@ public class DocumentSetChunkCoder<K> extends Coder<DocumentSetChunk<K>> {
   @Nonnull
   @Override
   public DataChunk writeImpl(DocumentSetChunk<K> obj) throws IOException {
-    BufferList output = new BufferList();
+    ByteBuilder output = new ByteBuilder();
     output.add(keyCoder, obj.key);
     output.add(listCoder, obj.docs);
-    return output.compact();
+    return output;
   }
 
   @Nonnull
