@@ -70,6 +70,7 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
       } catch (CoderException ex) {
         // Use try catch to return as many results as possible:
         System.err.println("Couldn't decode either key or value: "+Pair.of(key,val));
+        throw ex;
       }
     }
     return output;

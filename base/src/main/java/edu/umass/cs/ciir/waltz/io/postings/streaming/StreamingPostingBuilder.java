@@ -63,7 +63,6 @@ public class StreamingPostingBuilder<K, V> implements Closeable, Flushable {
         if (!Objects.equals(lastKey, atom.key)) {
           // flush old output, make new builder
           writer.put(lastKey, valBuilder.getOutput());
-          valBuilder.close();
 
           // update last key, continue;
           lastKey = atom.key;
@@ -74,7 +73,6 @@ public class StreamingPostingBuilder<K, V> implements Closeable, Flushable {
       // put the last one:
       if (lastKey != null) {
         writer.put(lastKey, valBuilder.getOutput());
-        valBuilder.close();
       }
     }
 

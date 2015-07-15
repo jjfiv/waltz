@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.postings.format;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
@@ -40,6 +41,10 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
     nextKeyBlockOffset = 0;
     done = false;
     totalKeys = VarUInt.instance.read(stream);
+
+    long remaining = streamSource.length() - stream.tell();
+    // should be at least 1 byte left for each key:
+    assert(remaining >= totalKeys);
     usedKeys = 0;
   }
 
@@ -63,7 +68,16 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
       usedKeys += numKeysInThisBlock;
       return new KeyBlock(keys);
 
-    } catch (IOException e) {
+    } catch (IOException | CoderException e) {
+      try {
+        System.err.println("tell: "+stream.tell());
+        System.err.println(usedKeys);
+        System.err.println(totalKeys);
+        System.err.println("tell: "+stream.tell());
+        System.err.println("length: "+streamSource.length());
+      } catch (IOException e1) {
+        throw new RuntimeException(e1);
+      }
       throw new RuntimeException(e);
     }
   }
