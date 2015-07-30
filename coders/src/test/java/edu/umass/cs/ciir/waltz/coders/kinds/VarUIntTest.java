@@ -55,7 +55,7 @@ public class VarUIntTest {
     data.push(Integer.MAX_VALUE);
     for (int i = 0; i < N; i++) {
       int x = Math.abs(rand.nextInt());
-      data.push(x);
+      data.add(x);
     }
 
     ByteBuilder builder = new ByteBuilder();
