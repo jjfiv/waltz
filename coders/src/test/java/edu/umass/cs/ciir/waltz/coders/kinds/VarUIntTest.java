@@ -49,13 +49,13 @@ public class VarUIntTest {
     IntList data = new IntList(N+4);
 
     // Check edge-case values:
-    data.push(0);
-    data.push(1);
-    data.push(2);
-    data.push(Integer.MAX_VALUE);
+    data.add(0);
+    data.add(1);
+    data.add(2);
+    data.add(Integer.MAX_VALUE);
     for (int i = 0; i < N; i++) {
       int x = Math.abs(rand.nextInt());
-      data.push(x);
+      data.add(x);
     }
 
     ByteBuilder builder = new ByteBuilder();
