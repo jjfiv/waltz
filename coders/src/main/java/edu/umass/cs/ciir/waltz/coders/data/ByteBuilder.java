@@ -81,6 +81,10 @@ public class ByteBuilder implements MutableDataChunk {
     baos.writeTo(out);
   }
 
+  public OutputStream asOutputStream() {
+    return baos;
+  }
+
   @Override
   public void write(WritableByteChannel out) throws IOException {
     baos.writeTo(Channels.newOutputStream(out));

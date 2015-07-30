@@ -67,7 +67,7 @@ public class PositionEntry {
 
     Iterable<Posting<PositionsList>> postings =
         IterableFns.map(
-            IterableFns.groupBy(infos, sameDocumentFn),
+            IterableFns.sortedStreamingGroupBy(infos, sameDocumentFn),
             toPositionsFn);
 
     return BlockPostingsMover.ofIterable(postings);

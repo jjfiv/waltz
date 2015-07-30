@@ -11,7 +11,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 /**
  * This is based on Galago's implementation.
@@ -29,51 +28,89 @@ public class VarUInt extends Coder<Integer> {
   private static int DONE_BIT =  0b10000000;
   private static int REG_DATA =  0b01111111;
 
+  private static final int max1 = DONE_BIT;
+  private static final int max2 = DONE_BIT << 7;
+  private static final int max3 = DONE_BIT << 14;
+  private static final int max4 = DONE_BIT << 21;
+
   @Nonnull
   @Override
   public DataChunk writeImpl(@Nonnegative Integer obj) throws IOException {
-    assert(obj != null);
     int x = obj;
-    assert(x >= 0);
 
-    byte[] data = new byte[6];
-    int put = 0;
-    while((x != 0) || (put == 0)) {
-      if(x < DONE_BIT) { // fits in 7 bits:
-        data[put++] = (byte) (x | DONE_BIT);
-        break;
-      } else {
-        data[put++] = (byte) (x & REG_DATA);
-        x >>>= 7;
-      }
+    if(x < max1) {
+      return new ByteArray(new byte[] {
+          (byte) (x | DONE_BIT)
+      });
+    } else if(x < max2) {
+      return new ByteArray(new byte[] {
+          (byte) (x & REG_DATA),
+          (byte) ((x >> 7) | DONE_BIT)
+      });
+    } else if(x < max3) {
+      return new ByteArray(new byte[] {
+          (byte) (x & REG_DATA),
+          (byte) ((x >>> 7) & REG_DATA),
+          (byte) ((x >>> 14) | DONE_BIT)
+      });
+    } else if(x < max4) {
+      return new ByteArray(new byte[] {
+          (byte) (x & REG_DATA),
+          (byte) ((x >>> 7) & REG_DATA),
+          (byte) ((x >>> 14) & REG_DATA),
+          (byte) ((x >>> 21) | DONE_BIT)
+      });
+    } else {
+      return new ByteArray(new byte[] {
+          (byte) (x & REG_DATA),
+          (byte) ((x >>> 7) & REG_DATA),
+          (byte) ((x >>> 14) & REG_DATA),
+          (byte) ((x >>> 21) & REG_DATA),
+          (byte) ((x >>> 28) | DONE_BIT)
+      });
     }
-
-    assert((data[put-1] & DONE_BIT) != 0);
-    assert(put >= 1 && put <= 6);
-    return new ByteArray(Arrays.copyOf(data, put));
   }
 
-  public void write(OutputStream out, @Nonnegative Integer obj) {
+  public void writePrim(OutputStream out, int x) {
     try {
-      int x = obj;
-      while(true) {
-        if (x < DONE_BIT) { // fits in 7 bits:
-          out.write((byte) (x | DONE_BIT));
-          break;
-        } else {
-          out.write((byte) (x & REG_DATA));
-          x >>>= 7;
-        }
+      if(x < max1) {
+        out.write(x | DONE_BIT);
+      } else if(x < max2) {
+        out.write(x & REG_DATA);
+        out.write((x >> 7) | DONE_BIT);
+      } else if(x < max3) {
+        out.write(x & REG_DATA);
+        out.write((x >>> 7) & REG_DATA);
+        out.write((x >>> 14) | DONE_BIT);
+      } else if(x < max4) {
+        out.write(x & REG_DATA);
+        out.write((x >>> 7) & REG_DATA);
+        out.write((x >>> 14) & REG_DATA);
+        out.write((x >>> 21) | DONE_BIT);
+      } else {
+        out.write(x & REG_DATA);
+        out.write((x >>> 7) & REG_DATA);
+        out.write((x >>> 14) & REG_DATA);
+        out.write((x >>> 21) & REG_DATA);
+        out.write((x >>> 28) | DONE_BIT);
       }
     } catch (IOException e) {
       throw new CoderException(e, this.getClass());
     }
   }
 
+  public void write(OutputStream out, @Nonnegative Integer obj) {
+    writePrim(out, obj);
+  }
+
   @Nonnegative
   @Nonnull
   @Override
   public Integer readImpl(InputStream inputStream) throws IOException {
+    return readPrim(inputStream);
+  }
+
+  public int readPrim(InputStream inputStream) throws IOException {
     int result = 0;
 
     for (int position = 0; true; position++) {
