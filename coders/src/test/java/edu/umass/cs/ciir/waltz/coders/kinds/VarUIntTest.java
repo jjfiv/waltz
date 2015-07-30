@@ -29,7 +29,7 @@ public class VarUIntTest {
   public void testImpl() throws Exception {
     VarUInt coder = new VarUInt();
     Random rand = new Random();
-    for (int i = 0; i < 1000000; i++) {
+    for (int i = 0; i < 100000; i++) {
       int x = Math.abs(rand.nextInt());
       assertEquals(x, coder.read(coder.write(x)).intValue());
     }

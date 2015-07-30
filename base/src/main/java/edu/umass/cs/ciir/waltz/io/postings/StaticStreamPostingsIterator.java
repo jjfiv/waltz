@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public abstract class StaticStreamPostingsIterator<X> implements BlockPostingsIterator<X> {
   protected SkipInputStream stream;
-  private final StaticStream streamSource;
+  protected final StaticStream streamSource;
 
   public StaticStreamPostingsIterator(StaticStream streamSource) {
     try {
