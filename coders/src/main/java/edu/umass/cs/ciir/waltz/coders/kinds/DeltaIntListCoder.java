@@ -52,7 +52,7 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
   @Override
   public List<Integer> readImpl(InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);
-    IntList output = new IntList();
+    IntList output = new IntList(amount);
     int delta = 0;
     for (int i = 0; i < amount; i++) {
       delta += itemCoder.read(inputStream);

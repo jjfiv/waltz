@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.postings.docset;
 
-import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
@@ -11,6 +10,7 @@ import edu.umass.cs.ciir.waltz.coders.sorter.ExternalSortingWriter;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author jfoley
@@ -69,10 +69,8 @@ public class DocumentSetWriter<K> implements Closeable {
       previous = x;
     }
 
-    public void write(IntList docs) throws IOException {
-      for (int doc : docs) {
-        write(doc);
-      }
+    public void write(List<Integer> docs) throws IOException {
+      for (int doc : docs) { write(doc); }
     }
 
     public void close() {

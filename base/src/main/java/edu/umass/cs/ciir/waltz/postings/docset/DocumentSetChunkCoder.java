@@ -45,8 +45,6 @@ public class DocumentSetChunkCoder<K> extends Coder<DocumentSetChunk<K>> {
   @Override
   public DocumentSetChunk<K> readImpl(InputStream inputStream) throws IOException {
     K key = keyCoder.readImpl(inputStream);
-    IntList docs = new IntList();
-    docs.addAll(listCoder.readImpl(inputStream));
-    return new DocumentSetChunk<>(key, docs);
+    return new DocumentSetChunk<>(key, listCoder.readImpl(inputStream));
   }
 }

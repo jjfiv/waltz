@@ -5,13 +5,14 @@ import ciir.jfoley.chai.collections.util.Comparing;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @author jfoley
  */
 public class DocumentSetChunk<K> implements Comparable<DocumentSetChunk<K>> {
   public K key;
-  public IntList docs;
+  public List<Integer> docs;
   Comparator<K> cmp;
 
   public DocumentSetChunk(K key, int doc) {
@@ -21,7 +22,7 @@ public class DocumentSetChunk<K> implements Comparable<DocumentSetChunk<K>> {
     this.cmp = Comparing.defaultComparator();
   }
 
-  public DocumentSetChunk(K key, IntList docs) {
+  public DocumentSetChunk(K key, List<Integer> docs) {
     this.key = key;
     this.docs = docs;
     this.cmp = Comparing.defaultComparator();
