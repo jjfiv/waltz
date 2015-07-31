@@ -1,7 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
 import ciir.jfoley.chai.collections.util.Comparing;
-import ciir.jfoley.chai.collections.util.MapFns;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
 import ciir.jfoley.chai.io.IO;
@@ -21,11 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Break External Sorting into two steps:
@@ -39,23 +33,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </ol>
  * @author jfoley.
  */
-public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T> {
+public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flushable, Closeable, SinkFn<T> {
   public static final int DEFAULT_MAX_ITEMS_IN_MEMORY = 64*1024;
-  public static final int DEFAULT_MERGE_FACTOR = 10;
   private final File dir;
   final Coder<Long> countCoder;
   final Coder<T> objCoder;
   private Reducer<T> reducer = new Reducer.NullReducer<>();
   final Comparator<? super T> cmp;
   private final int maxItemsInMemory;
-  private final int mergeFactor;
   private ArrayList<T> buffer;
-  private int nextId;
-  final Map<Integer, List<Integer>> runsByLevel = new ConcurrentHashMap<>();
   private long startTime = System.currentTimeMillis();
   private long endTime = 0;
-  public static final ExecutorService asyncExec = ForkJoinPool.commonPool();
-  AtomicInteger liveJobs = new AtomicInteger(0);
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
@@ -65,6 +53,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this(dir, coder, new Reducer.NullReducer<T>(), comparator, DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Reducer<T> reducer, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
+    super(mergeFactor);
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;
@@ -72,9 +61,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this.reducer = reducer == null ? new Reducer.NullReducer<>() : reducer;
     this.cmp = comparator;
     this.maxItemsInMemory = maxItemsInMemory;
-    this.mergeFactor = mergeFactor;
     this.buffer = new ArrayList<>();
-    this.nextId = 0;
 
     MemoryNotifier.register(this);
   }
@@ -83,38 +70,18 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this(dir, coder, reducer, Comparing.defaultComparator(), DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
   }
 
-  public synchronized void doAsync(Runnable r) {
-    liveJobs.incrementAndGet();
-    asyncExec.submit(() -> {
-      r.run();
-      liveJobs.decrementAndGet();
-    });
-  }
-
   @Override
   public void close() throws IOException {
     // push all runs to topmost level:
     MemoryNotifier.unregister(this);
     flush();
-    // merge as many runs as possible.
-    do {
-      mergeRuns();
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException ignored) { }
-    } while(liveJobs.get() > 0);
+    stop();
     endTime = System.currentTimeMillis();
   }
 
   public void flushSync() throws IOException {
     flush();
-    while(liveJobs.get() > 0) {
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-      }
-    }
-
+    waitForCurrentJobs();
   }
 
   public SortDirectory<T> getOutput() throws IOException {
@@ -129,31 +96,12 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
   public synchronized void flush() throws IOException {
     if(buffer.isEmpty()) return;
 
-    List<T> flushingBuffer;
-    flushingBuffer = buffer;
+    List<T> items;
+    items = buffer;
     buffer = new ArrayList<>();
-    int currentId = nextId++;
+    int currentId = allocate();
 
-    doAsync(new AsyncRunWriter(flushingBuffer, currentId));
-    // check and see if we need to mergeRuns()
-    mergeRuns();
-  }
-
-  public synchronized void addNewRun(int runId, int level)  {
-    MapFns.extendListInMap(runsByLevel, level, runId);
-  }
-
-  public class AsyncRunWriter implements Runnable {
-    private final List<T> items;
-    private final int currentId;
-
-    public AsyncRunWriter(List<T> items, int currentId) {
-      this.items = items;
-      this.currentId = currentId;
-    }
-
-    @Override
-    public void run() {
+    doAsync(() -> {
       try (ClosingSinkFn<T> writer = getNewWriter(currentId)) {
         QuickSort.sort(cmp, items);
         // write run to file.
@@ -170,46 +118,9 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
         e.printStackTrace(System.err);
         throw new RuntimeException(e);
       }
-    }
-  }
-
-  public class AsyncRunMerger implements Runnable {
-    private final List<Integer> runs;
-    private final int outputLevel;
-
-    public AsyncRunMerger(List<Integer> runs, int outputLevel) {
-      this.runs = runs;
-      this.outputLevel = outputLevel;
-    }
-
-    @Override
-    public void run() {
-      try {
-        addNewRun(mergeRuns(runs), outputLevel);
-      } catch (Throwable e) {
-        e.printStackTrace(System.err);
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private synchronized void mergeRuns() throws IOException {
-    while(true) {
-      boolean changed = false;
-
-      for (Map.Entry<Integer, List<Integer>> kv : runsByLevel.entrySet()) {
-        int level = kv.getKey();
-        List<Integer> runs = kv.getValue();
-        if (runs.size() >= mergeFactor) {
-          runsByLevel.remove(level);
-
-          doAsync(new AsyncRunMerger(runs, level + 1));
-          changed = true;
-          break;
-        }
-      }
-      if(!changed) break;
-    }
+    });
+    // check and see if we need to mergeRuns()
+    checkIfWeCanMergeRuns();
   }
 
   public File nameForId(int id) {
@@ -225,8 +136,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     return new SinkReducer<>(reducer, writer);
   }
 
-  private synchronized int mergeRuns(List<Integer> runs) throws IOException {
-    int currentId = nextId++;
+  public void mergeRuns(List<Integer> runs, int currentId) throws IOException {
     List<SortedReader<T>> readers = new ArrayList<>();
     for (int run : runs) {
       SortingRunReader<T> rdr = new SortingRunReader<>(cmp, objCoder, nameForId(run));
@@ -244,8 +154,6 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
         throw new IOException("Couldn't delete temporary sort file id="+run+" path="+nameForId(run).getAbsolutePath());
       }
     }
-
-    return currentId;
   }
 
   @Override
