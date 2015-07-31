@@ -22,4 +22,7 @@ public interface DataSink {
   <T> void write(long offset, Coder<T> coder, T value) throws IOException;
 
   long tell() throws IOException;
+
+  // Go back to a specific offset in this DataSink:
+  void seekAbsolute(long offset) throws IOException;
 }

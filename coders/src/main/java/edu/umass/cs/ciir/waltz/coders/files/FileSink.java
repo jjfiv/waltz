@@ -40,6 +40,11 @@ public class FileSink implements DataSink, Closeable, Flushable {
   }
 
   @Override
+  public void seekAbsolute(long offset) throws IOException {
+    channel.position(offset);
+  }
+
+  @Override
   public void close() throws IOException {
     channel.close();
   }

@@ -18,6 +18,7 @@ import edu.umass.cs.ciir.waltz.index.MutableIndex;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -113,6 +114,7 @@ public class DBIndex implements MutableIndex {
     }
   }
 
+  @Nonnull
   @Override
   public List<Integer> getAllDocumentIds() {
     IntList ids = new IntList();

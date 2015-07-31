@@ -15,6 +15,7 @@ import org.lemurproject.galago.core.retrieval.iterator.CountIterator;
 import org.lemurproject.galago.core.retrieval.iterator.ExtentIterator;
 import org.lemurproject.galago.utility.Parameters;
 
+import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
@@ -56,6 +57,7 @@ public class GalagoIndex extends AbstractIndex implements Index, Closeable {
     return IntMath.fromLong(inner.getIndexPartStatistics("lengths").highestDocumentCount);
   }
 
+  @Nonnull
   @Override
   public List<Integer> getAllDocumentIds() {
     IntList docIds = new IntList();

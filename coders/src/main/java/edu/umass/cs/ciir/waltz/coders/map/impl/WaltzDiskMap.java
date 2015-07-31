@@ -16,7 +16,8 @@ import java.util.Comparator;
  * @author jfoley
  */
 public class WaltzDiskMap {
-  public static final Coder<String> MagicCoder = new ASCII.FixedLength(128);
+  public static final int MagicLength = 128;
+  public static final Coder<String> MagicCoder = new ASCII.FixedLength(MagicLength);
 
   public static <K> WaltzDiskMapVocabReader<K> createVocabReader(DataSource keys, long size, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
     DataSourceSkipInputStream stream = keys.stream();

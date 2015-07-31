@@ -17,6 +17,7 @@ import edu.umass.cs.ciir.waltz.postings.SimplePosting;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,7 @@ public class MemoryPositionsIndex extends AbstractIndex implements MutableIndex 
 		}
 	}
 
+  @Nonnull
   @Override
   public List<Integer> getAllDocumentIds() {
     return IntRange.exclusive(0, lengths.size());

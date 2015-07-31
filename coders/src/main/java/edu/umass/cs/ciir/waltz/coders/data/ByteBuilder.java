@@ -91,9 +91,8 @@ public class ByteBuilder implements MutableDataChunk {
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     baos.reset();
-    baos.close();
   }
 
   public boolean isEmpty() {
