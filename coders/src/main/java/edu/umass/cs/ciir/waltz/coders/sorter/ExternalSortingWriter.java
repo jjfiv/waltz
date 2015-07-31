@@ -54,6 +54,7 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Reducer<T> reducer, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
     super(mergeFactor);
+    this.mergeFn = this::mergeRuns;
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;

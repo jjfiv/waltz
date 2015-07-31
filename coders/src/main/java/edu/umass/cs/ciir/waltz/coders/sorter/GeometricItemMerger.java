@@ -13,10 +13,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author jfoley
  */
-public abstract class GeometricItemMerger {
+public class GeometricItemMerger {
   public static final ExecutorService asyncExec = ForkJoinPool.commonPool();
   public static final int DEFAULT_MERGE_FACTOR = 10;
 
+  MergeFn mergeFn;
   final Map<Integer, List<Integer>> runsByLevel;
   AtomicInteger liveJobs;
   protected final int mergeFactor;
@@ -82,7 +83,9 @@ public abstract class GeometricItemMerger {
     }
   }
 
-  public abstract void mergeRuns(List<Integer> inputs, int output) throws IOException;
+  public interface MergeFn {
+    void apply(List<Integer> inputs, int output) throws IOException;
+  }
 
   public class AsyncRunMerger implements Runnable {
     private final List<Integer> runs;
@@ -97,7 +100,7 @@ public abstract class GeometricItemMerger {
     public void run() {
       try {
         int newId = allocate();
-        mergeRuns(runs, newId);
+        mergeFn.apply(runs, newId);
         addNewRun(newId, outputLevel);
       } catch (Throwable e) {
         e.printStackTrace(System.err);
