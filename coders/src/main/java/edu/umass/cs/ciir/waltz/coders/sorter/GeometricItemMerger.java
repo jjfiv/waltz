@@ -46,7 +46,7 @@ public class GeometricItemMerger {
     MapFns.extendListInMap(runsByLevel, level, runId);
   }
 
-  public void stop() throws IOException {
+  public void close() throws IOException {
     // merge as many runs as possible.
     do {
       checkIfWeCanMergeRuns();

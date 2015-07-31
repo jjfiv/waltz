@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.Comparing;
 import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.fn.SinkFn;
@@ -27,13 +28,9 @@ import java.util.List;
  * The writing writes sorted runs to files within a directory.
  * The reading stage combines these while reading in order.
  *
- * <ol>
- *   <li>{link: ExternalSortingWriter} Writing (this class)</li>
- *   <li>{link: ExternalSortingReader} Reading</li>
- * </ol>
  * @author jfoley.
  */
-public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flushable, Closeable, SinkFn<T> {
+public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T> {
   public static final int DEFAULT_MAX_ITEMS_IN_MEMORY = 64*1024;
   private final File dir;
   final Coder<Long> countCoder;
@@ -44,17 +41,18 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
   private ArrayList<T> buffer;
   private long startTime = System.currentTimeMillis();
   private long endTime = 0;
+  private final GeometricItemMerger merger;
 
   public ExternalSortingWriter(File dir, Coder<T> coder) {
     this(dir, coder, Comparing.defaultComparator());
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Comparator<? super T> comparator) {
     // Leverage some defaults from Galago, because why not?
-    this(dir, coder, new Reducer.NullReducer<T>(), comparator, DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
+    this(dir, coder, new Reducer.NullReducer<T>(), comparator, DEFAULT_MAX_ITEMS_IN_MEMORY, GeometricItemMerger.DEFAULT_MERGE_FACTOR);
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Reducer<T> reducer, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
-    super(mergeFactor);
-    this.mergeFn = this::mergeRuns;
+    merger = new GeometricItemMerger(mergeFactor);
+    merger.mergeFn = this::mergeRuns;
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;
@@ -68,7 +66,7 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
   }
 
   public ExternalSortingWriter(File dir, Reducer<T> reducer, Coder<T> coder) {
-    this(dir, coder, reducer, Comparing.defaultComparator(), DEFAULT_MAX_ITEMS_IN_MEMORY, DEFAULT_MERGE_FACTOR);
+    this(dir, coder, reducer, Comparing.defaultComparator(), DEFAULT_MAX_ITEMS_IN_MEMORY, GeometricItemMerger.DEFAULT_MERGE_FACTOR);
   }
 
   @Override
@@ -76,13 +74,13 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
     // push all runs to topmost level:
     MemoryNotifier.unregister(this);
     flush();
-    stop();
+    merger.close();
     endTime = System.currentTimeMillis();
   }
 
   public void flushSync() throws IOException {
     flush();
-    waitForCurrentJobs();
+    merger.waitForCurrentJobs();
   }
 
   public SortDirectory<T> getOutput() throws IOException {
@@ -100,9 +98,8 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
     List<T> items;
     items = buffer;
     buffer = new ArrayList<>();
-    int currentId = allocate();
-
-    doAsync(() -> {
+    int currentId = merger.allocate();
+    merger.doAsync(() -> {
       try (ClosingSinkFn<T> writer = getNewWriter(currentId)) {
         QuickSort.sort(cmp, items);
         // write run to file.
@@ -118,10 +115,10 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
         throw new RuntimeException(e);
       }
       // add to lowest rung of runs collection.
-      addNewRun(currentId, 0);
+      merger.addNewRun(currentId, 0);
     });
     // check and see if we need to mergeRuns()
-    checkIfWeCanMergeRuns();
+    merger.checkIfWeCanMergeRuns();
   }
 
   public File nameForId(int id) {
@@ -175,5 +172,13 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
 
   public long getTime() {
     return endTime - startTime;
+  }
+
+  public Iterable<Integer> getAllRuns() {
+    IntList data = new IntList();
+    for (List<Integer> ids : merger.runsByLevel.values()) {
+      data.addAll(ids);
+    }
+    return data;
   }
 }

@@ -47,10 +47,8 @@ public class ExternalSortingWriterTest {
       sorter.flushSync();
 
       List<SortingRunReader<Integer>> readers = new ArrayList<>();
-      for (List<Integer> ids : sorter.runsByLevel.values()) {
-        for (Integer id : ids) {
-          readers.add(new SortingRunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
-        }
+      for (Integer id : sorter.getAllRuns()) {
+        readers.add(new SortingRunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
       }
       for (SortingRunReader<Integer> reader : readers) {
         List<Integer> run = new IntList();
