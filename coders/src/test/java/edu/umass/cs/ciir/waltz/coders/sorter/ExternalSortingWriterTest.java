@@ -40,27 +40,28 @@ public class ExternalSortingWriterTest {
     List<List<Integer>> sortedRuns = new ArrayList<>();
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<Integer> sorter = new ExternalSortingWriter<>(tmpdir.get(), VarUInt.instance, new Reducer.NullReducer<>(), Comparing.defaultComparator(), maxItemsInMemory, mergeFactor)) {
-        for (int input : shuffled) {
-          sorter.process(input);
-        }
-        sorter.flush();
+      ExternalSortingWriter<Integer> sorter = new ExternalSortingWriter<>(tmpdir.get(), VarUInt.instance, new Reducer.NullReducer<>(), Comparing.defaultComparator(), maxItemsInMemory, mergeFactor);
+      for (int input : shuffled) {
+        sorter.process(input);
+      }
+      sorter.flushSync();
 
-        List<SortingRunReader<Integer>> readers = new ArrayList<>();
-        for (List<Integer> ids : sorter.runsByLevel.values()) {
-          for (Integer id : ids) {
-            readers.add(new SortingRunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
-          }
-        }
-        for (SortingRunReader<Integer> reader : readers) {
-          List<Integer> run = new IntList();
-          while(reader.hasNext()) {
-            run.add(reader.next());
-          }
-          sortedRuns.add(run);
-          hackedMerging.addAll(run);
+      List<SortingRunReader<Integer>> readers = new ArrayList<>();
+      for (List<Integer> ids : sorter.runsByLevel.values()) {
+        for (Integer id : ids) {
+          readers.add(new SortingRunReader<>(sorter.cmp, sorter.objCoder, sorter.nameForId(id)));
         }
       }
+      for (SortingRunReader<Integer> reader : readers) {
+        List<Integer> run = new IntList();
+        while(reader.hasNext()) {
+          run.add(reader.next());
+        }
+        sortedRuns.add(run);
+        hackedMerging.addAll(run);
+      }
+
+      sorter.close();
     }
 
     // The parameters here have been chosen to exercise as much code as possible.
@@ -165,42 +166,40 @@ public class ExternalSortingWriterTest {
     // Make sure we can sort this type:
     List<WordCount> sortedExternally;
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
+      ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
           tmpdir.get(),
           new WordCountCoder(),
           null, // no reducer
           Comparing.defaultComparator(),
           25, // make sure some flushes actually happen in this test
           2 // make sure merge factor is weird
-      )) {
-        testData.forEach(sorter::process);
+      );
+      testData.forEach(sorter::process);
 
-        sorter.flush();
-        sortedExternally = IterableFns.intoList(sorter.getOutput());
-      }
+      sorter.close();
+      sortedExternally = IterableFns.intoList(sorter.getOutput());
     }
     List<WordCount> sortedInternally = new ArrayList<>(testData);
     Collections.sort(sortedInternally);
     assertEquals(sortedInternally, sortedExternally);
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
+      ExternalSortingWriter<WordCount> sorter = new ExternalSortingWriter<>(
           tmpdir.get(),
           new WordCountCoder(),
           new WordCountReducer(),
           Comparing.defaultComparator(),
           25, // make sure some flushes actually happen in this test
           2 // make sure merge factor is weird
-      )) {
-        testData.forEach(sorter::process);
+      );
 
-        sorter.flush();
+      testData.forEach(sorter::process);
 
-        for (WordCount wordCount : sorter.getOutput()) {
-          assertEquals(frequencies.get(wordCount.getWord()).intValue(), wordCount.getCount());
-        }
+      sorter.close();
+
+      for (WordCount wordCount : sorter.getOutput()) {
+        assertEquals(frequencies.get(wordCount.getWord()).intValue(), wordCount.getCount());
       }
     }
-
   }
 }

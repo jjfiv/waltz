@@ -106,6 +106,17 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     endTime = System.currentTimeMillis();
   }
 
+  public void flushSync() throws IOException {
+    flush();
+    while(liveJobs.get() > 0) {
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+      }
+    }
+
+  }
+
   public SortDirectory<T> getOutput() throws IOException {
     return new SortDirectory<>(dir, cmp, reducer, objCoder);
   }
