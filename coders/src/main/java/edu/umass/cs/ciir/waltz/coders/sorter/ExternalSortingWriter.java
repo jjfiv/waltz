@@ -112,12 +112,12 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
 
         // ditch memory as soon as possible.
         items.clear();
-        // add to lowest rung of runs collection.
-        addNewRun(currentId, 0);
       } catch (Throwable e) {
         e.printStackTrace(System.err);
         throw new RuntimeException(e);
       }
+      // add to lowest rung of runs collection.
+      addNewRun(currentId, 0);
     });
     // check and see if we need to mergeRuns()
     checkIfWeCanMergeRuns();
@@ -140,6 +140,9 @@ public class ExternalSortingWriter<T> extends GeometricItemMerger implements Flu
     List<SortedReader<T>> readers = new ArrayList<>();
     for (int run : runs) {
       SortingRunReader<T> rdr = new SortingRunReader<>(cmp, objCoder, nameForId(run));
+      if(rdr.peek() == null) {
+        throw new AssertionError("fail+"+run+"+ "+rdr.getCount());
+      }
       readers.add(rdr);
     }
 
