@@ -114,11 +114,10 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
         e.printStackTrace(System.err);
         throw new RuntimeException(e);
       }
-      // add to lowest rung of runs collection.
-      merger.addNewRun(currentId, 0);
+      merger.addNewItem(currentId);
     });
     // check and see if we need to mergeRuns()
-    merger.checkIfWeCanMergeRuns();
+    merger.checkIfWeCanMergeItems();
   }
 
   public File nameForId(int id) {
@@ -176,7 +175,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
 
   public Iterable<Integer> getAllRuns() {
     IntList data = new IntList();
-    for (List<Integer> ids : merger.runsByLevel.values()) {
+    for (List<Integer> ids : merger.itemsByLevel.values()) {
       data.addAll(ids);
     }
     return data;

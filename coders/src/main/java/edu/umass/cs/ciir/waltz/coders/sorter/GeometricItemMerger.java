@@ -18,7 +18,8 @@ public class GeometricItemMerger {
   public static final int DEFAULT_MERGE_FACTOR = 10;
 
   MergeFn mergeFn;
-  final Map<Integer, List<Integer>> runsByLevel;
+  // Logical size only: 0: [...], 1: [...] ... whenever we get 10 level 0s we upgrade them to a level 1... etc.
+  final Map<Integer, List<Integer>> itemsByLevel;
   AtomicInteger liveJobs;
   protected final int mergeFactor;
   private int nextId;
@@ -27,7 +28,7 @@ public class GeometricItemMerger {
     this.mergeFactor = mergeFactor;
     nextId = 0;
     liveJobs = new AtomicInteger(0);
-    runsByLevel = new ConcurrentHashMap<>();
+    itemsByLevel = new ConcurrentHashMap<>();
   }
 
   public synchronized void doAsync(Runnable r) {
@@ -42,14 +43,18 @@ public class GeometricItemMerger {
     return nextId++;
   }
 
-  public synchronized void addNewRun(int runId, int level)  {
-    MapFns.extendListInMap(runsByLevel, level, runId);
+  public synchronized void insert(int id, int level)  {
+    MapFns.extendListInMap(itemsByLevel, level, id);
+  }
+
+  public void addNewItem(int itemId) {
+    insert(itemId, 0);
   }
 
   public void close() throws IOException {
     // merge as many runs as possible.
     do {
-      checkIfWeCanMergeRuns();
+      checkIfWeCanMergeItems();
       try {
         Thread.sleep(100);
       } catch (InterruptedException ignored) { }
@@ -64,17 +69,26 @@ public class GeometricItemMerger {
     }
   }
 
-  public synchronized void checkIfWeCanMergeRuns() throws IOException {
+  public synchronized void checkIfWeCanMergeItems() throws IOException {
     while(true) {
       boolean changed = false;
 
-      for (Map.Entry<Integer, List<Integer>> kv : runsByLevel.entrySet()) {
+      for (Map.Entry<Integer, List<Integer>> kv : itemsByLevel.entrySet()) {
         int level = kv.getKey();
         List<Integer> runs = kv.getValue();
         if (runs.size() >= mergeFactor) {
-          runsByLevel.remove(level);
+          itemsByLevel.remove(level);
 
-          doAsync(new AsyncRunMerger(runs, level + 1));
+          doAsync(() -> {
+            try {
+              int newId = allocate();
+              mergeFn.apply(runs, newId);
+              insert(newId, level+1);
+            } catch (Throwable e) {
+              e.printStackTrace(System.err);
+              throw new RuntimeException(e);
+            }
+          });
           changed = true;
           break;
         }
@@ -87,25 +101,4 @@ public class GeometricItemMerger {
     void apply(List<Integer> inputs, int output) throws IOException;
   }
 
-  public class AsyncRunMerger implements Runnable {
-    private final List<Integer> runs;
-    private final int outputLevel;
-
-    public AsyncRunMerger(List<Integer> runs, int outputLevel) {
-      this.runs = runs;
-      this.outputLevel = outputLevel;
-    }
-
-    @Override
-    public void run() {
-      try {
-        int newId = allocate();
-        mergeFn.apply(runs, newId);
-        addNewRun(newId, outputLevel);
-      } catch (Throwable e) {
-        e.printStackTrace(System.err);
-        throw new RuntimeException(e);
-      }
-    }
-  }
 }
