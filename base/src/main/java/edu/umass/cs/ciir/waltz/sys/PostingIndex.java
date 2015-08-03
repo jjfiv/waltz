@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.sys;
 
+import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
@@ -145,6 +146,12 @@ public class PostingIndex {
     public void close() throws IOException {
       MemoryNotifier.unregister(this);
       flush();
+    }
+
+    public void mergeTo(BlockedPostingsWriter<K, M, V> finalWriter) throws IOException {
+      close();
+      PostingIndex.TmpPostingMerger<K, M, V> merger = this.getMerger(IntRange.exclusive(0, temporaryIndex));
+      merger.write(finalWriter);
     }
   }
 

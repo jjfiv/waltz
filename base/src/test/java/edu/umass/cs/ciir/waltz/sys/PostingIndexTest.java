@@ -231,7 +231,7 @@ public class PostingIndexTest {
 
         assertEquals(countsIndex.get("fast").toMap(), ChaiMap.create(Pair.of(0, 3), Pair.of(2, 3)));
         assertEquals(countsIndex.get("last").toMap(), ChaiMap.create(Pair.of(3, 1)));
-        assertEquals(countsIndex.get("quick").toMap(), ChaiMap.create(Pair.of(0, 3), Pair.of(2,3)));
+        assertEquals(countsIndex.get("quick").toMap(), ChaiMap.create(Pair.of(0, 3), Pair.of(2, 3)));
         assertEquals(countsIndex.get("second").toMap(), ChaiMap.create(Pair.of(1, 5)));
         assertEquals(countsIndex.get("the").toMap(),
             ChaiMap.create(Pair.of(0, 1), Pair.of(1,4), Pair.of(2,1), Pair.of(3,2)));
