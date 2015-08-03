@@ -78,6 +78,8 @@ public class WaltzDiskMapWriter<K, V> implements IOMapWriter<K, V> {
     long startVal = valuesFile.tell();
     if(sorting) {
       keySorter.process(new VocabEntry<>(key, startVal));
+    } else {
+      keysFile.write(koffCoder, new VocabEntry<K>(key, startVal));
     }
     keyCount++;
   }
@@ -106,13 +108,13 @@ public class WaltzDiskMapWriter<K, V> implements IOMapWriter<K, V> {
       for (VocabEntry<K> kv : this.keySorter.getOutput()) {
         keysFile.write(koffCoder, kv);
       }
+
+      // clean up sort files:
+      sortDir.removeRecursively();
     } else {
       // Fix up the keyCount in the header:
       keysFile.seekAbsolute(WaltzDiskMap.MagicLength);
       keysFile.write(FixedSize.longs, keyCount);
-
-      // clean up sort files:
-      sortDir.removeRecursively();
     }
     keysFile.close();
   }

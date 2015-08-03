@@ -46,7 +46,8 @@ public abstract class Coder<T> {
   public T read(InputStream is) {
     try {
       return readImpl(is);
-    } catch (IOException e) {
+    } catch (AssertionError | IOException e) {
+      System.err.println("InputStreamClass for error: "+is.getClass());
       throw new CoderException(e, this.getClass());
     }
   }

@@ -3,6 +3,9 @@ package edu.umass.cs.ciir.waltz.dociter.movement;
 import ciir.jfoley.chai.fn.SinkFn;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author jfoley
  */
@@ -21,5 +24,12 @@ public interface PostingMover<X> extends Mover {
   default void collectValues(SinkFn<X> collector) {
     MoverFeature<X> feature = getFeature();
     execute(input -> collector.process(feature.getFeature(input)));
+  }
+
+  default Map<Integer,X> toMap() {
+    Map<Integer,X> data = new HashMap<>();
+    MoverFeature<X> feature = getFeature();
+    execute(input -> data.put(input, feature.getFeature(input)));
+    return data;
   }
 }
