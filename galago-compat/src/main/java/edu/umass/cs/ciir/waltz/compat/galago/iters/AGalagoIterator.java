@@ -33,7 +33,7 @@ public class AGalagoIterator<MoverKind extends Mover> implements BaseIterator {
 
   @Override
   public void movePast(long identifier) throws IOException {
-    for(; !mover.isDone(); mover.next()) {
+    for(mover.start(); !mover.isDone(); mover.next()) {
       if(mover.currentKey() == identifier) {
         mover.next();
         return;
@@ -43,7 +43,7 @@ public class AGalagoIterator<MoverKind extends Mover> implements BaseIterator {
 
   @Override
   public void syncTo(long identifier) throws IOException {
-    for(; !mover.isDone(); mover.next()) {
+    for(mover.start(); !mover.isDone(); mover.next()) {
       if(mover.currentKey() == identifier) return;
     }
   }

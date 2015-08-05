@@ -23,7 +23,15 @@ public interface Mover {
 	default boolean hasNext() { return !isDone(); }
 
 	/** Abstracts the block movement away from a user perspective */
-	void next();
+	default void next() {
+		if(!isDoneWithBlock()) {
+			nextKey();
+		}
+		while(isDoneWithBlock()) {
+			if (isDone()) return;
+			nextBlock();
+		}
+	}
 
 	/** returns true if we've consumed all of the current block */
 	boolean isDoneWithBlock();
@@ -60,6 +68,14 @@ public interface Mover {
 	 * @param documentHandler the object to call into for each "hit" on this mover.
 	 */
 	default void execute(SinkFn<Integer> documentHandler) {
-		for( ; !isDone(); next()) documentHandler.process(currentKey());
+		for( ; !isDone(); nextBlock()) {
+			for( ; !isDoneWithBlock(); nextKey()) {
+				documentHandler.process(currentKey());
+			}
+		}
 	}
+
+	default void start() {
+		while(isDoneWithBlock()) next();
+	};
 }

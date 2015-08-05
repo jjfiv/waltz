@@ -81,7 +81,8 @@ public class PositionalSDM {
     od_bg = new double[numTerms-1];
     uw_bg = new double[numTerms-1];
 
-    for(Mover mover = getMover(); !mover.isDone(); mover.next()) {
+    Mover mover = getMover();
+    for(mover.start(); !mover.isDone(); mover.next()) {
       int doc = mover.currentKey();
       List<PositionsList> extents = new ArrayList<>(numTerms);
       for (int i = 0; i < iters.size(); i++) {

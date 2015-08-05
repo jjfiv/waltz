@@ -25,6 +25,7 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 			Mover child = children.get(i);
 			maxCurrent = Math.max(child.currentKey(), maxCurrent);
 		}
+
 		return maxCurrent;
 	}
 

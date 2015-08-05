@@ -24,7 +24,7 @@ public class FeatureMoverTest {
 		BlockPostingsMover<Integer> mover = new BlockPostingsMover<>(new ListBlockPostingsIterator<>(data, 3));
 
 		int total = 0;
-		for(; !mover.isDone(); mover.next()) {
+		for(mover.start(); !mover.isDone(); mover.next()) {
 			int doc = mover.currentKey();
 
 			total++;

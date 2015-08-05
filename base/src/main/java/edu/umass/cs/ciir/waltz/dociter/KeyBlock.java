@@ -15,11 +15,13 @@ public class KeyBlock extends AbstractList<Integer> implements IKeyBlock {
   }
   @Override
   public int minKey() {
+    assert(keys.size() >= 1);
     return keys.get(0);
   }
 
   @Override
   public int maxKey() {
+    assert(keys.size() >= 1);
     return keys.get(keys.size()-1);
   }
 

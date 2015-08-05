@@ -82,7 +82,7 @@ public class SimplePostingListFormatTest {
           int lastId = -1;
           assertFalse(fromMemIndex.isDone());
           assertFalse(fromDisk.isDone());
-          for( ; !fromMemIndex.isDone(); fromDisk.next(), fromMemIndex.next()) {
+          for(fromMemIndex.start(), fromDisk.start() ; !fromMemIndex.isDone(); fromDisk.next(), fromMemIndex.next()) {
             assertTrue(lastId < fromMemIndex.currentKey());
             assertTrue(lastId < fromDisk.currentKey());
             lastId = fromMemIndex.currentKey();

@@ -26,19 +26,6 @@ public abstract class AMover implements Mover {
 	}
 
 	@Override
-	public void next() {
-		if(!isDoneWithBlock()) {
-			nextKey();
-		}
-		while(isDoneWithBlock()) {
-			if (isDone()) break;
-			if (!isDone()) {
-				nextBlock();
-			}
-		}
-	}
-
-	@Override
 	public int currentKey() {
 		if(isDone()) return DONE_ID;
 		if(isDoneWithBlock()) return maxKey()+1;

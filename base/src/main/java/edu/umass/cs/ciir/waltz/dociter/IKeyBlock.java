@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.dociter;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,6 +11,4 @@ public interface IKeyBlock extends List<Integer> {
   int getKey(int index);
   @Override
   int size();
-
-  IKeyBlock EMPTY = new KeyBlock(Collections.emptyList());
 }

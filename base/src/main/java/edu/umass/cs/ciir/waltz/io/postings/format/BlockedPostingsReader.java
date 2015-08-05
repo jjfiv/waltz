@@ -62,6 +62,7 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
       // VByte: size of next block of keys+values
       int nextBlockSize = VarUInt.instance.read(stream);
       nextKeyBlockOffset = stream.tell() + nextBlockSize;
+
       // Read in all the keys.
       List<Integer> keys = intsCoder.read(stream);
       this.numKeysInThisBlock = keys.size();

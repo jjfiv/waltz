@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class AllOfMoverTest {
 
@@ -49,7 +50,7 @@ public class AllOfMoverTest {
 	@Test
 	public void testXL() throws Exception {
 		Mover xl = new IdSetMover(IntRange.exclusive(0, 20000));
-		List<Integer> twoHits = Arrays.asList(2,4,6,8,10);
+		List<Integer> twoHits = Arrays.asList(2, 4, 6, 8, 10);
 		Mover twos = new IdSetMover(twoHits);
 
 		Mover mover = AllOfMover.of(xl, twos);
@@ -61,6 +62,39 @@ public class AllOfMoverTest {
 			}
 		}
 
+		assertEquals(twoHits, hits);
+	}
+
+	@Test
+	public void testCommonRare() {
+		Mover xl = new IdSetMover(IntRange.exclusive(0, 20000));
+		List<Integer> twoHits = Arrays.asList(302,304,306,308,310);
+		Mover twos = new IdSetMover(twoHits);
+
+		Mover mover = AllOfMover.of(xl, twos);
+		List<Integer> hits = new ArrayList<>();
+		for(; !mover.isDone(); mover.nextBlock()) {
+			for(; !mover.isDoneWithBlock(); mover.next()) {
+				int doc = mover.currentKey();
+				hits.add(doc);
+			}
+		}
+
+		assertEquals(twoHits, hits);
+	}
+
+	@Test
+	public void testCommonRare2() {
+		Mover xl = new IdSetMover(IntRange.exclusive(0, 20000));
+		List<Integer> twoHits = Arrays.asList(302,304,306,308,310);
+		Mover twos = new IdSetMover(twoHits);
+
+		AllOfMover<AMover> mover = AllOfMover.<AMover>of((AMover) xl, (AMover) twos);
+		List<Integer> hits = new ArrayList<>();
+		for(mover.start(); !mover.isDone(); mover.next()) {
+			assertFalse(mover.isDoneWithBlock());
+			hits.add(mover.currentKey());
+		}
 		assertEquals(twoHits, hits);
 	}
 }
