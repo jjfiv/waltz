@@ -85,7 +85,7 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
   @Nonnull
   @Override
   public Iterable<Pair<K, V>> items() throws IOException {
-    throw new UnsupportedOperationException("TODO");
+    return getInBulk(IterableFns.intoList(keys()));
   }
 
   @Override
