@@ -32,6 +32,11 @@ public class DocumentSetChunk<K> implements Comparable<DocumentSetChunk<K>> {
   public int compareTo(@Nonnull DocumentSetChunk<K> o) {
     int cv = cmp.compare(this.key, o.key);
     if (cv != 0) return cv;
-    return Integer.compare(this.docs.get(0), o.docs.get(0));
+    return Integer.compare(this.first(), o.first());
   }
+
+  public int first() {
+    return this.docs.get(0);
+  }
+
 }

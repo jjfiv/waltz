@@ -29,6 +29,10 @@ public interface DataSource extends Closeable {
     return FixedSize.longs.read(read(position, 8));
   }
 
+  default int readInt(long position) throws IOException {
+    return FixedSize.ints.read(read(position, 4));
+  }
+
   /**
    * Reads a byte from this source like its an InputStream:
    * {@link java.io.InputStream#read}

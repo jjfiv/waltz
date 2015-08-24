@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;

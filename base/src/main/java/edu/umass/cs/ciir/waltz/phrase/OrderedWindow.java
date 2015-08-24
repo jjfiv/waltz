@@ -29,7 +29,6 @@ public class OrderedWindow {
     while(notDone) {
       // find the start of the first word
       boolean invalid = false;
-      int begin = arrayIterators.get(0).currentBegin();
 
       // loop over all the rest of the words
       for (int i = 1; i < arrayIterators.size(); i++) {
