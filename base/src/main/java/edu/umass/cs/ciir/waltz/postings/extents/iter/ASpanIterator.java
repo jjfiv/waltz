@@ -28,4 +28,5 @@ public abstract class ASpanIterator implements SpanIterator {
   public void reset() {
     pos = 0;
   }
+
 }

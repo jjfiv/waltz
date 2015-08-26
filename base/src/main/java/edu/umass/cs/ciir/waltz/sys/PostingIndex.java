@@ -1,15 +1,18 @@
 package edu.umass.cs.ciir.waltz.sys;
 
 import ciir.jfoley.chai.collections.IntRange;
+import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSink;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.io.postings.format.BlockedPostingValueWriter;
+import edu.umass.cs.ciir.waltz.io.postings.format.BlockedPostingsCoder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,13 +87,13 @@ public class PostingIndex {
     private final Directory tmpDir;
     public int temporaryIndex;
     PostingsConfig<K,M,V> cfg;
-    public final TreeMap<K, TemporaryPosting<M,V>> memoryPostingIndex;
+    public final HashMap<K, TemporaryPosting<M,V>> memoryPostingIndex;
     private int totalDocuments;
 
     public TmpStreamPostingIndexWriter(Directory outputDir, String baseName, PostingsConfig<K,M,V> cfg) {
       this.tmpDir = outputDir.childDir(baseName+".tmp");
       this.cfg = cfg;
-      this.memoryPostingIndex = new TreeMap<>(cfg.keyCmp);
+      this.memoryPostingIndex = new HashMap<>();
       this.totalDocuments = 0;
     }
 
@@ -105,6 +108,14 @@ public class PostingIndex {
         memoryPostingIndex.put(key, valBuilder);
       }
       valBuilder.add(document, payload);
+
+      if(memoryPostingIndex.size() > 200000) {
+        try {
+          flush();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
     }
 
     public TmpPostingMerger<K,M,V> getMerger(List<Integer> ids) throws IOException {
@@ -132,8 +143,14 @@ public class PostingIndex {
         VarUInt.instance.writePrim(segmentWriter, keyCount);
         VarUInt.instance.writePrim(segmentWriter, totalDocuments);
 
+        List<Map.Entry<K,TemporaryPosting<M,V>>> data = new ArrayList<>(memoryPostingIndex.entrySet());
+        memoryPostingIndex.clear();
+        QuickSort.sort(
+            (lhs, rhs) -> cfg.keyCmp.compare(lhs.getKey(), rhs.getKey()), data
+        );
+
         // followed by k,v pairs in order:
-        for (Map.Entry<K, TemporaryPosting<M,V>> kv : memoryPostingIndex.entrySet()) {
+        for (Map.Entry<K, TemporaryPosting<M,V>> kv : data) {
           cfg.keyCoder.write(segmentWriter, kv.getKey());
           kv.getValue().write(segmentWriter);
           kv.getValue().close();
@@ -148,7 +165,7 @@ public class PostingIndex {
       flush();
     }
 
-    public void mergeTo(BlockedPostingsWriter<K, M, V> finalWriter) throws IOException {
+    public void mergeTo(PostingIndexWriter<K, M, V> finalWriter) throws IOException {
       close();
       PostingIndex.TmpPostingMerger<K, M, V> merger = this.getMerger(IntRange.exclusive(0, temporaryIndex));
       merger.write(finalWriter);
@@ -172,6 +189,25 @@ public class PostingIndex {
 
     public M newMetadata() {
       return metadata.zero();
+    }
+
+    public TmpStreamPostingIndexWriter<K, M, V> makeTemporaryWriter(Directory outdir, String baseName) {
+      return new TmpStreamPostingIndexWriter<>(outdir, baseName, this);
+    }
+
+    public BlockedPostingsWriter<K, M, V> makeFinalWriter(Directory outdir, String baseName) throws IOException {
+      return new PostingIndex.BlockedPostingsWriter<>(this,
+          new WaltzDiskMapWriter<>(
+              outdir,
+              baseName,
+              this.keyCoder,
+              new BlockedPostingsCoder<>(this.valCoder),
+              false
+          ));
+    }
+
+    public WaltzDiskMapReader<K,PostingMover<V>> openReader(Directory input, String positions) throws IOException {
+      return new WaltzDiskMapReader<>(input, positions, this.keyCoder, new BlockedPostingsCoder<>(this.valCoder));
     }
   }
 
@@ -251,8 +287,7 @@ public class PostingIndex {
       this.cfg = cfg;
       queue = new PriorityQueue<>(sources.size());
 
-      for (int i = 0; i < sources.size(); i++) {
-        InputStream source = sources.get(i);
+      for (InputStream source : sources) {
         TmpPostingReader<K, M, V> reader = new TmpPostingReader<>(cfg, source);
         queue.offer(reader);
       }

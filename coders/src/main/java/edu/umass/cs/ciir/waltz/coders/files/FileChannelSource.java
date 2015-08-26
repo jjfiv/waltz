@@ -12,14 +12,16 @@ import static java.nio.file.StandardOpenOption.READ;
  */
 public class FileChannelSource implements DataSource {
   private final FileChannel channel;
+  private final long size;
 
   public FileChannelSource(String path) throws IOException {
     this.channel = FileChannel.open(new File(path).toPath(), READ);
+    this.size = channel.size();
   }
 
   @Override
   public long size() throws IOException {
-    return channel.size();
+    return size;
   }
 
   /**

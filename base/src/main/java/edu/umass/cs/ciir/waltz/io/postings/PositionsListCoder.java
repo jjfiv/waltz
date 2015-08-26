@@ -1,28 +1,24 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
+import ciir.jfoley.chai.collections.list.AChaiList;
+import ciir.jfoley.chai.collections.list.BitVector;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
-import edu.umass.cs.ciir.waltz.postings.positions.SimplePositionsList;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * @author jfoley
  */
 public class PositionsListCoder extends Coder<PositionsList> {
-  private final Coder<List<Integer>> innerCoder;
-
   public PositionsListCoder() {
-    this(new DeltaIntListCoder());
-  }
-  public PositionsListCoder(Coder<List<Integer>> innerCoder) {
-    assert(innerCoder.knowsOwnSize());
-    this.innerCoder = innerCoder;
   }
 
   @Override
@@ -33,12 +29,65 @@ public class PositionsListCoder extends Coder<PositionsList> {
   @Nonnull
   @Override
   public DataChunk writeImpl(PositionsList obj) throws IOException {
-    return innerCoder.writeImpl(obj);
+    ByteBuilder bl = new ByteBuilder();
+    int count = obj.size();
+    int prev = 0;
+    bl.add(VarUInt.instance.write(count));
+
+    for (int x : obj) {
+      int delta = x - prev;
+      bl.add(VarInt.instance, delta);
+      prev = x;
+    }
+
+    return bl;
   }
 
   @Nonnull
   @Override
   public PositionsList readImpl(InputStream inputStream) throws IOException {
-    return new SimplePositionsList(innerCoder.readImpl(inputStream));
+    BitVector bv = new BitVector(4000);
+    int count = VarUInt.instance.readImpl(inputStream);
+    int[] data = new int[count];
+
+    int runningValue = 0;
+    for (int i = 0; i < count; i++) {
+      runningValue += VarInt.instance.readImpl(inputStream);
+      data[i] = runningValue;
+      bv.set(runningValue);
+    }
+    ArrayPosList ap = new ArrayPosList(data);
+    ap.myBitVector = bv;
+    return ap;
   }
+
+  public final static class ArrayPosList extends AChaiList<Integer> implements PositionsList {
+    final int[] data;
+    public BitVector myBitVector = null;
+
+    public ArrayPosList(int[] data) {
+      this.data = data;
+    }
+
+    @Override
+    public Integer get(int index) {
+      return data[index];
+    }
+
+    @Override
+    public int getPosition(int index) {
+      return data[index];
+    }
+
+    @Override
+    public int size() {
+      return data.length;
+    }
+
+    @Override
+    public PositionsIterator getSpanIterator() {
+      return new PositionsIterator(this);
+    }
+  }
+
 }
