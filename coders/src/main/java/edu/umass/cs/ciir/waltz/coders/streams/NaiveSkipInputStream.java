@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.streams;
 
+import javax.annotation.Nonnull;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,14 +24,14 @@ public class NaiveSkipInputStream extends SkipInputStream {
   }
 
   @Override
-  public int read(byte[] b) throws IOException  {
+  public int read(@Nonnull byte[] b) throws IOException  {
     int amountRead = inner.read(b);
     this.offset += amountRead;
     return amountRead;
   }
 
   @Override
-  public int read(byte[] b, int offset, int amount) throws IOException  {
+  public int read(@Nonnull byte[] b, int offset, int amount) throws IOException  {
     int amountRead = inner.read(b, offset, amount);
     this.offset += amountRead;
     return amountRead;

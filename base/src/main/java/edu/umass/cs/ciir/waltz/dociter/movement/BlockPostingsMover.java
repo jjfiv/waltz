@@ -46,6 +46,6 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
 
 
   public static <Z> BlockPostingsMover<Z> ofIterable(Iterable<? extends Posting<Z>> coll) {
-    return new BlockPostingsMover<Z>(new IterableBlockPostingsIterator<>(coll));
+    return new BlockPostingsMover<>(new IterableBlockPostingsIterator<>(coll));
   }
 }
