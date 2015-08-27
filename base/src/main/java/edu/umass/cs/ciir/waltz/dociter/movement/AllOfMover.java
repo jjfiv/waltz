@@ -66,7 +66,7 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 		}
 
 		//System.out.println(ids+"\t"+lastKey);
-		return new FastKeyBlock(ids.asArray(), ids.size());
+		return new FastKeyBlock(ids.unsafeArray(), ids.size());
 	}
 
   @Override

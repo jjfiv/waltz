@@ -38,7 +38,7 @@ public class IdSetMover extends AMover {
     }
 
     IntList relevantKeys = new IntList(keys.subList(readPtr, Math.min(readPtr + blockSize, keys.size())));
-    this.currentBlock = new FastKeyBlock(relevantKeys.asArray(), relevantKeys.size());
+    this.currentBlock = new FastKeyBlock(relevantKeys.unsafeArray(), relevantKeys.size());
     readPtr += blockSize;
   }
 

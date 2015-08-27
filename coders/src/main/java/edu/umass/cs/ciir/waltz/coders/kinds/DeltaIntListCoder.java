@@ -53,7 +53,7 @@ public class DeltaIntListCoder extends IntsCoder {
   public void readInto(IntList target, InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);
     target.setSize(amount);
-    int[] arr = target.asArray();
+    int[] arr = target.unsafeArray();
     int delta = 0;
     for (int i = 0; i < amount; i++) {
       delta += itemCoder.read(inputStream);

@@ -42,12 +42,12 @@ public class PositionsListCoder extends Coder<PositionsList> {
   @Nonnull
   @Override
   public PositionsList readImpl(InputStream inputStream) throws IOException {
-    int count = VarUInt.instance.readImpl(inputStream);
+    int count = VarUInt.instance.readPrim(inputStream);
     int[] data = new int[count];
 
     int runningValue = 0;
     for (int i = 0; i < count; i++) {
-      runningValue += VarInt.instance.readImpl(inputStream);
+      runningValue += VarInt.instance.readPrim(inputStream);
       data[i] = runningValue;
     }
     return new ArrayPosList(data);

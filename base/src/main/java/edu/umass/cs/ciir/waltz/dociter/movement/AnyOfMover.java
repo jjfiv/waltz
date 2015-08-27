@@ -39,7 +39,7 @@ public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
 			}
 		}
 
-		return new FastKeyBlock(ids.asArray(), ids.size());
+		return new FastKeyBlock(ids.unsafeArray(), ids.size());
 	}
 
   @Override

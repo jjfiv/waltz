@@ -1,13 +1,11 @@
 package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.collections.list.IntList;
-import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
-import edu.umass.cs.ciir.waltz.coders.kinds.ListCoder;
-import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -20,13 +18,13 @@ public class DeltaIntListCoderTest {
     IntList testData = new IntList();
     Random r = new Random();
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 100; i++) {
       testData.add(Math.abs(r.nextInt()));
     }
     Collections.sort(testData);
 
     ListCoder<Integer> lc = new ListCoder<>(VarInt.instance);
-    DeltaIntListCoder dlc = new DeltaIntListCoder();
+    DeltaIntListCoder dlc = new DeltaIntListCoder(VarUInt.instance, VarInt.instance);
 
     ByteBuffer withoutDeltas = lc.write(testData);
     ByteBuffer withDeltas = dlc.write(testData);
@@ -37,7 +35,7 @@ public class DeltaIntListCoderTest {
     // This is the whole reason we're doing it...
     assertTrue(withoutDeltas.limit() >= withDeltas.limit());
 
-    assertEquals(testData, lc.read(withoutDeltas));
-    assertEquals(testData, dlc.read(withDeltas));
+    assertEquals((List<Integer>) testData, lc.read(withoutDeltas));
+    assertEquals((List<Integer>) testData, dlc.read(withDeltas));
   }
 }
