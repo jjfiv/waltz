@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.List;
  * This integer list provides delta-gapped writing and reading, for sorted lists of integers.
  * @author jfoley
  */
-public class DeltaIntListCoder extends Coder<List<Integer>> {
+public class DeltaIntListCoder extends IntsCoder {
   private final Coder<Integer> countCoder;
   private final Coder<Integer> itemCoder;
 
@@ -48,17 +49,16 @@ public class DeltaIntListCoder extends Coder<List<Integer>> {
     return bl;
   }
 
-  @Nonnull
   @Override
-  public List<Integer> readImpl(InputStream inputStream) throws IOException {
+  public void readInto(IntList target, InputStream inputStream) throws IOException {
     int amount = countCoder.read(inputStream);
-    int[] data = new int[amount];
+    target.setSize(amount);
+    int[] arr = target.asArray();
     int delta = 0;
     for (int i = 0; i < amount; i++) {
       delta += itemCoder.read(inputStream);
-      data[i] = delta;
+      arr[i] = delta;
     }
-    return new IntList(data);
   }
 
 }

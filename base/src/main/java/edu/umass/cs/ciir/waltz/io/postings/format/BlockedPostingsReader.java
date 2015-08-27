@@ -3,6 +3,7 @@ package edu.umass.cs.ciir.waltz.io.postings.format;
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.*;
@@ -17,7 +18,7 @@ import java.util.List;
  * @param <V>
  */
 public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
-  private final Coder<List<Integer>> intsCoder;
+  private final IntsCoder intsCoder;
   private final Coder<V> valCoder;
   private boolean haveReadCurrentValues;
   private long nextKeyBlockOffset;
@@ -25,11 +26,13 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
   private int totalKeys;
   private int usedKeys = 0;
   private boolean done;
+  IntList keys;
 
-  public BlockedPostingsReader(Coder<List<Integer>> intsCoder, Coder<V> valCoder, StaticStream streamSource) {
+  public BlockedPostingsReader(IntsCoder intsCoder, Coder<V> valCoder, StaticStream streamSource) {
     super(streamSource);
     this.intsCoder = intsCoder;
     this.valCoder = valCoder;
+    keys = new IntList();
   }
 
   @Override
@@ -62,14 +65,10 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
       nextKeyBlockOffset = stream.tell() + nextBlockSize;
 
       // Read in all the keys.
-      List<Integer> keys = intsCoder.read(stream);
+      intsCoder.readInto(keys, stream);
       this.numKeysInThisBlock = keys.size();
       usedKeys += numKeysInThisBlock;
-      if(keys instanceof IntList) {
-        return new FastKeyBlock(((IntList) keys).asArray(), keys.size());
-      } else {
-        return new KeyBlock(keys);
-      }
+      return new FastKeyBlock(keys.asArray(), keys.size());
 
     } catch (IOException | CoderException e) {
       try {

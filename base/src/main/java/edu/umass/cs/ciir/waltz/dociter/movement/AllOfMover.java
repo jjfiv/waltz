@@ -29,6 +29,16 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 		return maxCurrent;
 	}
 
+	private boolean isMatch(int targetKey) {
+		for (Mover child : children) {
+			child.moveTo(targetKey);
+			if(child.currentKey() != targetKey) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@Override
 	protected IKeyBlock loadKeysFromChildren() {
 		IntList ids = new IntList();
@@ -40,17 +50,7 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 				break;
 			}
 
-			// See if everyone has that key:
-			boolean isHit = true;
-			for (Mover child : children) {
-				child.moveTo(targetKey);
-				if(child.currentKey() != targetKey) {
-					isHit = false;
-					break;
-				}
-			}
-
-			if(isHit) {
+			if(isMatch(targetKey)) {
 				ids.add(targetKey);
 			}
 

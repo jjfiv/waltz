@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.io.postings.format;
 
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.movement.BlockPostingsMover;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
@@ -10,7 +11,6 @@ import edu.umass.cs.ciir.waltz.io.postings.AbstractValueBuilder;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * This is a coder that reads and writes high level {:link PostingMover} objects.
@@ -19,12 +19,12 @@ import java.util.List;
 public class BlockedPostingsCoder<V> extends AbstractPostingListCoder<V> {
   private final int blockSize;
   private final Coder<V> valCoder;
-  private final Coder<List<Integer>> intsCoder;
+  private final IntsCoder intsCoder;
 
   public BlockedPostingsCoder(Coder<V> valCoder) throws IOException {
     this(BlockedPostingsFormat.DEFAULT_BLOCKSIZE, BlockedPostingsFormat.DEFAULT_INTSCODER, valCoder);
   }
-  public BlockedPostingsCoder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
+  public BlockedPostingsCoder(int blockSize, IntsCoder intsCoder, Coder<V> valCoder) {
     this.blockSize = blockSize;
     assert(intsCoder.knowsOwnSize());
     assert(valCoder.knowsOwnSize());
