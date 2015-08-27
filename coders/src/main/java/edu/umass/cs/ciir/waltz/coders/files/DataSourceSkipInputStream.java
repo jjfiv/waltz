@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.files;
 
+import edu.umass.cs.ciir.waltz.coders.streams.CachedSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 
 import javax.annotation.Nonnull;
@@ -72,5 +73,9 @@ public class DataSourceSkipInputStream extends SkipInputStream {
 
   public DataSource sourceAtCurrentPosition() throws IOException {
     return mySource.view(this.position);
+  }
+
+  public CachedSkipInputStream cached() {
+    return new CachedSkipInputStream(this);
   }
 }

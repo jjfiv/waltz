@@ -104,8 +104,10 @@ public class CachedSkipInputStream extends SkipInputStream {
   @Override
   public void seekRelative(long delta) throws IOException {
     if(delta < 0) {
+      //System.err.println("seekBackwards: "+tell()+" delta="+delta);
       seekBackwards(-delta);
     } else {
+      //System.err.println("seekForwards: "+tell()+" delta="+delta);
       seekForwards(delta);
     }
   }
@@ -116,17 +118,19 @@ public class CachedSkipInputStream extends SkipInputStream {
    */
   private void seekBackwards(long delta) throws IOException {
     // are we within the same buffer? if so, don't do any I/O
-    if(delta < bufferIndex) {
+    if(delta <= bufferIndex) {
       bufferIndex -= delta;
       return;
     }
 
+    //System.err.printf("seekBackwards: @%d|%d [%d/%d] -%d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
     // discard buffer, underlying seek:
-    inner.seekRelative(-delta);
+    inner.seekRelative(-bufferFill-delta);
     this.bufferFill = 0;
     this.bufferIndex = 0;
     this.bufferStartPosition = inner.tell();
     fillBuffer();
+    //System.err.printf("!seekBackwards: @%d|%d [%d/%d] -%d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
   }
 
   private void seekForwards(long delta) throws IOException {
@@ -136,12 +140,14 @@ public class CachedSkipInputStream extends SkipInputStream {
       return;
     }
 
+    //System.err.printf("seekForwards: @%d|%d [%d/%d] %d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
     // discard buffer, underlying seek:
-    inner.seekRelative(delta);
+    inner.seekRelative(delta - bufferFill);
     this.bufferFill = 0;
     this.bufferIndex = 0;
     this.bufferStartPosition = inner.tell();
     fillBuffer();
+    //System.err.printf("!seekForwards: @%d|%d [%d/%d] %d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
   }
 
   @Override
