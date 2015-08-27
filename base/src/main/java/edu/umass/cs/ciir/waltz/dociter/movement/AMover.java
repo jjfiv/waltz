@@ -51,6 +51,10 @@ public abstract class AMover implements Mover {
 			index = currentBlock.size();
 			return;
 		}
+		findInCurrentBlock(key);
+	}
+
+	private void findInCurrentBlock(int key) {
 		for(; index < currentBlock.size(); index++) {
 			if(currentKey() >= key) break;
 		}

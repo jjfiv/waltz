@@ -1,13 +1,11 @@
 package edu.umass.cs.ciir.waltz.io.postings.format;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
-import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
-import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
+import edu.umass.cs.ciir.waltz.dociter.*;
 import edu.umass.cs.ciir.waltz.io.postings.StaticStreamPostingsIterator;
 
 import java.io.IOException;
@@ -67,7 +65,11 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
       List<Integer> keys = intsCoder.read(stream);
       this.numKeysInThisBlock = keys.size();
       usedKeys += numKeysInThisBlock;
-      return new KeyBlock(keys);
+      if(keys instanceof IntList) {
+        return new FastKeyBlock(((IntList) keys).asArray(), keys.size());
+      } else {
+        return new KeyBlock(keys);
+      }
 
     } catch (IOException | CoderException e) {
       try {

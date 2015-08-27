@@ -25,17 +25,18 @@ public class ListBlockPostingsIterator<X> implements BlockPostingsIterator<X> {
   }
 
   @Override
-  public KeyBlock nextKeyBlock() {
-    List<Integer> bufferedKeys = new ArrayList<>();
-    for (int i = 0; i < blockSize && (keyReadPtr+i) < postings.size(); i++) {
-      bufferedKeys.add(postings.get(keyReadPtr+i).getKey());
+  public FastKeyBlock nextKeyBlock() {
+    int[] bufferedKeys = new int[blockSize];
+    int writeIndex;
+    for (writeIndex = 0; writeIndex < blockSize && (keyReadPtr+writeIndex) < postings.size(); writeIndex++) {
+      bufferedKeys[writeIndex] = postings.get(keyReadPtr+writeIndex).getKey();
     }
     // skip any non-decoded values.
     valueReadPtr = keyReadPtr;
-    keyReadPtr += bufferedKeys.size();
+    keyReadPtr += bufferedKeys.length;
 
-    if(bufferedKeys.isEmpty()) return null;
-    return new KeyBlock(bufferedKeys);
+    if(writeIndex == 0) return null;
+    return new FastKeyBlock(bufferedKeys, writeIndex);
   }
 
   @Override

@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.dociter.FastKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
 	}
 
 	protected IKeyBlock loadKeysFromChildren() {
-		List<Integer> ids = new IntList();
+		IntList ids = new IntList();
 		while(true) {
 			int minimumChildKey = findMinimumKey();
 			if(minimumChildKey == DONE_ID) {
@@ -39,7 +39,7 @@ public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
 			}
 		}
 
-		return new KeyBlock(ids);
+		return new FastKeyBlock(ids.asArray(), ids.size());
 	}
 
   @Override

@@ -1,7 +1,6 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
 import ciir.jfoley.chai.collections.list.AChaiList;
-import ciir.jfoley.chai.collections.list.BitVector;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
@@ -46,7 +45,6 @@ public class PositionsListCoder extends Coder<PositionsList> {
   @Nonnull
   @Override
   public PositionsList readImpl(InputStream inputStream) throws IOException {
-    BitVector bv = new BitVector(4000);
     int count = VarUInt.instance.readImpl(inputStream);
     int[] data = new int[count];
 
@@ -54,16 +52,12 @@ public class PositionsListCoder extends Coder<PositionsList> {
     for (int i = 0; i < count; i++) {
       runningValue += VarInt.instance.readImpl(inputStream);
       data[i] = runningValue;
-      bv.set(runningValue);
     }
-    ArrayPosList ap = new ArrayPosList(data);
-    ap.myBitVector = bv;
-    return ap;
+    return new ArrayPosList(data);
   }
 
   public final static class ArrayPosList extends AChaiList<Integer> implements PositionsList {
     final int[] data;
-    public BitVector myBitVector = null;
 
     public ArrayPosList(int[] data) {
       this.data = data;

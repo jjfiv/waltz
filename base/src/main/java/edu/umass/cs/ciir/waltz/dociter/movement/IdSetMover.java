@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.ArrayFns;
-import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
+import edu.umass.cs.ciir.waltz.dociter.FastKeyBlock;
 
 import java.util.*;
 
@@ -37,8 +37,8 @@ public class IdSetMover extends AMover {
       return;
     }
 
-    List<Integer> relevantKeys = keys.subList(readPtr, Math.min(readPtr + blockSize, keys.size()));
-    this.currentBlock = new KeyBlock(relevantKeys);
+    IntList relevantKeys = new IntList(keys.subList(readPtr, Math.min(readPtr + blockSize, keys.size())));
+    this.currentBlock = new FastKeyBlock(relevantKeys.asArray(), relevantKeys.size());
     readPtr += blockSize;
   }
 

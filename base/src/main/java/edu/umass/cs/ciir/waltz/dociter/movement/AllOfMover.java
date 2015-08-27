@@ -1,8 +1,8 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.collections.list.IntList;
+import edu.umass.cs.ciir.waltz.dociter.FastKeyBlock;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
-import edu.umass.cs.ciir.waltz.dociter.KeyBlock;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 
 	@Override
 	protected IKeyBlock loadKeysFromChildren() {
-		List<Integer> ids = new IntList();
+		IntList ids = new IntList();
 		while(true) {
 			int targetKey = findMaxCurrentKey();
 			if(targetKey == DONE_ID) {
@@ -66,7 +66,7 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 		}
 
 		//System.out.println(ids+"\t"+lastKey);
-		return new KeyBlock(ids);
+		return new FastKeyBlock(ids.asArray(), ids.size());
 	}
 
   @Override
