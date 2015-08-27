@@ -91,6 +91,9 @@ public class PositionsIndexFile {
     PostingIndex.PostingIndexWriter<K, PositionsCountMetadata, PositionsList> finalWriter;
 
     public PIndexWriter(Coder<K> keyCoder, Directory outdir) throws IOException {
+      this(keyCoder, outdir, "positions");
+    }
+    public PIndexWriter(Coder<K> keyCoder, Directory outdir, String baseName) throws IOException {
       cfg = new PostingIndex.PostingsConfig<>(
           keyCoder,
           new PositionsCountMetadataCoder(),
@@ -99,8 +102,8 @@ public class PositionsIndexFile {
           new PositionsCountMetadata()
       );
       this.tmpdir = new TemporaryDirectory();
-      this.writer = cfg.makeTemporaryWriter(tmpdir, "positions");
-      this.finalWriter = cfg.makeFinalWriter(outdir, "positions");
+      this.writer = cfg.makeTemporaryWriter(tmpdir, baseName);
+      this.finalWriter = cfg.makeFinalWriter(outdir, baseName);
     }
 
     public void add(K key, int document, PositionsList positions) {
@@ -117,6 +120,9 @@ public class PositionsIndexFile {
   }
 
   public static <K> IOMap<K, PostingMover<PositionsList>> openReader(Coder<K> keyCoder, Directory input) throws IOException {
+    return openReader(keyCoder, input, "positions");
+  }
+  public static <K> IOMap<K, PostingMover<PositionsList>> openReader(Coder<K> keyCoder, Directory input, String baseName) throws IOException {
     PostingIndex.PostingsConfig<K,PositionsCountMetadata,PositionsList> cfg = new PostingIndex.PostingsConfig<>(
         keyCoder,
         new PositionsCountMetadataCoder(),
@@ -125,6 +131,6 @@ public class PositionsIndexFile {
         new PositionsCountMetadata()
     );
 
-    return cfg.openReader(input, "positions");
+    return cfg.openReader(input, baseName);
   }
 }

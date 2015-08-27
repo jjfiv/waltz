@@ -7,6 +7,8 @@ import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSink;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
+import edu.umass.cs.ciir.waltz.coders.kinds.DeltaIntListCoder;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
@@ -30,24 +32,6 @@ public class PostingIndex {
     Subclass zero();
   }
 
-  public static final class PostingIndexEntry<K,M,V> implements Comparable<PostingIndexEntry<K,M,V>> {
-    private Comparator<K> keyCmp;
-    private K key;
-    private M metadata;
-    private PostingMover<V> values;
-
-    @Override
-    public int compareTo(@Nonnull PostingIndexEntry<K,M,V> o) {
-      int cmp = keyCmp.compare(this.key, o.key);
-      if(cmp != 0) return cmp;
-      return Integer.compare(values.currentKey(), o.values.currentKey());
-    }
-  }
-
-  public interface PostingIndexReader<K,M,V> {
-    @Nonnull Comparator<K> getKeyCmp();
-    @Nonnull Iterable<PostingIndexEntry<K,M,V>> items();
-  }
   public interface PostingIndexWriter<K,M,V> extends Closeable {
     void writeNewKey(K key) throws IOException;
     void writeMetadata(M metadata) throws IOException;
@@ -89,11 +73,12 @@ public class PostingIndex {
     PostingsConfig<K,M,V> cfg;
     public final HashMap<K, TemporaryPosting<M,V>> memoryPostingIndex;
     private int totalDocuments;
+    private int flushSize = 200000;
 
     public TmpStreamPostingIndexWriter(Directory outputDir, String baseName, PostingsConfig<K,M,V> cfg) {
       this.tmpDir = outputDir.childDir(baseName+".tmp");
       this.cfg = cfg;
-      this.memoryPostingIndex = new HashMap<>();
+      this.memoryPostingIndex = new HashMap<>(flushSize);
       this.totalDocuments = 0;
     }
 
@@ -109,7 +94,7 @@ public class PostingIndex {
       }
       valBuilder.add(document, payload);
 
-      if(memoryPostingIndex.size() > 200000) {
+      if(memoryPostingIndex.size() > flushSize) {
         try {
           flush();
         } catch (IOException e) {
@@ -179,6 +164,10 @@ public class PostingIndex {
     public final Comparator<K> keyCmp;
     private final KeyMetadata<V,M> metadata;
 
+    // make slightly more efficient:
+    public IntsCoder docsCoder = new DeltaIntListCoder(VarUInt.instance, VarUInt.instance);
+    public int blockSize = 128;
+
     public PostingsConfig(Coder<K> keyCoder, Coder<M> metadataCoder, Coder<V> valCoder, Comparator<K> keyCmp, M metadata) {
       this.keyCoder = keyCoder.lengthSafe();
       this.metadataCoder = metadataCoder.lengthSafe();
@@ -201,13 +190,20 @@ public class PostingIndex {
               outdir,
               baseName,
               this.keyCoder,
-              new BlockedPostingsCoder<>(this.valCoder),
+              new BlockedPostingsCoder<>(this.blockSize, this.docsCoder, this.valCoder),
               false
           ));
     }
 
     public WaltzDiskMapReader<K,PostingMover<V>> openReader(Directory input, String positions) throws IOException {
-      return new WaltzDiskMapReader<>(input, positions, this.keyCoder, new BlockedPostingsCoder<>(this.valCoder));
+      return new WaltzDiskMapReader<>(input, positions, this.keyCoder, new BlockedPostingsCoder<>(
+          this.blockSize,
+          this.docsCoder,
+          this.valCoder));
+    }
+
+    public PositionsIndexFile.PIndexWriter<K> getWriter(Directory input, String baseName) throws IOException {
+      return new PositionsIndexFile.PIndexWriter<>(this.keyCoder, input, baseName);
     }
   }
 
@@ -363,7 +359,7 @@ public class PostingIndex {
     public void writeMetadata(M metadata) throws IOException {
       assert(postingsWriter == null);
       writer.valueWriter().write(VarUInt.instance, metadata.totalDocuments());
-      postingsWriter = new BlockedPostingValueWriter<V>(valueWriter, cfg.valCoder);
+      postingsWriter = new BlockedPostingValueWriter<>(valueWriter, cfg.blockSize, cfg.docsCoder, cfg.valCoder);
     }
 
     @Override

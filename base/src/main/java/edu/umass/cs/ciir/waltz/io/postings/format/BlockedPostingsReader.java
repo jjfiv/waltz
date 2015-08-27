@@ -69,7 +69,6 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
       this.numKeysInThisBlock = keys.size();
       usedKeys += numKeysInThisBlock;
       return new FastKeyBlock(keys.asArray(), keys.size());
-
     } catch (IOException | CoderException e) {
       try {
         System.err.println("tell: "+stream.tell());

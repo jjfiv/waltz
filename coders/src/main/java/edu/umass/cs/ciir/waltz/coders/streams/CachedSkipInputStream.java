@@ -129,7 +129,7 @@ public class CachedSkipInputStream extends SkipInputStream {
     this.bufferFill = 0;
     this.bufferIndex = 0;
     this.bufferStartPosition = inner.tell();
-    fillBuffer();
+    //fillBuffer();
     //System.err.printf("!seekBackwards: @%d|%d [%d/%d] -%d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
   }
 
@@ -146,7 +146,7 @@ public class CachedSkipInputStream extends SkipInputStream {
     this.bufferFill = 0;
     this.bufferIndex = 0;
     this.bufferStartPosition = inner.tell();
-    fillBuffer();
+    //fillBuffer();
     //System.err.printf("!seekForwards: @%d|%d [%d/%d] %d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
   }
 

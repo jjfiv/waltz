@@ -17,9 +17,6 @@ import java.io.InputStream;
  * @author jfoley
  */
 public class PositionsListCoder extends Coder<PositionsList> {
-  public PositionsListCoder() {
-  }
-
   @Override
   public boolean knowsOwnSize() {
     return true;

@@ -63,6 +63,10 @@ public class VarInt extends Coder<Integer> {
   @Nonnull
   @Override
   public Integer readImpl(InputStream inputStream) throws IOException {
+    return readPrim(inputStream);
+  }
+
+  public int readPrim(InputStream inputStream) throws IOException {
     int result = 0;
 
     for (int position = 0; true; position++) {
