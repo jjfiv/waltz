@@ -104,11 +104,11 @@ public class CachedSkipInputStream extends SkipInputStream {
   @Override
   public void seekRelative(long delta) throws IOException {
     if(delta < 0) {
-      //System.err.println("seekBackwards: "+tell()+" delta="+delta);
       seekBackwards(-delta);
     } else {
-      //System.err.println("seekForwards: "+tell()+" delta="+delta);
+      long start = tell();
       seekForwards(delta);
+      assert(tell() == start+delta);
     }
   }
 
@@ -142,7 +142,7 @@ public class CachedSkipInputStream extends SkipInputStream {
 
     //System.err.printf("seekForwards: @%d|%d [%d/%d] %d\n", inner.tell(), tell(), bufferIndex, bufferFill, delta);
     // discard buffer, underlying seek:
-    inner.seekRelative(delta - bufferFill);
+    inner.seek(tell() + delta);
     this.bufferFill = 0;
     this.bufferIndex = 0;
     this.bufferStartPosition = inner.tell();

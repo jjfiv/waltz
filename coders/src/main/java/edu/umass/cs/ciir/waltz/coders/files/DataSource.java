@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.files;
 
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.streams.CachedSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
@@ -50,14 +51,11 @@ public interface DataSource extends Closeable {
     return new StaticStream() {
       @Override
       public SkipInputStream getNewStream() throws IOException {
-        //return new CachedSkipInputStream(new DataSourceSkipInputStream(view(start, size)));
-        return new DataSourceSkipInputStream(view(start, size));
+        return new CachedSkipInputStream(new DataSourceSkipInputStream(view(start, size)));
+        //return new DataSourceSkipInputStream(view(start, size));
       }
 
-      @Override
-      public long length() {
-        return size;
-      }
+      @Override public long length() { return size; }
     };
   }
 
