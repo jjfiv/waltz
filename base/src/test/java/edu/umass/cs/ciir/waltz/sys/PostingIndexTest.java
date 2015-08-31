@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
  * @author jfoley
  */
 public class PostingIndexTest {
-  public static class CountMetadata implements PostingIndex.KeyMetadata<Integer, CountMetadata> {
+  public static class CountMetadata implements KeyMetadata<Integer, CountMetadata> {
     public int totalDocs = 0;
     public int maxCount = 0;
     public int totalCount = 0;
@@ -87,7 +87,7 @@ public class PostingIndexTest {
 
   @Test
   public void testStringIndexWriter() throws IOException {
-    PostingIndex.PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingIndex.PostingsConfig<String,CountMetadata,Integer>(
+    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<String,CountMetadata,Integer>(
         CharsetCoders.utf8,
         new CountMetadataCoder(),
         VarUInt.instance,
@@ -98,7 +98,7 @@ public class PostingIndexTest {
     TestTextCountsWriter wr = new TestTextCountsWriter();
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (PostingIndex.TmpStreamPostingIndexWriter<String,CountMetadata,Integer> writer = new PostingIndex.TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
+      try (TmpStreamPostingIndexWriter<String,CountMetadata,Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
         int current = writer.addDocument();
         writer.add("the", current, 1);
         writer.add("quick", current, 3);
@@ -124,7 +124,7 @@ public class PostingIndexTest {
 
         writer.flush();
 
-        PostingIndex.TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
+        TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
 
         merger.write(wr);
       }
@@ -155,7 +155,7 @@ public class PostingIndexTest {
     assertEquals(expected, wr.sw.toString());
   }
 
-  private static class TestTextCountsWriter implements PostingIndex.PostingIndexWriter<String, CountMetadata, Integer> {
+  private static class TestTextCountsWriter implements PostingIndexWriter<String, CountMetadata, Integer> {
     public final StringWriter sw = new StringWriter();
     public final PrintWriter out = new PrintWriter(sw);
 
@@ -182,7 +182,7 @@ public class PostingIndexTest {
 
   @Test
   public void testDiskIndexWriter() throws IOException {
-    PostingIndex.PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingIndex.PostingsConfig<String,CountMetadata,Integer>(
+    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<String,CountMetadata,Integer>(
         CharsetCoders.utf8,
         new CountMetadataCoder(),
         VarUInt.instance,
@@ -191,8 +191,8 @@ public class PostingIndexTest {
     );
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (PostingIndex.BlockedPostingsWriter<String, CountMetadata, Integer> finalWriter = new PostingIndex.BlockedPostingsWriter<>(countsConfig, tmpdir, "counts")) {
-        try (PostingIndex.TmpStreamPostingIndexWriter<String, CountMetadata, Integer> writer = new PostingIndex.TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
+      try (BlockedPostingsWriter<String, CountMetadata, Integer> finalWriter = new BlockedPostingsWriter<>(countsConfig, tmpdir, "counts")) {
+        try (TmpStreamPostingIndexWriter<String, CountMetadata, Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
           int current = writer.addDocument();
           writer.add("the", current, 1);
           writer.add("quick", current, 3);
@@ -218,7 +218,7 @@ public class PostingIndexTest {
 
           writer.flush();
 
-          PostingIndex.TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
+          TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
 
           merger.write(finalWriter);
         }

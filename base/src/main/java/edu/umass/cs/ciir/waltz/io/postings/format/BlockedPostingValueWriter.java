@@ -4,10 +4,10 @@ import ciir.jfoley.chai.IntMath;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.files.DataSink;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author jfoley
@@ -18,10 +18,7 @@ public class BlockedPostingValueWriter<V> {
   public BlockedPostingListChunk<V> currentChunk;
   public final DataSink output;
 
-  public BlockedPostingValueWriter(DataSink output, Coder<V> valCoder) throws IOException {
-    this(output, BlockedPostingsFormat.DEFAULT_BLOCKSIZE, BlockedPostingsFormat.DEFAULT_INTSCODER, valCoder);
-  }
-  public BlockedPostingValueWriter(DataSink output, int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
+  public BlockedPostingValueWriter(DataSink output, int blockSize, IntsCoder intsCoder, Coder<V> valCoder) throws IOException {
     this.output = output;
     this.blockSize = blockSize;
     currentChunk = new BlockedPostingListChunk<>(intsCoder, valCoder);

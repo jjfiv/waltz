@@ -6,11 +6,11 @@ import edu.umass.cs.ciir.waltz.coders.data.BufferList;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.MutableDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.SmartDataChunk;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.io.postings.AbstractValueBuilder;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * This is a low-level builder that takes in sorted (key, value) pairs and writes them in chunks to a temporary file.
@@ -28,7 +28,7 @@ public class BlockedPostingValueBuilder<V> extends AbstractValueBuilder<V> {
   public BlockedPostingValueBuilder(Coder<V> valCoder) throws IOException {
     this(BlockedPostingsFormat.DEFAULT_BLOCKSIZE, BlockedPostingsFormat.DEFAULT_INTSCODER, valCoder);
   }
-  public BlockedPostingValueBuilder(int blockSize, Coder<List<Integer>> intsCoder, Coder<V> valCoder) throws IOException {
+  public BlockedPostingValueBuilder(int blockSize, IntsCoder intsCoder, Coder<V> valCoder) throws IOException {
     output = new SmartDataChunk();
     this.blockSize = blockSize;
     currentChunk = new BlockedPostingListChunk<>(intsCoder, valCoder);

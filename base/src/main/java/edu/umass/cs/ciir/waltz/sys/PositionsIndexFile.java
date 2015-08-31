@@ -21,7 +21,7 @@ import java.io.InputStream;
  * @author jfoley
  */
 public class PositionsIndexFile {
-  public static class PositionsCountMetadata implements PostingIndex.KeyMetadata<PositionsList, PositionsCountMetadata> {
+  public static class PositionsCountMetadata implements KeyMetadata<PositionsList, PositionsCountMetadata> {
 
     public int totalDocs = 0;
     public int maxCount = 0;
@@ -85,16 +85,16 @@ public class PositionsIndexFile {
   }
 
   public static class PIndexWriter<K> implements Closeable {
-    final PostingIndex.PostingsConfig<K, PositionsCountMetadata, PositionsList> cfg;
+    final PostingsConfig<K, PositionsCountMetadata, PositionsList> cfg;
     private final TemporaryDirectory tmpdir;
-    PostingIndex.TmpStreamPostingIndexWriter<K, PositionsCountMetadata, PositionsList> writer;
-    PostingIndex.PostingIndexWriter<K, PositionsCountMetadata, PositionsList> finalWriter;
+    TmpStreamPostingIndexWriter<K, PositionsCountMetadata, PositionsList> writer;
+    PostingIndexWriter<K, PositionsCountMetadata, PositionsList> finalWriter;
 
     public PIndexWriter(Coder<K> keyCoder, Directory outdir) throws IOException {
       this(keyCoder, outdir, "positions");
     }
     public PIndexWriter(Coder<K> keyCoder, Directory outdir, String baseName) throws IOException {
-      cfg = new PostingIndex.PostingsConfig<>(
+      cfg = new PostingsConfig<>(
           keyCoder,
           new PositionsCountMetadataCoder(),
           new PositionsListCoder(),
@@ -123,7 +123,7 @@ public class PositionsIndexFile {
     return openReader(keyCoder, input, "positions");
   }
   public static <K> IOMap<K, PostingMover<PositionsList>> openReader(Coder<K> keyCoder, Directory input, String baseName) throws IOException {
-    PostingIndex.PostingsConfig<K,PositionsCountMetadata,PositionsList> cfg = new PostingIndex.PostingsConfig<>(
+    PostingsConfig<K,PositionsCountMetadata,PositionsList> cfg = new PostingsConfig<>(
         keyCoder,
         new PositionsCountMetadataCoder(),
         new PositionsListCoder(),

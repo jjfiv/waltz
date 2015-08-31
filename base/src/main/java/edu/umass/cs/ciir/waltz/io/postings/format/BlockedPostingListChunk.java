@@ -4,6 +4,7 @@ import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.ints.IntsCoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
 public class BlockedPostingListChunk<V> {
   public final IntList keys;
   public final List<V> vals;
-  public final Coder<List<Integer>> intsCoder;
+  public final IntsCoder intsCoder;
   public final Coder<V> valCoder;
 
-  public BlockedPostingListChunk(Coder<List<Integer>> intsCoder, Coder<V> valCoder) {
+  public BlockedPostingListChunk(IntsCoder intsCoder, Coder<V> valCoder) {
     this.intsCoder = intsCoder;
     this.valCoder = valCoder;
     keys = new IntList();
