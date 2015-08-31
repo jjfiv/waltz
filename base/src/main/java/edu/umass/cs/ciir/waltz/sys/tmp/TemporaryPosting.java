@@ -33,7 +33,7 @@ public final class TemporaryPosting<V> {
   }
 
   public TemporaryPosting<V> write(OutputStream out) throws IOException {
-    cfg.metadata.encode().write(out);
+    metadata.encode().write(out);
     data.writeTo(out);
     return this;
   }
