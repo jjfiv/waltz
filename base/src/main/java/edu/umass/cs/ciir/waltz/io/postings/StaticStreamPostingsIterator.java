@@ -17,7 +17,6 @@ public abstract class StaticStreamPostingsIterator<X> implements BlockPostingsIt
     try {
       this.streamSource = streamSource;
       this.stream = streamSource.getNewStream();
-      readStreamHeader();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

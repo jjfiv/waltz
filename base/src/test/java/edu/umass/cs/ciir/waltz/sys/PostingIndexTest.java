@@ -4,20 +4,17 @@ import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.chained.ChaiMap;
 import ciir.jfoley.chai.io.TemporaryDirectory;
-import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
-import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.CharsetCoders;
-import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
-import edu.umass.cs.ciir.waltz.io.postings.format.BlockedPostingsCoder;
+import edu.umass.cs.ciir.waltz.sys.counts.CountMetadata;
+import edu.umass.cs.ciir.waltz.sys.counts.CountMetadataCoder;
+import edu.umass.cs.ciir.waltz.sys.tmp.TmpPostingMerger;
+import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 import org.junit.Test;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Comparator;
@@ -28,66 +25,10 @@ import static org.junit.Assert.assertEquals;
  * @author jfoley
  */
 public class PostingIndexTest {
-  public static class CountMetadata implements KeyMetadata<Integer, CountMetadata> {
-    public int totalDocs = 0;
-    public int maxCount = 0;
-    public int totalCount = 0;
-
-    @Override
-    public int totalDocuments() {
-      return totalDocs;
-    }
-
-    @Override
-    public void accumulate(CountMetadata o) {
-      this.totalDocs += o.totalDocs;
-      this.totalCount += o.totalCount;
-      this.maxCount = Math.max(this.maxCount, o.maxCount);
-    }
-
-    @Override
-    public void accumulate(int document, Integer item) {
-      totalDocs++;
-      totalCount += item;
-      maxCount = Math.max(maxCount, item);
-    }
-
-    @Override
-    public CountMetadata zero() {
-      return new CountMetadata();
-    }
-  }
-
-  public static class CountMetadataCoder extends Coder<CountMetadata> {
-    @Override
-    public boolean knowsOwnSize() {
-      return true;
-    }
-
-    @Nonnull
-    @Override
-    public DataChunk writeImpl(CountMetadata m) throws IOException {
-      ByteBuilder bb = new ByteBuilder();
-      bb.add(FixedSize.ints, m.totalDocs);
-      bb.add(FixedSize.ints, m.maxCount);
-      bb.add(FixedSize.ints, m.totalCount);
-      return bb;
-    }
-
-    @Nonnull
-    @Override
-    public CountMetadata readImpl(InputStream inputStream) throws IOException {
-      CountMetadata m = new CountMetadata();
-      m.totalDocs = FixedSize.ints.readImpl(inputStream);
-      m.maxCount = FixedSize.ints.readImpl(inputStream);
-      m.totalCount = FixedSize.ints.readImpl(inputStream);
-      return m;
-    }
-  }
 
   @Test
   public void testStringIndexWriter() throws IOException {
-    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<String,CountMetadata,Integer>(
+    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<>(
         CharsetCoders.utf8,
         new CountMetadataCoder(),
         VarUInt.instance,
@@ -224,10 +165,7 @@ public class PostingIndexTest {
         }
       }
 
-      try (WaltzDiskMapReader<String, PostingMover<Integer>> countsIndex = new WaltzDiskMapReader<>(
-          tmpdir, "counts",
-          CharsetCoders.utf8, new BlockedPostingsCoder<>(VarUInt.instance)
-      )) {
+      try (WaltzDiskMapReader<String, PostingMover<Integer>> countsIndex = countsConfig.openReader(tmpdir, "counts")) {
 
         assertEquals(countsIndex.get("fast").toMap(), ChaiMap.create(Pair.of(0, 3), Pair.of(2, 3)));
         assertEquals(countsIndex.get("last").toMap(), ChaiMap.create(Pair.of(3, 1)));

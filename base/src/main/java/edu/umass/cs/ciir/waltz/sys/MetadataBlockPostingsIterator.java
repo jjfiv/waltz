@@ -13,6 +13,7 @@ import edu.umass.cs.ciir.waltz.io.postings.StaticStreamPostingsIterator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jfoley
@@ -22,7 +23,6 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> exten
   private boolean haveReadCurrentValues;
   private long nextKeyBlockOffset;
   private int numKeysInThisBlock;
-  private int totalKeys;
   private int usedKeys = 0;
   private boolean done;
   IntList keys;
@@ -30,9 +30,14 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> exten
 
   public MetadataBlockPostingsIterator(PostingsConfig<?, M, V> cfg, StaticStream streamSource) {
     super(streamSource);
-    this.cfg = cfg;
+    this.cfg = Objects.requireNonNull(cfg);
     keys = new IntList();
     metadata = null;
+    try {
+      this.readStreamHeader();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
@@ -46,14 +51,14 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> exten
 
     long remaining = streamSource.length() - stream.tell();
     // should be at least 1 byte left for each key:
-    assert (remaining >= totalKeys);
+    assert (remaining >= metadata.totalDocuments());
     usedKeys = 0;
   }
 
   @Override
   public IKeyBlock nextKeyBlock() {
     if (done) return null;
-    if (usedKeys == totalKeys) return null;
+    if (usedKeys == totalKeys()) return null;
 
     try {
       // Skip values if possible.
@@ -74,7 +79,8 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> exten
       try {
         System.err.println("tell: " + stream.tell());
         System.err.println(usedKeys);
-        System.err.println(totalKeys);
+        System.err.println(totalKeys());
+        System.err.println(metadata);
         System.err.println("tell: " + stream.tell());
         System.err.println("length: " + streamSource.length());
       } catch (IOException e1) {

@@ -33,6 +33,11 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
     this.intsCoder = intsCoder;
     this.valCoder = valCoder;
     keys = new IntList();
+    try {
+      this.readStreamHeader();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

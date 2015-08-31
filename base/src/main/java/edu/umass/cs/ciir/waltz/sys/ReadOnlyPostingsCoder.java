@@ -8,6 +8,7 @@ import edu.umass.cs.ciir.waltz.io.postings.AbstractPostingListCoder;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author jfoley
@@ -16,7 +17,7 @@ public class ReadOnlyPostingsCoder<M extends KeyMetadata<V, M>, V> extends Abstr
   private final PostingsConfig<?, M, V> cfg;
 
   public ReadOnlyPostingsCoder(PostingsConfig<?, M, V> cfg) {
-    this.cfg = cfg;
+    this.cfg = Objects.requireNonNull(cfg);
   }
 
   @Nonnull

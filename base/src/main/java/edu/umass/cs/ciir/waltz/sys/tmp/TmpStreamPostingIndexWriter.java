@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.sys;
+package edu.umass.cs.ciir.waltz.sys.tmp;
 
 import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.util.QuickSort;
@@ -6,6 +6,9 @@ import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
+import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import java.io.*;
 import java.util.ArrayList;

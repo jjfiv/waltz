@@ -1,6 +1,8 @@
-package edu.umass.cs.ciir.waltz.sys;
+package edu.umass.cs.ciir.waltz.sys.tmp;
 
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

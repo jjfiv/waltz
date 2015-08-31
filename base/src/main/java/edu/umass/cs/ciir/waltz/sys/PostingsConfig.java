@@ -8,6 +8,8 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
+import edu.umass.cs.ciir.waltz.sys.positions.PIndexWriter;
+import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -58,7 +60,7 @@ public final class PostingsConfig<K, M extends KeyMetadata<V, M>, V> {
     return new WaltzDiskMapReader<>(input, positions, this.keyCoder, new ReadOnlyPostingsCoder<>(this));
   }
 
-  public PositionsIndexFile.PIndexWriter<K> getWriter(Directory input, String baseName) throws IOException {
-    return new PositionsIndexFile.PIndexWriter<>(this.keyCoder, input, baseName);
+  public PIndexWriter<K> getWriter(Directory input, String baseName) throws IOException {
+    return new PIndexWriter<>(this.keyCoder, input, baseName);
   }
 }
