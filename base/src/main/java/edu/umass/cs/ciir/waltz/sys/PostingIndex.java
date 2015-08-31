@@ -358,7 +358,8 @@ public class PostingIndex {
     @Override
     public void writeMetadata(M metadata) throws IOException {
       assert(postingsWriter == null);
-      writer.valueWriter().write(VarUInt.instance, metadata.totalDocuments());
+      cfg.metadataCoder.write(metadata);
+      //writer.valueWriter().write(VarUInt.instance, metadata.totalDocuments());
       postingsWriter = new BlockedPostingValueWriter<>(valueWriter, cfg.blockSize, cfg.docsCoder, cfg.valCoder);
     }
 

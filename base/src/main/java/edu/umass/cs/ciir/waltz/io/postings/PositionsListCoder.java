@@ -1,12 +1,10 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
-import ciir.jfoley.chai.collections.list.AChaiList;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarInt;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
-import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 
 import javax.annotation.Nonnull;
@@ -30,7 +28,8 @@ public class PositionsListCoder extends Coder<PositionsList> {
     int prev = 0;
     bl.add(VarUInt.instance.write(count));
 
-    for (int x : obj) {
+    for (int i = 0; i < count; i++) {
+      int x = obj.getPosition(i);
       int delta = x - prev;
       bl.add(VarInt.instance, delta);
       prev = x;
@@ -50,35 +49,7 @@ public class PositionsListCoder extends Coder<PositionsList> {
       runningValue += VarInt.instance.readPrim(inputStream);
       data[i] = runningValue;
     }
-    return new ArrayPosList(data);
-  }
-
-  public final static class ArrayPosList extends AChaiList<Integer> implements PositionsList {
-    final int[] data;
-
-    public ArrayPosList(int[] data) {
-      this.data = data;
-    }
-
-    @Override
-    public Integer get(int index) {
-      return data[index];
-    }
-
-    @Override
-    public int getPosition(int index) {
-      return data[index];
-    }
-
-    @Override
-    public int size() {
-      return data.length;
-    }
-
-    @Override
-    public PositionsIterator getSpanIterator() {
-      return new PositionsIterator(this);
-    }
+    return new ArrayPosList(data, count);
   }
 
 }
