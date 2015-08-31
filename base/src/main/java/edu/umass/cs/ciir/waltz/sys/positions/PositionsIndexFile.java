@@ -20,9 +20,8 @@ public class PositionsIndexFile {
     return openReader(keyCoder, input, "positions");
   }
   public static <K> IOMap<K, PostingMover<PositionsList>> openReader(Coder<K> keyCoder, Directory input, String baseName) throws IOException {
-    PostingsConfig<K,PositionsCountMetadata,PositionsList> cfg = new PostingsConfig<>(
+    PostingsConfig<K,PositionsList> cfg = new PostingsConfig<>(
         keyCoder,
-        new PositionsCountMetadataCoder(),
         new PositionsListCoder(),
         Comparing.defaultComparator(),
         new PositionsCountMetadata()

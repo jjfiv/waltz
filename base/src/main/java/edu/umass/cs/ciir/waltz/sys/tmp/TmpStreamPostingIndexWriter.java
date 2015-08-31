@@ -6,7 +6,6 @@ import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
-import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
@@ -19,15 +18,15 @@ import java.util.Map;
 /**
  * @author jfoley
  */
-public final class TmpStreamPostingIndexWriter<K, M extends KeyMetadata<V, M>, V> implements Flushable, Closeable {
+public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Closeable {
   private final Directory tmpDir;
   public int temporaryIndex;
-  PostingsConfig<K, M, V> cfg;
-  public final HashMap<K, TemporaryPosting<M, V>> memoryPostingIndex;
+  PostingsConfig<K, V> cfg;
+  public final HashMap<K, TemporaryPosting<V>> memoryPostingIndex;
   private int totalDocuments;
   private int flushSize = 200000;
 
-  public TmpStreamPostingIndexWriter(Directory outputDir, String baseName, PostingsConfig<K, M, V> cfg) {
+  public TmpStreamPostingIndexWriter(Directory outputDir, String baseName, PostingsConfig<K, V> cfg) {
     this.tmpDir = outputDir.childDir(baseName + ".tmp");
     this.cfg = cfg;
     this.memoryPostingIndex = new HashMap<>(flushSize);
@@ -39,7 +38,7 @@ public final class TmpStreamPostingIndexWriter<K, M extends KeyMetadata<V, M>, V
   }
 
   public synchronized void add(K key, int document, V payload) {
-    TemporaryPosting<M, V> valBuilder = memoryPostingIndex.get(key);
+    TemporaryPosting<V> valBuilder = memoryPostingIndex.get(key);
     if (valBuilder == null) {
       valBuilder = new TemporaryPosting<>(cfg);
       memoryPostingIndex.put(key, valBuilder);
@@ -55,7 +54,7 @@ public final class TmpStreamPostingIndexWriter<K, M extends KeyMetadata<V, M>, V
     }
   }
 
-  public TmpPostingMerger<K, M, V> getMerger(List<Integer> ids) throws IOException {
+  public TmpPostingMerger<K, V> getMerger(List<Integer> ids) throws IOException {
     List<InputStream> inputs = new ArrayList<>();
     for (Integer id : ids) {
       assert (id < temporaryIndex);
@@ -80,14 +79,14 @@ public final class TmpStreamPostingIndexWriter<K, M extends KeyMetadata<V, M>, V
       VarUInt.instance.writePrim(segmentWriter, keyCount);
       VarUInt.instance.writePrim(segmentWriter, totalDocuments);
 
-      List<Map.Entry<K, TemporaryPosting<M, V>>> data = new ArrayList<>(memoryPostingIndex.entrySet());
+      List<Map.Entry<K, TemporaryPosting<V>>> data = new ArrayList<>(memoryPostingIndex.entrySet());
       memoryPostingIndex.clear();
       QuickSort.sort(
           (lhs, rhs) -> cfg.keyCmp.compare(lhs.getKey(), rhs.getKey()), data
       );
 
       // followed by k,v pairs in order:
-      for (Map.Entry<K, TemporaryPosting<M, V>> kv : data) {
+      for (Map.Entry<K, TemporaryPosting<V>> kv : data) {
         cfg.keyCoder.write(segmentWriter, kv.getKey());
         kv.getValue().write(segmentWriter);
         kv.getValue().close();
@@ -102,9 +101,9 @@ public final class TmpStreamPostingIndexWriter<K, M extends KeyMetadata<V, M>, V
     flush();
   }
 
-  public void mergeTo(PostingIndexWriter<K, M, V> finalWriter) throws IOException {
+  public void mergeTo(PostingIndexWriter<K, V> finalWriter) throws IOException {
     close();
-    TmpPostingMerger<K, M, V> merger = this.getMerger(IntRange.exclusive(0, temporaryIndex));
+    TmpPostingMerger<K, V> merger = this.getMerger(IntRange.exclusive(0, temporaryIndex));
     merger.write(finalWriter);
   }
 }

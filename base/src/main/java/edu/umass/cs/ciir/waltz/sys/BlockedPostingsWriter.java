@@ -11,20 +11,20 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public class BlockedPostingsWriter<K, M extends KeyMetadata<V, M>, V> implements PostingIndexWriter<K, M, V> {
+public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
   public final WaltzDiskMapWriter<K, PostingMover<V>> writer;
-  private final PostingsConfig<K, M, V> cfg;
+  private final PostingsConfig<K, V> cfg;
   private BlockedPostingValueWriter<V> postingsWriter;
   DataSink valueWriter;
 
-  public BlockedPostingsWriter(PostingsConfig<K, M, V> cfg, WaltzDiskMapWriter<K, PostingMover<V>> writer) {
+  public BlockedPostingsWriter(PostingsConfig<K, V> cfg, WaltzDiskMapWriter<K, PostingMover<V>> writer) {
     this.cfg = cfg;
     this.writer = writer;
     this.valueWriter = writer.valueWriter();
     this.postingsWriter = null;
   }
 
-  public BlockedPostingsWriter(PostingsConfig<K, M, V> cfg, Directory outputDir, String baseName) throws IOException {
+  public BlockedPostingsWriter(PostingsConfig<K, V> cfg, Directory outputDir, String baseName) throws IOException {
     this(cfg, new WaltzDiskMapWriter<>(outputDir, baseName, cfg.keyCoder, null, false));
   }
 
@@ -35,9 +35,9 @@ public class BlockedPostingsWriter<K, M extends KeyMetadata<V, M>, V> implements
   }
 
   @Override
-  public void writeMetadata(M metadata) throws IOException {
+  public void writeMetadata(KeyMetadata<V> metadata) throws IOException {
     assert (postingsWriter == null);
-    cfg.metadataCoder.write(metadata);
+    valueWriter.write(metadata.encode());
     postingsWriter = new BlockedPostingValueWriter<>(valueWriter, cfg.blockSize, cfg.docsCoder, cfg.valCoder);
   }
 

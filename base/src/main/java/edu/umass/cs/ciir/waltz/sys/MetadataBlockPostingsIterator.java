@@ -18,17 +18,17 @@ import java.util.Objects;
 /**
  * @author jfoley
  */
-public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> extends StaticStreamPostingsIterator<V> {
-  private final PostingsConfig<?, M, V> cfg;
+public class MetadataBlockPostingsIterator<M extends KeyMetadata<V>, V> extends StaticStreamPostingsIterator<V> {
+  private final PostingsConfig<?, V> cfg;
   private boolean haveReadCurrentValues;
   private long nextKeyBlockOffset;
   private int numKeysInThisBlock;
   private int usedKeys = 0;
   private boolean done;
   IntList keys;
-  private M metadata;
+  private KeyMetadata<V> metadata;
 
-  public MetadataBlockPostingsIterator(PostingsConfig<?, M, V> cfg, StaticStream streamSource) {
+  public MetadataBlockPostingsIterator(PostingsConfig<?, V> cfg, StaticStream streamSource) {
     super(streamSource);
     this.cfg = Objects.requireNonNull(cfg);
     keys = new IntList();
@@ -47,7 +47,7 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V, M>, V> exten
     nextKeyBlockOffset = 0;
     done = false;
 
-    this.metadata = cfg.metadataCoder.read(stream);
+    this.metadata = cfg.metadata.decode(stream);
 
     long remaining = streamSource.length() - stream.tell();
     // should be at least 1 byte left for each key:

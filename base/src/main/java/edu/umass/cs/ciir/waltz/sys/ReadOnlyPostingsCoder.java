@@ -13,10 +13,10 @@ import java.util.Objects;
 /**
  * @author jfoley
  */
-public class ReadOnlyPostingsCoder<M extends KeyMetadata<V, M>, V> extends AbstractPostingListCoder<V> {
-  private final PostingsConfig<?, M, V> cfg;
+public class ReadOnlyPostingsCoder<V> extends AbstractPostingListCoder<V> {
+  private final PostingsConfig<?, V> cfg;
 
-  public ReadOnlyPostingsCoder(PostingsConfig<?, M, V> cfg) {
+  public ReadOnlyPostingsCoder(PostingsConfig<?, V> cfg) {
     this.cfg = Objects.requireNonNull(cfg);
   }
 

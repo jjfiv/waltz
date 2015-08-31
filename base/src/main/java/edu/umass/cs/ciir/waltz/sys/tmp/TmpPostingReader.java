@@ -6,25 +6,26 @@ import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author jfoley
  */
-public final class TmpPostingReader<K, M extends KeyMetadata<V, M>, V> implements Comparable<TmpPostingReader<K, M, V>> {
-  final PostingsConfig<K, M, V> cfg;
+public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader<K, V>> {
+  final PostingsConfig<K, V> cfg;
   final InputStream input;
   final int keyCount;
   private final int totalDocuments;
   int keyIndex;
   K currentKey;
-  M currentMetadata;
+  KeyMetadata<V> currentMetadata;
   int documentCount;
   int documentIndex;
   int currentDocument;
   V currentValue;
 
-  public TmpPostingReader(PostingsConfig<K, M, V> cfg, InputStream input) {
+  public TmpPostingReader(PostingsConfig<K, V> cfg, InputStream input) {
     this.cfg = cfg;
     this.input = input;
     this.keyCount = VarUInt.instance.read(input);
@@ -36,7 +37,8 @@ public final class TmpPostingReader<K, M extends KeyMetadata<V, M>, V> implement
     return totalDocuments;
   }
 
-  public M getCurrentMetadata() {
+  @Nonnull
+  public KeyMetadata<V> getCurrentMetadata() {
     return currentMetadata;
   }
 
@@ -60,7 +62,11 @@ public final class TmpPostingReader<K, M extends KeyMetadata<V, M>, V> implement
       keyIndex++;
       documentIndex = 0;
       currentDocument = 0;
-      currentMetadata = cfg.metadataCoder.read(input);
+      try {
+        currentMetadata = cfg.metadata.decode(input);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
       documentCount = currentMetadata.totalDocuments();
       readNext();
       return currentKey;
@@ -78,7 +84,7 @@ public final class TmpPostingReader<K, M extends KeyMetadata<V, M>, V> implement
   }
 
   @Override
-  public int compareTo(@Nonnull TmpPostingReader<K, M, V> o) {
+  public int compareTo(@Nonnull TmpPostingReader<K, V> o) {
     int cmp = cfg.keyCmp.compare(currentKey, o.currentKey);
     if (cmp != 0) return cmp;
     return Integer.compare(currentDocument, o.currentDocument);

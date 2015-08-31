@@ -17,34 +17,32 @@ import java.util.Comparator;
 /**
  * @author jfoley
  */
-public final class PostingsConfig<K, M extends KeyMetadata<V, M>, V> {
+public final class PostingsConfig<K, V> {
   public final Coder<K> keyCoder;
-  public final Coder<M> metadataCoder;
   public final Coder<V> valCoder;
   public final Comparator<K> keyCmp;
-  private final KeyMetadata<V, M> metadata;
+  public final KeyMetadata<V> metadata;
 
   // make slightly more efficient:
   public IntsCoder docsCoder = new DeltaIntListCoder(VarUInt.instance, VarUInt.instance);
   public int blockSize = 128;
 
-  public PostingsConfig(Coder<K> keyCoder, Coder<M> metadataCoder, Coder<V> valCoder, Comparator<K> keyCmp, M metadata) {
+  public PostingsConfig(Coder<K> keyCoder, Coder<V> valCoder, Comparator<K> keyCmp, KeyMetadata<V> metadata) {
     this.keyCoder = keyCoder.lengthSafe();
-    this.metadataCoder = metadataCoder.lengthSafe();
     this.valCoder = valCoder.lengthSafe();
     this.keyCmp = keyCmp;
     this.metadata = metadata;
   }
 
-  public M newMetadata() {
+  public KeyMetadata<V> newMetadata() {
     return metadata.zero();
   }
 
-  public TmpStreamPostingIndexWriter<K, M, V> makeTemporaryWriter(Directory outdir, String baseName) {
+  public TmpStreamPostingIndexWriter<K, V> makeTemporaryWriter(Directory outdir, String baseName) {
     return new TmpStreamPostingIndexWriter<>(outdir, baseName, this);
   }
 
-  public BlockedPostingsWriter<K, M, V> makeFinalWriter(Directory outdir, String baseName) throws IOException {
+  public BlockedPostingsWriter<K, V> makeFinalWriter(Directory outdir, String baseName) throws IOException {
     return new BlockedPostingsWriter<>(this,
         new WaltzDiskMapWriter<>(
             outdir,

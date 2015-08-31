@@ -17,10 +17,10 @@ import java.io.IOException;
  * @author jfoley
  */
 public class PIndexWriter<K> implements Closeable {
-  final PostingsConfig<K, PositionsCountMetadata, PositionsList> cfg;
+  final PostingsConfig<K, PositionsList> cfg;
   private final TemporaryDirectory tmpdir;
-  TmpStreamPostingIndexWriter<K, PositionsCountMetadata, PositionsList> writer;
-  PostingIndexWriter<K, PositionsCountMetadata, PositionsList> finalWriter;
+  TmpStreamPostingIndexWriter<K, PositionsList> writer;
+  PostingIndexWriter<K, PositionsList> finalWriter;
 
   public PIndexWriter(Coder<K> keyCoder, Directory outdir) throws IOException {
     this(keyCoder, outdir, "positions");
@@ -29,7 +29,6 @@ public class PIndexWriter<K> implements Closeable {
   public PIndexWriter(Coder<K> keyCoder, Directory outdir, String baseName) throws IOException {
     cfg = new PostingsConfig<>(
         keyCoder,
-        new PositionsCountMetadataCoder(),
         new PositionsListCoder(),
         Comparing.defaultComparator(),
         new PositionsCountMetadata()

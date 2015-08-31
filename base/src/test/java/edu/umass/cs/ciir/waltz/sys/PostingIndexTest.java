@@ -9,7 +9,6 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.sys.counts.CountMetadata;
-import edu.umass.cs.ciir.waltz.sys.counts.CountMetadataCoder;
 import edu.umass.cs.ciir.waltz.sys.tmp.TmpPostingMerger;
 import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 import org.junit.Test;
@@ -28,9 +27,8 @@ public class PostingIndexTest {
 
   @Test
   public void testStringIndexWriter() throws IOException {
-    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<>(
+    PostingsConfig<String, Integer> countsConfig = new PostingsConfig<>(
         CharsetCoders.utf8,
-        new CountMetadataCoder(),
         VarUInt.instance,
         Comparator.<String>naturalOrder(),
         new CountMetadata()
@@ -39,7 +37,7 @@ public class PostingIndexTest {
     TestTextCountsWriter wr = new TestTextCountsWriter();
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (TmpStreamPostingIndexWriter<String,CountMetadata,Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
+      try (TmpStreamPostingIndexWriter<String,Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
         int current = writer.addDocument();
         writer.add("the", current, 1);
         writer.add("quick", current, 3);
@@ -65,7 +63,7 @@ public class PostingIndexTest {
 
         writer.flush();
 
-        TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
+        TmpPostingMerger<String, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
 
         merger.write(wr);
       }
@@ -96,7 +94,7 @@ public class PostingIndexTest {
     assertEquals(expected, wr.sw.toString());
   }
 
-  private static class TestTextCountsWriter implements PostingIndexWriter<String, CountMetadata, Integer> {
+  private static class TestTextCountsWriter implements PostingIndexWriter<String, Integer> {
     public final StringWriter sw = new StringWriter();
     public final PrintWriter out = new PrintWriter(sw);
 
@@ -106,7 +104,9 @@ public class PostingIndexTest {
     }
 
     @Override
-    public void writeMetadata(CountMetadata metadata) {
+    public void writeMetadata(KeyMetadata<Integer> m) {
+      assert(m instanceof CountMetadata);
+      CountMetadata metadata = (CountMetadata) m;
       out.println("  meta: max:"+metadata.maxCount+" total:"+metadata.totalCount+" docs:"+metadata.totalDocs);
     }
 
@@ -123,17 +123,16 @@ public class PostingIndexTest {
 
   @Test
   public void testDiskIndexWriter() throws IOException {
-    PostingsConfig<String,CountMetadata, Integer> countsConfig = new PostingsConfig<String,CountMetadata,Integer>(
+    PostingsConfig<String, Integer> countsConfig = new PostingsConfig<>(
         CharsetCoders.utf8,
-        new CountMetadataCoder(),
         VarUInt.instance,
         Comparator.<String>naturalOrder(),
         new CountMetadata()
     );
 
     try (TemporaryDirectory tmpdir = new TemporaryDirectory()) {
-      try (BlockedPostingsWriter<String, CountMetadata, Integer> finalWriter = new BlockedPostingsWriter<>(countsConfig, tmpdir, "counts")) {
-        try (TmpStreamPostingIndexWriter<String, CountMetadata, Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
+      try (BlockedPostingsWriter<String, Integer> finalWriter = new BlockedPostingsWriter<>(countsConfig, tmpdir, "counts")) {
+        try (TmpStreamPostingIndexWriter<String, Integer> writer = new TmpStreamPostingIndexWriter<>(tmpdir, "counts", countsConfig)) {
           int current = writer.addDocument();
           writer.add("the", current, 1);
           writer.add("quick", current, 3);
@@ -159,7 +158,7 @@ public class PostingIndexTest {
 
           writer.flush();
 
-          TmpPostingMerger<String, CountMetadata, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
+          TmpPostingMerger<String, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
 
           merger.write(finalWriter);
         }

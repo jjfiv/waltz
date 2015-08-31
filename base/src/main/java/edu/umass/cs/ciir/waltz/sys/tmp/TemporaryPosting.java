@@ -11,13 +11,13 @@ import java.io.OutputStream;
 /**
  * @author jfoley
  */
-public final class TemporaryPosting<M extends KeyMetadata<V, M>, V> {
-  public final PostingsConfig<?, M, V> cfg;
-  private M metadata;
+public final class TemporaryPosting<V> {
+  public final PostingsConfig<?, V> cfg;
+  private KeyMetadata<V> metadata;
   public ByteArrayOutputStream data;
   private int previousDocument;
 
-  public TemporaryPosting(PostingsConfig<?, M, V> cfg) {
+  public TemporaryPosting(PostingsConfig<?, V> cfg) {
     this.cfg = cfg;
     this.data = new ByteArrayOutputStream();
     this.previousDocument = 0;
@@ -32,8 +32,8 @@ public final class TemporaryPosting<M extends KeyMetadata<V, M>, V> {
     previousDocument = document;
   }
 
-  public TemporaryPosting<M, V> write(OutputStream out) throws IOException {
-    cfg.metadataCoder.write(out, metadata);
+  public TemporaryPosting<V> write(OutputStream out) throws IOException {
+    cfg.metadata.encode().write(out);
     data.writeTo(out);
     return this;
   }
