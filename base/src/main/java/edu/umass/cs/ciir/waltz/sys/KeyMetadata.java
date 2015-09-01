@@ -16,6 +16,11 @@ public interface KeyMetadata<V> {
   int totalDocuments();
 
   /**
+   * @return the maximum document number encountered.
+   */
+  int maxDocument();
+
+  /**
    * Add in the information as represented by the other metadata object.
    * @param m another metadata object of the same class.
    */

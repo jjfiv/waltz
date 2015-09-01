@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.sys.positions;
 
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
-import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
@@ -15,20 +15,20 @@ import java.io.InputStream;
 public class PositionsCountMetadata implements KeyMetadata<PositionsList> {
 
   public int totalDocs = 0;
+  public int maxDoc = 0;
   public int maxCount = 0;
   public int totalCount = 0;
   public int highestPosition = 0;
 
-  @Override
-  public int totalDocuments() {
-    return totalDocs;
-  }
+  @Override public int totalDocuments() { return totalDocs; }
+  @Override public int maxDocument() { return maxDoc; }
 
   @Override
   public void accumulate(KeyMetadata o) {
     assert(o instanceof PositionsCountMetadata);
     PositionsCountMetadata m = (PositionsCountMetadata) o;
     totalDocs += m.totalDocs;
+    maxDoc = Math.max(maxDoc, m.maxDoc);
     totalCount += m.totalCount;
     maxCount = Math.max(maxCount, m.maxCount);
     highestPosition = Math.max(highestPosition, m.highestPosition);
@@ -39,6 +39,7 @@ public class PositionsCountMetadata implements KeyMetadata<PositionsList> {
     totalDocs++;
     int count = item.size();
     totalCount += count;
+    maxDoc = Math.max(maxDoc, document);
     maxCount = Math.max(count, maxCount);
     highestPosition = Math.max(highestPosition, item.getPosition(count - 1));
   }
@@ -51,20 +52,22 @@ public class PositionsCountMetadata implements KeyMetadata<PositionsList> {
   @Override
   public DataChunk encode() {
     ByteBuilder bb = new ByteBuilder();
-    bb.add(FixedSize.ints, totalDocs);
-    bb.add(FixedSize.ints, maxCount);
-    bb.add(FixedSize.ints, totalCount);
-    bb.add(FixedSize.ints, highestPosition);
+    bb.add(VarUInt.instance, totalDocs);
+    bb.add(VarUInt.instance, maxDoc);
+    bb.add(VarUInt.instance, maxCount);
+    bb.add(VarUInt.instance, totalCount);
+    bb.add(VarUInt.instance, highestPosition);
     return bb;
   }
 
   @Override
   public KeyMetadata<PositionsList> decode(InputStream input) throws IOException {
     PositionsCountMetadata m = new PositionsCountMetadata();
-    m.totalDocs = FixedSize.ints.readImpl(input);
-    m.maxCount = FixedSize.ints.readImpl(input);
-    m.totalCount = FixedSize.ints.readImpl(input);
-    m.highestPosition = FixedSize.ints.readImpl(input);
+    m.totalDocs = VarUInt.instance.readImpl(input);
+    m.maxDoc = VarUInt.instance.readImpl(input);
+    m.maxCount = VarUInt.instance.readImpl(input);
+    m.totalCount = VarUInt.instance.readImpl(input);
+    m.highestPosition = VarUInt.instance.readImpl(input);
     return m;
   }
 }
