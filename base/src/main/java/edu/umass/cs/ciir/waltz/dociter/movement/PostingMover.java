@@ -2,7 +2,9 @@ package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.fn.SinkFn;
 import edu.umass.cs.ciir.waltz.feature.MoverFeature;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,14 @@ import java.util.Map;
 public interface PostingMover<X> extends Mover {
   /** always call matches(doc id) before calling this to make sure you're reading what you think you're reading! */
   X getCurrentPosting();
+
+  /**
+   * The difference here is the generic type is applied.
+   * {@inheritDoc}
+   */
+  @Override
+  @Nullable
+  KeyMetadata<X> getMetadata();
 
   /**
    * Turn this mover into a feature!

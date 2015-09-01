@@ -1,5 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter;
 
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+
+import javax.annotation.Nullable;
+
 /**
  * @author jfoley
  */
@@ -13,5 +17,8 @@ public interface BlockPostingsIterator<X> {
   void reset();
   /** How many hits there are in total. */
   int totalKeys();
+
+  @Nullable
+  KeyMetadata<X> getMetadata();
 }
 

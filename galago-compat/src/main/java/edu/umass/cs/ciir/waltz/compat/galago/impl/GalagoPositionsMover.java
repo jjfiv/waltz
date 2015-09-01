@@ -4,8 +4,11 @@ import ciir.jfoley.chai.collections.list.AChaiList;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 import org.lemurproject.galago.core.retrieval.iterator.ExtentIterator;
 import org.lemurproject.galago.core.util.ExtentArray;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley
@@ -20,6 +23,12 @@ public class GalagoPositionsMover extends AGalagoMover<ExtentIterator> implement
     ctx.document = currentKey();
     ExtentArray arr = iter.extents(ctx);
     return new GalagoExtentsAsPositionsList(arr);
+  }
+
+  @Nullable
+  @Override
+  public KeyMetadata<PositionsList> getMetadata() {
+    return null;
   }
 
   public static class GalagoExtentsAsPositionsList extends AChaiList<Integer> implements PositionsList {

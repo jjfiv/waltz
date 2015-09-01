@@ -1,9 +1,11 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
-import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
+import edu.umass.cs.ciir.waltz.dociter.BlockPostingsIterator;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 /**
@@ -24,6 +26,9 @@ public abstract class StaticStreamPostingsIterator<X> implements BlockPostingsIt
 
   /** Read the beginning of the stream to figure out what's going on */
   public abstract void readStreamHeader() throws IOException;
+
+  @Nullable
+  public abstract KeyMetadata<X> getMetadata();
 
   @Override
   public void reset() {

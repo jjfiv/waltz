@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * @author jfoley
  */
-public class AGalagoMover<X extends BaseIterator> implements Mover {
+public abstract class AGalagoMover<X extends BaseIterator> implements Mover {
   protected final X iter;
   public final ScoringContext ctx;
 

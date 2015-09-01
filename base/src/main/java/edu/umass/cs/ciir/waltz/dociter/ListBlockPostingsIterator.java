@@ -1,7 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter;
 
 import edu.umass.cs.ciir.waltz.postings.Posting;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class ListBlockPostingsIterator<X> implements BlockPostingsIterator<X> {
   private final int blockSize;
   private int keyReadPtr;
   private int valueReadPtr;
+  public KeyMetadata<X> metadata;
 
   public ListBlockPostingsIterator(List<Posting<X>> postings) {
     this(postings, 16);
@@ -57,5 +60,11 @@ public class ListBlockPostingsIterator<X> implements BlockPostingsIterator<X> {
   @Override
   public int totalKeys() {
     return postings.size();
+  }
+
+  @Nullable
+  @Override
+  public KeyMetadata<X> getMetadata() {
+    return metadata;
   }
 }

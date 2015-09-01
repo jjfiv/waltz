@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.fn.SinkFn;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley.
@@ -62,6 +65,9 @@ public interface Mover {
 
   /** The total number of hits, or an overestimate if not possible (AnyOf). */
 	int totalKeys();
+
+	/** If it has been encoded, a metadata object. */
+	@Nullable KeyMetadata<?> getMetadata();
 
 	/**
 	 * We can't be an iterator because of how state works, but we can be a Clojure-style reducer.

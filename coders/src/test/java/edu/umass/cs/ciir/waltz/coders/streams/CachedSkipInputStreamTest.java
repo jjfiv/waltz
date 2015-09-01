@@ -118,19 +118,12 @@ public class CachedSkipInputStreamTest {
       FileChannelSource source = new FileChannelSource(tmp.getPath());
       SkipInputStream sis = new CachedSkipInputStream(source.stream(), 77);
 
-      System.err.println(sis.tell());
       sis.seekRelative(500);
-      System.err.println(sis.tell());
       sis.seekRelative(500); // 1000
-      System.err.println(sis.tell());
       sis.seekRelative(50);
-      System.err.println(sis.tell());
       sis.seekRelative(-50);
-      System.err.println(sis.tell());
       sis.seekRelative(150);
-      System.err.println(sis.tell());
       sis.seekRelative(-150);
-      System.err.println(sis.tell());
 
       byte[] secondHalf = StreamFns.readBytes(sis, 1000);
       assertArrayEquals(secondHalf, Arrays.copyOfRange(data, 1000, 2000));

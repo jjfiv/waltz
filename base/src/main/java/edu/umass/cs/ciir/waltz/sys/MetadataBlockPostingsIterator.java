@@ -10,6 +10,7 @@ import edu.umass.cs.ciir.waltz.dociter.IValueBlock;
 import edu.umass.cs.ciir.waltz.dociter.ValueBlock;
 import edu.umass.cs.ciir.waltz.io.postings.StaticStreamPostingsIterator;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,12 @@ public class MetadataBlockPostingsIterator<M extends KeyMetadata<V>, V> extends 
     // should be at least 1 byte left for each key:
     assert (remaining >= metadata.totalDocuments());
     usedKeys = 0;
+  }
+
+  @Nullable
+  @Override
+  public KeyMetadata<V> getMetadata() {
+    return metadata;
   }
 
   @Override

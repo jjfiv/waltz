@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley.
@@ -100,4 +103,10 @@ public abstract class AMover implements Mover {
       moveTo(key);
     }
   }
+
+	@Override
+	@Nullable
+	public KeyMetadata<?> getMetadata() {
+		return null;
+	}
 }

@@ -1,6 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
 import ciir.jfoley.chai.fn.TransformFn;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+
+import javax.annotation.Nullable;
 
 /**
  * @author jfoley
@@ -12,6 +15,11 @@ public class IdMappingMover<X> implements PostingMover<X> {
   public IdMappingMover(Mover inner, TransformFn<Integer,X> mapper) {
     this.inner = inner;
     this.mapper = mapper;
+  }
+  @Override
+  @Nullable
+  public KeyMetadata<X> getMetadata() {
+    return null;
   }
 
   @Override

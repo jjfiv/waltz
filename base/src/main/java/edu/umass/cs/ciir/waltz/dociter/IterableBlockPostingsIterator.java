@@ -3,7 +3,9 @@ package edu.umass.cs.ciir.waltz.dociter;
 import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.io.IO;
 import edu.umass.cs.ciir.waltz.postings.Posting;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +19,7 @@ public class IterableBlockPostingsIterator<X> implements BlockPostingsIterator<X
 	private final Iterable<? extends Posting<X>> iterGen;
 	private Iterator<? extends Posting<X>> iter;
 	List<Posting<X>> currentBlock;
+	public KeyMetadata<X> metadata;
 
 	public IterableBlockPostingsIterator(Iterable<? extends Posting<X>> postings) {
 		this(postings, 16);
@@ -60,6 +63,12 @@ public class IterableBlockPostingsIterator<X> implements BlockPostingsIterator<X
 	public int totalKeys() {
 		//TODO
 		throw new UnsupportedOperationException();
+	}
+
+	@Nullable
+	@Override
+	public KeyMetadata<X> getMetadata() {
+		return metadata;
 	}
 
 	@Override

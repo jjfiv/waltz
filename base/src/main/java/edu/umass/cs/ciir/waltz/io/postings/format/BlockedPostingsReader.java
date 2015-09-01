@@ -8,7 +8,9 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 import edu.umass.cs.ciir.waltz.dociter.*;
 import edu.umass.cs.ciir.waltz.io.postings.StaticStreamPostingsIterator;
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,13 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
     // should be at least 1 byte left for each key:
     assert(remaining >= totalKeys);
     usedKeys = 0;
+  }
+
+  @Nullable
+  @Override
+  public KeyMetadata<V> getMetadata() {
+    // TODO: return a fake metadata object that knows totalKeys
+    return null;
   }
 
   @Override

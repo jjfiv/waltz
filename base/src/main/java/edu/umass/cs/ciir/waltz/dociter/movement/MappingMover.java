@@ -1,5 +1,9 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
+import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
+
+import javax.annotation.Nullable;
+
 /**
  * This is a mover that wraps another mover to deliver output of a different kind, but doesn't change movement rules at all.
  * e.g. positions -> counts
@@ -13,6 +17,13 @@ public abstract class MappingMover<A, B> implements PostingMover<B> {
 
   @Override
   public abstract B getCurrentPosting();
+
+  @Override
+  @Nullable
+  public KeyMetadata<B> getMetadata() {
+    return null;
+  }
+
 
   @Override
   public int maxKey() {
