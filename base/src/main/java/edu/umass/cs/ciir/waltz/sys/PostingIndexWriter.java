@@ -12,4 +12,6 @@ public interface PostingIndexWriter<K, V> extends Closeable {
   void writeMetadata(KeyMetadata<V> metadata) throws IOException;
 
   void writePosting(int doc, V value) throws IOException;
+
+  void setDocumentCount(int totalDocumentCount);
 }

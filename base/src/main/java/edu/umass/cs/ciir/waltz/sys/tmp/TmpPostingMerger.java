@@ -5,7 +5,6 @@ import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -17,17 +16,18 @@ public final class TmpPostingMerger<K, V> {
   public final PostingsConfig<K, V> cfg;
   public final PriorityQueue<TmpPostingReader<K, V>> queue;
 
-  public TmpPostingMerger(PostingsConfig<K, V> cfg, List<InputStream> sources) {
+  public TmpPostingMerger(PostingsConfig<K, V> cfg, List<TmpPostingReader<K,V>> sources) {
     this.cfg = cfg;
-    queue = new PriorityQueue<>(sources.size());
-
-    for (InputStream source : sources) {
-      TmpPostingReader<K, V> reader = new TmpPostingReader<>(cfg, source);
-      queue.offer(reader);
-    }
+    queue = new PriorityQueue<>(sources);
   }
 
   public void write(PostingIndexWriter<K,V> writer) throws IOException {
+
+    int totalDocumentCount = 0;
+    for (TmpPostingReader<K, V> reader : queue) {
+      totalDocumentCount += reader.getTotalDocuments();
+    }
+    writer.setDocumentCount(totalDocumentCount);
 
     while (!queue.isEmpty()) {
       K key = queue.peek().currentKey;
@@ -68,5 +68,4 @@ public final class TmpPostingMerger<K, V> {
       }
     }
   }
-
 }

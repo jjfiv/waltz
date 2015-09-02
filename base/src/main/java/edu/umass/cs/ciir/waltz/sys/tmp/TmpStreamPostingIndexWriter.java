@@ -1,19 +1,16 @@
 package edu.umass.cs.ciir.waltz.sys.tmp;
 
 import ciir.jfoley.chai.collections.IntRange;
-import ciir.jfoley.chai.collections.util.QuickSort;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
-import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.coders.sorter.GeometricItemMerger;
 import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author jfoley
@@ -22,30 +19,31 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
   private final Directory tmpDir;
   public int temporaryIndex;
   PostingsConfig<K, V> cfg;
-  public final HashMap<K, TemporaryPosting<V>> memoryPostingIndex;
+  public MemoryPostingIndex<K,V> tmpIndex;
   private int totalDocuments;
   private int flushSize = 200000;
+  GeometricItemMerger merger;
 
   public TmpStreamPostingIndexWriter(Directory outputDir, String baseName, PostingsConfig<K, V> cfg) {
     this.tmpDir = outputDir.childDir(baseName + ".tmp");
     this.cfg = cfg;
-    this.memoryPostingIndex = new HashMap<>(flushSize);
+    tmpIndex = new MemoryPostingIndex<>(cfg);
     this.totalDocuments = 0;
+    this.merger = new GeometricItemMerger(8);
+    MemoryNotifier.register(this);
   }
 
   public synchronized int addDocument() {
-    return this.totalDocuments++;
+    // local doc number
+    this.tmpIndex.totalDocuments++;
+    // global doc number
+    return totalDocuments++;
   }
 
   public synchronized void add(K key, int document, V payload) {
-    TemporaryPosting<V> valBuilder = memoryPostingIndex.get(key);
-    if (valBuilder == null) {
-      valBuilder = new TemporaryPosting<>(cfg);
-      memoryPostingIndex.put(key, valBuilder);
-    }
-    valBuilder.add(document, payload);
+    tmpIndex.add(key, document, payload);
 
-    if (memoryPostingIndex.size() > flushSize) {
+    if (tmpIndex.size() > flushSize) {
       try {
         flush();
       } catch (IOException e) {
@@ -55,11 +53,13 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
   }
 
   public TmpPostingMerger<K, V> getMerger(List<Integer> ids) throws IOException {
-    List<InputStream> inputs = new ArrayList<>();
+    merger.waitForCurrentJobs();
+    List<TmpPostingReader<K,V>> inputs = new ArrayList<>();
     for (Integer id : ids) {
       assert (id < temporaryIndex);
       File input = getOutput(id);
-      inputs.add(IO.openInputStream(input));
+      TmpPostingReader<K,V> x = new TmpPostingReader<>(cfg, IO.openInputStream(input));
+      inputs.add(x);
     }
     return new TmpPostingMerger<>(cfg, inputs);
   }
@@ -70,36 +70,43 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
 
   @Override
   public synchronized void flush() throws IOException {
-    if (memoryPostingIndex.isEmpty()) return;
+    if(tmpIndex.isEmpty()) { return; }
 
+    MemoryPostingIndex<K,V> prev = tmpIndex;
+    tmpIndex = new MemoryPostingIndex<>(cfg);
     File output = getOutput(temporaryIndex++);
-    try (OutputStream segmentWriter = IO.openOutputStream(output)) {
-      // count
-      int keyCount = memoryPostingIndex.size();
-      VarUInt.instance.writePrim(segmentWriter, keyCount);
-      VarUInt.instance.writePrim(segmentWriter, totalDocuments);
 
-      List<Map.Entry<K, TemporaryPosting<V>>> data = new ArrayList<>(memoryPostingIndex.entrySet());
-      memoryPostingIndex.clear();
-      QuickSort.sort(
-          (lhs, rhs) -> cfg.keyCmp.compare(lhs.getKey(), rhs.getKey()), data
-      );
-
-      // followed by k,v pairs in order:
-      for (Map.Entry<K, TemporaryPosting<V>> kv : data) {
-        cfg.keyCoder.write(segmentWriter, kv.getKey());
-        kv.getValue().write(segmentWriter);
-        kv.getValue().close();
+    // flush to disk asynchronously
+    merger.doAsync(() -> {
+      try (TmpPostingWriter<K, V> writer = new TmpPostingWriter<>(cfg, output)) {
+        prev.write(writer);
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-    }
-    // clear in-memory map:
-    memoryPostingIndex.clear();
+    });
   }
 
   public void close() throws IOException {
     MemoryNotifier.unregister(this);
     flush();
   }
+
+  /*
+  public final class MergeIntermediate implements GeometricItemMerger.MergeFn {
+    @Override
+    public void apply(List<Integer> inputs, int output) throws IOException {
+      TmpPostingMerger<K, V> merger = getMerger(inputs);
+      try (TmpPostingWriter<K,V> writer = new TmpPostingWriter<>(cfg, getOutput(output))) {
+        merger.write(writer);
+      }
+      for (int input : inputs) {
+        if(!getOutput(input).delete()) {
+          Logger.getAnonymousLogger().warning("Couldn't delete temporary indexing file: "+getOutput(input).getAbsolutePath());
+        }
+      }
+    }
+  }
+  */
 
   public void mergeTo(PostingIndexWriter<K, V> finalWriter) throws IOException {
     close();

@@ -47,6 +47,7 @@ public class PostingIndexTest {
         writer.add("the", current, 4);
         writer.add("second", current, 5);
 
+        assertEquals(2, writer.tmpIndex.getTotalDocuments());
         // flush segment:
         writer.flush();
 
@@ -54,12 +55,14 @@ public class PostingIndexTest {
         writer.add("the", current, 1);
         writer.add("quick", current, 3);
         writer.add("fast", current, 3);
+        assertEquals(1, writer.tmpIndex.getTotalDocuments());
 
         writer.flush();
 
         current = writer.addDocument();
         writer.add("the", current, 2);
         writer.add("last", current, 1);
+        assertEquals(1, writer.tmpIndex.getTotalDocuments());
 
         writer.flush();
 
@@ -70,7 +73,8 @@ public class PostingIndexTest {
     }
     wr.close();
 
-    String expected = "fast\n" +
+    String expected = "totalDocumentCount: 4\n" +
+        "fast\n" +
         "  meta: max:3 total:6 docs:2\n" +
         "    0:3\n" +
         "    2:3\n" +
@@ -113,6 +117,11 @@ public class PostingIndexTest {
     @Override
     public void writePosting(int doc, Integer value) {
       out.println("    "+doc+":"+value);
+    }
+
+    @Override
+    public void setDocumentCount(int totalDocumentCount) {
+      out.println("totalDocumentCount: "+totalDocumentCount);
     }
 
     @Override

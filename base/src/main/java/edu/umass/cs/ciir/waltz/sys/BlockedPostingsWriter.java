@@ -47,6 +47,12 @@ public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
     postingsWriter.add(doc, value);
   }
 
+  @Override
+  public void setDocumentCount(int totalDocumentCount) {
+    // don't do anything with this for now.
+    // imagine one could add it to the writer.metadata someday
+  }
+
   public void finishCurrentPostingList() throws IOException {
     if (postingsWriter != null) {
       postingsWriter.finish();

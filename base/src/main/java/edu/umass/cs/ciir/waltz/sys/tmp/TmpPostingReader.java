@@ -8,13 +8,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 
 /**
  * @author jfoley
  */
 public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader<K, V>> {
   final PostingsConfig<K, V> cfg;
-  final InputStream input;
+  final PushbackInputStream input;
   final int keyCount;
   private final int totalDocuments;
   int keyIndex;
@@ -27,7 +28,7 @@ public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader
 
   public TmpPostingReader(PostingsConfig<K, V> cfg, InputStream input) {
     this.cfg = cfg;
-    this.input = input;
+    this.input = new PushbackInputStream(input);
     this.keyCount = VarUInt.instance.read(input);
     this.totalDocuments = VarUInt.instance.read(input);
     this.getNextKey();
