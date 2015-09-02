@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.io.postings;
 
 import ciir.jfoley.chai.collections.list.AChaiList;
+import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsIterator;
 import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
 
@@ -14,6 +15,10 @@ public final class ArrayPosList extends AChaiList<Integer> implements PositionsL
   public ArrayPosList(int[] data, int size) {
     this.data = data;
     this.size = size;
+  }
+
+  public ArrayPosList(IntList value) {
+    this(value.unsafeArray(), value.size());
   }
 
   @Override
