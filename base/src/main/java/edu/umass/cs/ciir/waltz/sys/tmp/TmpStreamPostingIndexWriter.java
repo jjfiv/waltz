@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.sys.tmp;
 
-import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.IO;
 import ciir.jfoley.chai.jvm.MemoryNotifier;
@@ -21,7 +20,6 @@ import java.util.logging.Logger;
  */
 public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Closeable {
   private final Directory tmpDir;
-  public int temporaryIndex;
   PostingsConfig<K, V> cfg;
   public MemoryPostingIndex<K,V> tmpIndex;
   private int totalDocuments;
@@ -33,7 +31,7 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
     this.cfg = cfg;
     tmpIndex = new MemoryPostingIndex<>(cfg);
     this.totalDocuments = 0;
-    this.merger = new GeometricItemMerger(8);
+    this.merger = new GeometricItemMerger(8, new MergeIntermediate());
     MemoryNotifier.register(this);
   }
 
@@ -57,10 +55,8 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
   }
 
   public TmpPostingMerger<K, V> getMerger(List<Integer> ids) throws IOException {
-    merger.waitForCurrentJobs();
     List<TmpPostingReader<K,V>> inputs = new ArrayList<>();
     for (Integer id : ids) {
-      assert (id < temporaryIndex);
       File input = getOutput(id);
       TmpPostingReader<K,V> x = new TmpPostingReader<>(cfg, IO.openInputStream(input));
       inputs.add(x);
@@ -78,7 +74,8 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
 
     MemoryPostingIndex<K,V> prev = tmpIndex;
     tmpIndex = new MemoryPostingIndex<>(cfg);
-    File output = getOutput(temporaryIndex++);
+    int currentId = merger.allocate();
+    File output = getOutput(currentId);
 
     // flush to disk asynchronously
     merger.doAsync(() -> {
@@ -87,7 +84,10 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
       } catch (IOException e) {
         e.printStackTrace();
       }
+      merger.addNewItem(currentId);
     });
+
+    merger.checkIfWeCanMergeItems();
   }
 
   public void close() throws IOException {
@@ -111,8 +111,8 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
   }
 
   public void mergeTo(PostingIndexWriter<K, V> finalWriter) throws IOException {
-    close();
-    TmpPostingMerger<K, V> merger = this.getMerger(IntRange.exclusive(0, temporaryIndex));
-    merger.write(finalWriter);
+    flush();
+    TmpPostingMerger<K, V> postingMerger = this.getMerger(merger.getFinalItems());
+    postingMerger.write(finalWriter);
   }
 }

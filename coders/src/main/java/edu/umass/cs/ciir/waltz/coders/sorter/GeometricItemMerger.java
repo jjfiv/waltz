@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.coders.sorter;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.MapFns;
 
 import java.io.IOException;
@@ -18,18 +19,19 @@ public class GeometricItemMerger {
   public static final int DEFAULT_MERGE_FACTOR = 10;
   public static final boolean useThreads = true; // almost 2x slower building positions on robust without this
 
-  MergeFn mergeFn;
+  final MergeFn mergeFn;
   // Logical size only: 0: [...], 1: [...] ... whenever we get 10 level 0s we upgrade them to a level 1... etc.
   final Map<Integer, List<Integer>> itemsByLevel;
   AtomicInteger liveJobs;
   protected final int mergeFactor;
   private int nextId;
 
-  public GeometricItemMerger(int mergeFactor) {
+  public GeometricItemMerger(int mergeFactor, MergeFn mergeFn) {
     this.mergeFactor = mergeFactor;
     nextId = 0;
     liveJobs = new AtomicInteger(0);
     itemsByLevel = new ConcurrentHashMap<>();
+    this.mergeFn = mergeFn;
   }
 
   public synchronized void doAsync(Runnable r) {
@@ -58,13 +60,17 @@ public class GeometricItemMerger {
   }
 
   public void close() throws IOException {
-    // merge as many runs as possible.
+    finish();
+  }
+
+  public void finish() throws IOException {
     do {
       checkIfWeCanMergeItems();
       try {
         Thread.sleep(100);
       } catch (InterruptedException ignored) { }
     } while(liveJobs.get() > 0);
+
   }
 
   public void waitForCurrentJobs() {
@@ -73,6 +79,15 @@ public class GeometricItemMerger {
         Thread.sleep(1000);
       } catch (InterruptedException ignored) { }
     }
+  }
+
+  public IntList getFinalItems() throws IOException {
+    finish();
+    IntList total = new IntList();
+    for (List<Integer> liveIds : itemsByLevel.values()) {
+      total.addAll(liveIds);
+    }
+    return total;
   }
 
   public synchronized void checkIfWeCanMergeItems() throws IOException {

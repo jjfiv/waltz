@@ -51,8 +51,7 @@ public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T>
     this(dir, coder, new Reducer.NullReducer<T>(), comparator, DEFAULT_MAX_ITEMS_IN_MEMORY, GeometricItemMerger.DEFAULT_MERGE_FACTOR);
   }
   public ExternalSortingWriter(File dir, Coder<T> coder, Reducer<T> reducer, Comparator<? super T> comparator, int maxItemsInMemory, int mergeFactor) {
-    merger = new GeometricItemMerger(mergeFactor);
-    merger.mergeFn = this::mergeRuns;
+    merger = new GeometricItemMerger(mergeFactor, this::mergeRuns);
     assert(dir.isDirectory());
     this.dir = dir;
     this.countCoder = FixedSize.longs;

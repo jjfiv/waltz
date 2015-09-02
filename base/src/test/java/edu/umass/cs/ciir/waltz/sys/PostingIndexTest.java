@@ -1,6 +1,5 @@
 package edu.umass.cs.ciir.waltz.sys;
 
-import ciir.jfoley.chai.collections.IntRange;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.chained.ChaiMap;
 import ciir.jfoley.chai.io.TemporaryDirectory;
@@ -9,7 +8,6 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
 import edu.umass.cs.ciir.waltz.sys.counts.CountMetadata;
-import edu.umass.cs.ciir.waltz.sys.tmp.TmpPostingMerger;
 import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 import org.junit.Test;
 
@@ -64,11 +62,7 @@ public class PostingIndexTest {
         writer.add("last", current, 1);
         assertEquals(1, writer.tmpIndex.getTotalDocuments());
 
-        writer.flush();
-
-        TmpPostingMerger<String, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
-
-        merger.write(wr);
+        writer.mergeTo(wr);
       }
     }
     wr.close();
@@ -162,10 +156,7 @@ public class PostingIndexTest {
           writer.add("last", current, 1);
 
           writer.flush();
-
-          TmpPostingMerger<String, Integer> merger = writer.getMerger(IntRange.exclusive(0, writer.temporaryIndex));
-
-          merger.write(finalWriter);
+          writer.mergeTo(finalWriter);
         }
       }
 
