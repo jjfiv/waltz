@@ -27,7 +27,7 @@ public final class TmpPostingMerger<K, V> {
     for (TmpPostingReader<K, V> reader : queue) {
       totalDocumentCount += reader.getTotalDocuments();
     }
-    writer.setDocumentCount(totalDocumentCount);
+    writer.writeHeader(totalDocumentCount);
 
     while (!queue.isEmpty()) {
       K key = queue.peek().currentKey;
@@ -35,8 +35,6 @@ public final class TmpPostingMerger<K, V> {
         queue.poll();
         continue;
       }
-
-      writer.writeNewKey(key);
 
       // collect all indices that have the current key
       List<TmpPostingReader<K, V>> matching = new ArrayList<>();
@@ -50,7 +48,7 @@ public final class TmpPostingMerger<K, V> {
       for (TmpPostingReader<K, V> reader : matching) {
         totalMeta.accumulate(reader.getCurrentMetadata());
       }
-      writer.writeMetadata(totalMeta);
+      writer.writeNewKey(key, totalMeta);
 
       // write posting list:
       for (TmpPostingReader<K, V> reader : matching) {

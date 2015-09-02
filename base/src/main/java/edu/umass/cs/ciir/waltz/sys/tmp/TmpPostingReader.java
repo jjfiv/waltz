@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.sys.tmp;
 
+import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
@@ -9,6 +10,8 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author jfoley
@@ -16,9 +19,7 @@ import java.io.PushbackInputStream;
 public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader<K, V>> {
   final PostingsConfig<K, V> cfg;
   final PushbackInputStream input;
-  final int keyCount;
   private final int totalDocuments;
-  int keyIndex;
   K currentKey;
   KeyMetadata<V> currentMetadata;
   int documentCount;
@@ -29,7 +30,6 @@ public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader
   public TmpPostingReader(PostingsConfig<K, V> cfg, InputStream input) {
     this.cfg = cfg;
     this.input = new PushbackInputStream(input);
-    this.keyCount = VarUInt.instance.read(input);
     this.totalDocuments = VarUInt.instance.read(input);
     this.getNextKey();
   }
@@ -48,7 +48,12 @@ public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader
   }
 
   public boolean hasNextKey() {
-    return keyIndex < keyCount;
+    try {
+      return StreamFns.hasMoreData(input);
+    } catch (IOException e) {
+      Logger.getAnonymousLogger().log(Level.WARNING, "hasNextKey exited weirdly...", e);
+      return false;
+    }
   }
 
   public V getCurrentValue() { return currentValue; }
@@ -60,7 +65,6 @@ public final class TmpPostingReader<K, V> implements Comparable<TmpPostingReader
     }
     if (hasNextKey()) {
       currentKey = cfg.keyCoder.read(input);
-      keyIndex++;
       documentIndex = 0;
       currentDocument = 0;
       try {

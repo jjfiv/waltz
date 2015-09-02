@@ -29,13 +29,9 @@ public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
   }
 
   @Override
-  public void writeNewKey(K key) throws IOException {
+  public void writeNewKey(K key, KeyMetadata<V> metadata) throws IOException {
     finishCurrentPostingList();
     writer.beginWrite(key);
-  }
-
-  @Override
-  public void writeMetadata(KeyMetadata<V> metadata) throws IOException {
     assert (postingsWriter == null);
     valueWriter.write(metadata.encode());
     postingsWriter = new BlockedPostingValueWriter<>(valueWriter, cfg.blockSize, cfg.docsCoder, cfg.valCoder);
@@ -48,7 +44,7 @@ public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
   }
 
   @Override
-  public void setDocumentCount(int totalDocumentCount) {
+  public void writeHeader(int totalDocumentCount) {
     // don't do anything with this for now.
     // imagine one could add it to the writer.metadata someday
   }

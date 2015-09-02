@@ -103,12 +103,8 @@ public class PostingIndexTest {
     public final PrintWriter out = new PrintWriter(sw);
 
     @Override
-    public void writeNewKey(String key) {
+    public void writeNewKey(String key, KeyMetadata<Integer> m) {
       out.println(key);
-    }
-
-    @Override
-    public void writeMetadata(KeyMetadata<Integer> m) {
       assert(m instanceof CountMetadata);
       CountMetadata metadata = (CountMetadata) m;
       out.println("  meta: max:"+metadata.maxCount+" total:"+metadata.totalCount+" docs:"+metadata.totalDocs);
@@ -120,7 +116,7 @@ public class PostingIndexTest {
     }
 
     @Override
-    public void setDocumentCount(int totalDocumentCount) {
+    public void writeHeader(int totalDocumentCount) {
       out.println("totalDocumentCount: "+totalDocumentCount);
     }
 

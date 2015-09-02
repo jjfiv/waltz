@@ -8,9 +8,13 @@ import edu.umass.cs.ciir.waltz.coders.sorter.GeometricItemMerger;
 import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.Flushable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author jfoley
@@ -91,7 +95,6 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
     flush();
   }
 
-  /*
   public final class MergeIntermediate implements GeometricItemMerger.MergeFn {
     @Override
     public void apply(List<Integer> inputs, int output) throws IOException {
@@ -106,7 +109,6 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
       }
     }
   }
-  */
 
   public void mergeTo(PostingIndexWriter<K, V> finalWriter) throws IOException {
     close();
