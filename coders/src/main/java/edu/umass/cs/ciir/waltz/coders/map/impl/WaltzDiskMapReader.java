@@ -41,7 +41,7 @@ public class WaltzDiskMapReader<K, V> implements IOMap<K, V> {
     FileChannelSource keys = new FileChannelSource(getKeyFileName(baseDir, baseName));
 
     valuesFile = new FileChannelSource(getValueFileName(baseDir, baseName));
-    vocab = WaltzDiskMap.createVocabReader(keys, valuesFile.size(), keyCoder, Comparing.defaultComparator());
+    vocab = WaltzDiskMap.createVocabReader(keys, keyCoder, Comparing.defaultComparator());
   }
 
   @Override

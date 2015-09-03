@@ -27,7 +27,7 @@ public class StreamingDocumentSetChunkWriter<K> implements Closeable {
 
   public void process(DocumentSetChunk<K> chunk) throws IOException {
     if (previousKey == null || !Objects.equals(chunk.key, previousKey)) {
-      flush();
+      finishPreviousValue();
       startNewValue(chunk.key);
       previousKey = chunk.key;
     }
@@ -42,14 +42,15 @@ public class StreamingDocumentSetChunkWriter<K> implements Closeable {
     valueWriter.write(FixedSize.ints, 0xdeadbeef);
   }
 
-  public void flush() throws IOException {
+  public void finishPreviousValue() throws IOException {
     intOutput.flush();
     if (previousKey == null) return;
     valueWriter.write(valueStartOffset, FixedSize.ints, intOutput.total);
+    writer.finishWrite();
   }
 
   public void close() throws IOException {
-    flush();
+    finishPreviousValue();
     intOutput.close();
     writer.close();
   }

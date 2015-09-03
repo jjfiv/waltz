@@ -1,4 +1,4 @@
-package edu.umass.cs.ciir.waltz.coders.map.impl;
+package edu.umass.cs.ciir.waltz.coders.map.impl.vocab;
 
 import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.collections.Pair;
@@ -7,6 +7,9 @@ import ciir.jfoley.chai.collections.util.ListFns;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSlice;
+import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
+import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapVocabReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,36 +25,31 @@ import java.util.List;
  * @param <K>
  */
 public class NaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
-  final VocabEntryCoder<K> koffCoder;
-  private final long maxValueSize;
   private final int count;
   ArrayList<VocabEntry<K>> keysAndOffsets;
   final Comparator<K> keyCmp;
   final DataSource keys;
 
-  public NaiveVocabReader(int count, long maxValueSize, Coder<K> keyCoder, Comparator<K> keyCmp, DataSource keys) throws IOException {
+  public NaiveVocabReader(int count, Coder<K> keyCoder, Comparator<K> keyCmp, DataSource keys) throws IOException {
     this.count = count;
     this.keyCmp = keyCmp;
     this.keys = keys;
-    this.koffCoder = new VocabEntryCoder<>(keyCoder);
-    this.maxValueSize = maxValueSize;
 
     // TODO, be less memory-lazy here:
     keysAndOffsets = new ArrayList<>();
     InputStream is = keys.stream();
     keysAndOffsets.ensureCapacity(IntMath.fromLong(count));
     for (int i = 0; i < count; i++) {
-      keysAndOffsets.add(koffCoder.read(is));
+      K key = keyCoder.read(is);
+      long start = FixedSize.longs.read(is);
+      int size = VarUInt.instance.read(is);
+      VocabEntry<K> entry = new VocabEntry<K>(key, start, size, keyCmp);
+      keysAndOffsets.add(entry);
     }
   }
 
   FileSlice getSlice(int i) {
-    long start = keysAndOffsets.get(i).offset;
-    if(i+1 < keysAndOffsets.size()) {
-      return new FileSlice(start, keysAndOffsets.get(i+1).offset);
-    } else {
-      return new FileSlice(start, maxValueSize);
-    }
+    return keysAndOffsets.get(i).slice();
   }
 
   @Nonnull

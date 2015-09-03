@@ -48,8 +48,7 @@ public final class PostingsConfig<K, V> {
             outdir,
             baseName,
             this.keyCoder,
-            null,
-            false
+            null
         ));
   }
 

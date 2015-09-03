@@ -7,6 +7,7 @@ import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.kinds.ASCII;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
+import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.NaiveVocabReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,22 +20,23 @@ public class WaltzDiskMap {
   public static final int MagicLength = 128;
   public static final Coder<String> MagicCoder = new ASCII.FixedLength(MagicLength);
 
-  public static <K> WaltzDiskMapVocabReader<K> createVocabReader(DataSource keys, long size, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
+  public static <K> WaltzDiskMapVocabReader<K> createVocabReader(DataSource keys, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
     DataSourceSkipInputStream stream = keys.stream();
     String magic = MagicCoder.read(stream);
     long count;
 
     switch (magic) {
-      case "waltz.keys.naive":
+      case "waltz.keys.NaiveVocabWriter":
         count = FixedSize.longs.read(stream);
         break;
+      case "waltz.keys.naive": // old, buggy format
       default:
         throw new IOException("Unsupported keys format: "+magic);
     }
 
     // TODO dispatch better on type/count
     if(count < Integer.MAX_VALUE) {
-      return new NaiveVocabReader<>(IntMath.fromLong(count), size, keyCoder, cmp, stream.sourceAtCurrentPosition());
+      return new NaiveVocabReader<>(IntMath.fromLong(count), keyCoder, cmp, stream.sourceAtCurrentPosition());
     } else {
       throw new UnsupportedOperationException();
     }

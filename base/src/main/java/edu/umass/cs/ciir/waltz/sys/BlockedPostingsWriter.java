@@ -25,7 +25,7 @@ public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
   }
 
   public BlockedPostingsWriter(PostingsConfig<K, V> cfg, Directory outputDir, String baseName) throws IOException {
-    this(cfg, new WaltzDiskMapWriter<>(outputDir, baseName, cfg.keyCoder, null, false));
+    this(cfg, new WaltzDiskMapWriter<>(outputDir, baseName, cfg.keyCoder, null));
   }
 
   @Override
@@ -52,6 +52,7 @@ public class BlockedPostingsWriter<K, V> implements PostingIndexWriter<K, V> {
   public void finishCurrentPostingList() throws IOException {
     if (postingsWriter != null) {
       postingsWriter.finish();
+      writer.finishWrite();
       postingsWriter = null;
     }
   }
