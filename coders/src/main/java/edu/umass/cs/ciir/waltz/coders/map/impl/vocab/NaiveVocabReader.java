@@ -4,7 +4,6 @@ import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.list.AChaiList;
 import ciir.jfoley.chai.collections.util.ListFns;
-import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSlice;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
@@ -26,24 +25,28 @@ import java.util.List;
  */
 public class NaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
   private final int count;
+  private final DataSource file;
   ArrayList<VocabEntry<K>> keysAndOffsets;
-  final Comparator<K> keyCmp;
-  final DataSource keys;
+  final VocabConfig<K> cfg;
 
-  public NaiveVocabReader(int count, Coder<K> keyCoder, Comparator<K> keyCmp, DataSource keys) throws IOException {
+  public NaiveVocabReader(int count, VocabConfig<K> cfg, DataSource dataSource) throws IOException {
     this.count = count;
-    this.keyCmp = keyCmp;
-    this.keys = keys;
+    this.cfg = cfg;
+    this.file = dataSource;
 
+    readAllKeys();
+  }
+
+  private void readAllKeys() throws IOException {
     // TODO, be less memory-lazy here:
     keysAndOffsets = new ArrayList<>();
-    InputStream is = keys.stream();
+    InputStream is = file.stream();
     keysAndOffsets.ensureCapacity(IntMath.fromLong(count));
     for (int i = 0; i < count; i++) {
-      K key = keyCoder.read(is);
+      K key = cfg.keyCoder.read(is);
       long start = FixedSize.longs.read(is);
       int size = VarUInt.instance.read(is);
-      VocabEntry<K> entry = new VocabEntry<K>(key, start, size, keyCmp);
+      VocabEntry<K> entry = new VocabEntry<K>(key, start, size, cfg.cmp);
       keysAndOffsets.add(entry);
     }
   }
@@ -64,20 +67,20 @@ public class NaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
 
   @Override
   public Comparator<K> keyComparator() {
-    return this.keyCmp;
+    return this.cfg.cmp;
   }
 
   @Override
   public List<Pair<K, FileSlice>> findInBulk(List<K> keys) {
     ArrayList<Pair<K, FileSlice>> data = new ArrayList<>();
     data.ensureCapacity(keys.size());
-    Collections.sort(keys, keyCmp);
+    Collections.sort(keys, cfg.cmp);
 
     int start = 0;
     for (K key : keys) {
       int pos = Collections.binarySearch(
           ListFns.slice(keys(), start, count),
-          key, keyCmp);
+          key, cfg.cmp);
 
       //
       // Copied from the Collections.binarySearch javadoc:
@@ -128,7 +131,7 @@ public class NaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
   @Nullable
   public FileSlice find(K key) throws IOException {
     List<K> keys = ListFns.lazyMap(keysAndOffsets, (x) -> x.key);
-    int pos = Collections.binarySearch(keys, key, keyCmp);
+    int pos = Collections.binarySearch(keys, key, cfg.cmp);
     if(pos >= 0) {
       return getSlice(pos);
     }
@@ -139,6 +142,6 @@ public class NaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
   public void close() throws IOException {
     keysAndOffsets.clear();
     keysAndOffsets = null;
-    keys.close();
+    file.close();
   }
 }

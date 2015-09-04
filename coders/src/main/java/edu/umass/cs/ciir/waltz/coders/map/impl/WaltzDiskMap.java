@@ -8,6 +8,7 @@ import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.kinds.ASCII;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.NaiveVocabReader;
+import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.VocabConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class WaltzDiskMap {
   public static final Coder<String> MagicCoder = new ASCII.FixedLength(MagicLength);
 
   public static <K> WaltzDiskMapVocabReader<K> createVocabReader(DataSource keys, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
+    VocabConfig<K> cfg = new VocabConfig<>(keyCoder, cmp);
     DataSourceSkipInputStream stream = keys.stream();
     String magic = MagicCoder.read(stream);
     long count;
@@ -36,7 +38,7 @@ public class WaltzDiskMap {
 
     // TODO dispatch better on type/count
     if(count < Integer.MAX_VALUE) {
-      return new NaiveVocabReader<>(IntMath.fromLong(count), keyCoder, cmp, stream.sourceAtCurrentPosition());
+      return new NaiveVocabReader<>(IntMath.fromLong(count), cfg, stream.sourceAtCurrentPosition());
     } else {
       throw new UnsupportedOperationException();
     }
