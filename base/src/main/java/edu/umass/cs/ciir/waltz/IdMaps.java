@@ -41,7 +41,24 @@ public class IdMaps {
 
   }
 
-  public static class Reader<V> implements Closeable {
+  public interface IdReader<V> extends Closeable {
+
+    Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException;
+
+    V getForward(int id) throws IOException;
+
+    Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException;
+
+    Integer getReverse(V item) throws IOException;
+
+    Iterable<Pair<Integer, V>> items() throws IOException;
+
+    Iterable<Integer> ids() throws IOException;
+
+    Iterable<V> values() throws IOException;
+  }
+
+  public static class Reader<V> implements IdReader<V> {
     private final IOMap<Integer, V> forwardReader;
     private final IOMap<V, Integer> reverseReader;
 
@@ -56,26 +73,81 @@ public class IdMaps {
       this.reverseReader.close();
     }
 
+    @Override
     public Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException {
       return forwardReader.getInBulk(bulk);
     }
+    @Override
     public V getForward(int id) throws IOException {
       return forwardReader.get(id);
     }
+    @Override
     public Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException {
       return reverseReader.getInBulk(bulk);
     }
+    @Override
     public Integer getReverse(V item) throws IOException {
       return reverseReader.get(item);
     }
+    @Override
     public Iterable<Pair<Integer, V>> items() throws IOException {
       return forwardReader.items();
     }
+    @Override
     public Iterable<Integer> ids() throws IOException {
       return forwardReader.keys();
     }
+    @Override
     public Iterable<V> values() throws IOException {
       return reverseReader.keys();
+    }
+  }
+
+  public static class CachedIdReader<V> implements IdReader<V> {
+    final IdReader<V> inner;
+
+    public CachedIdReader(IdReader<V> inner) {
+      this.inner = inner;
+    }
+
+    @Override
+    public Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException {
+      return null;
+    }
+
+    @Override
+    public V getForward(int id) throws IOException {
+      return null;
+    }
+
+    @Override
+    public Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException {
+      return null;
+    }
+
+    @Override
+    public Integer getReverse(V item) throws IOException {
+      return null;
+    }
+
+    @Override
+    public Iterable<Pair<Integer, V>> items() throws IOException {
+      return null;
+    }
+
+    @Override
+    public Iterable<Integer> ids() throws IOException {
+      return null;
+    }
+
+    @Override
+    public Iterable<V> values() throws IOException {
+      return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+
     }
   }
 

@@ -82,6 +82,8 @@ public interface Mover {
 	}
 
 	default void start() {
-		while(isDoneWithBlock()) next();
+		while(isDoneWithBlock()) {
+			next();
+		}
 	};
 }
