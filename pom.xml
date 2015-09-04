@@ -13,7 +13,6 @@
   </licenses>
   <modules>
     <module>base</module>
-    <module>db-index</module>
     <module>coders</module>
     <module>galago-io</module>
     <module>galago-compat</module>

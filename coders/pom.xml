@@ -43,6 +43,7 @@
       <type>jar</type>
     </dependency>
 
+
     <dependency>
       <groupId>edu.umass.cs.ciir.jfoley</groupId>
       <artifactId>chai-core</artifactId>
