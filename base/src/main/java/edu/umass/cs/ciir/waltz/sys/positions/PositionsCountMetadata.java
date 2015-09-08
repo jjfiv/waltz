@@ -45,6 +45,11 @@ public class PositionsCountMetadata implements KeyMetadata<PositionsList> {
   }
 
   @Override
+  public String toString() {
+    return "{totalDocs: "+totalDocs+" totalCount:"+totalCount+" maxDoc:"+maxDoc+" maxCount:"+maxCount+"}";
+  }
+
+  @Override
   public KeyMetadata<PositionsList> zero() {
     return new PositionsCountMetadata();
   }
