@@ -15,6 +15,12 @@ import java.io.InputStream;
  * @author jfoley
  */
 public class PositionsListCoder extends Coder<PositionsList> {
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return PositionsList.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

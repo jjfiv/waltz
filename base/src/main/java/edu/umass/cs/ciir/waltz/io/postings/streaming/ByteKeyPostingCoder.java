@@ -22,6 +22,12 @@ class ByteKeyPostingCoder<V> extends Coder<ByteKeyPosting<V>> {
     this.valCoder = valCoder.lengthSafe();
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return ByteKeyPosting.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

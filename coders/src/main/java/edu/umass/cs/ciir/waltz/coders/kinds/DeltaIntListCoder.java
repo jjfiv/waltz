@@ -27,6 +27,12 @@ public class DeltaIntListCoder extends IntsCoder {
     this.itemCoder = itemCoder;
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return IntList.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

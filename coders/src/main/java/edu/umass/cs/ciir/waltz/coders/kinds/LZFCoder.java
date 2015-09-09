@@ -28,6 +28,12 @@ public class LZFCoder<T> extends Coder<T> {
     this.innerCoder = innerCoder;
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return innerCoder.getTargetClass();
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

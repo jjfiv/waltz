@@ -38,6 +38,12 @@ public class CharsetCoders extends Module {
 
     @Nonnull
     @Override
+    public Class<String> getTargetClass() {
+      return String.class;
+    }
+
+    @Nonnull
+    @Override
     public String read(ByteBuffer buf) {
       return new String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
     }

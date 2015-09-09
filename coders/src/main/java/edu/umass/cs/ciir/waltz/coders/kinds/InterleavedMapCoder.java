@@ -28,6 +28,12 @@ public class InterleavedMapCoder<K,V> extends Coder<Map<K,V>> {
     this.valCoder = valCoder.lengthSafe();
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Map.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

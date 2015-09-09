@@ -4,20 +4,21 @@ import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author jfoley
  */
 public class MemoryPostingIndex<K,V> {
   public final PostingsConfig<K,V> cfg;
-  public final HashMap<K, TemporaryPosting<V>> memoryPostingIndex;
+  public final ConcurrentHashMap<K, TemporaryPosting<V>> memoryPostingIndex;
   public int totalDocuments;
 
   public MemoryPostingIndex(PostingsConfig<K, V> cfg) {
     this.cfg = cfg;
-    this.memoryPostingIndex = new HashMap<>();
+    //this.memoryPostingIndex = MapFactory.create(cfg.getKeyClass(), TemporaryPosting.class);
+    this.memoryPostingIndex = new ConcurrentHashMap<>();
     totalDocuments = 0;
   }
 

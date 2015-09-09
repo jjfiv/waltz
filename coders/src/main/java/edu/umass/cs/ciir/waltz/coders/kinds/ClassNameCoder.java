@@ -8,7 +8,9 @@ import edu.umass.cs.ciir.waltz.coders.CoderException;
 public class ClassNameCoder<T> extends MappingCoder<Class<? extends T>, String> {
   @SuppressWarnings("unchecked")
   public ClassNameCoder(Class<T> classWeExpect) {
-    super(CharsetCoders.utf8,
+    super(
+        classWeExpect,
+        CharsetCoders.utf8,
         Class::getName,
         (className) -> ofClassName(classWeExpect, className));
   }

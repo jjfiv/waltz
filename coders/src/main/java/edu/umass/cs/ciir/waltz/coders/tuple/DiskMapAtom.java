@@ -35,6 +35,12 @@ public class DiskMapAtom<K, V> extends Pair<K,V> {
       this.valCoder = valCoder.lengthSafe();
     }
 
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return DiskMapAtom.class;
+    }
+
     @Override
     public boolean knowsOwnSize() {
       return true;

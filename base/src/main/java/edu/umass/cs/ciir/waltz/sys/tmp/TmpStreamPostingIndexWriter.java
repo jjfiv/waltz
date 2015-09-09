@@ -69,23 +69,27 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
   }
 
   @Override
-  public synchronized void flush() throws IOException {
-    if(tmpIndex.isEmpty()) { return; }
-
-    MemoryPostingIndex<K,V> prev = tmpIndex;
-    tmpIndex = new MemoryPostingIndex<>(cfg);
-    int currentId = merger.allocate();
-    File output = getOutput(currentId);
-
-    // flush to disk asynchronously
-    merger.doAsync(() -> {
-      try (TmpPostingWriter<K, V> writer = new TmpPostingWriter<>(cfg, output)) {
-        prev.write(writer);
-      } catch (IOException e) {
-        e.printStackTrace();
+  public void flush() throws IOException {
+    synchronized (this) {
+      if (tmpIndex.isEmpty()) {
+        return;
       }
-      merger.addNewItem(currentId);
-    });
+
+      MemoryPostingIndex<K, V> prev = tmpIndex;
+      tmpIndex = new MemoryPostingIndex<>(cfg);
+      int currentId = merger.allocate();
+      File output = getOutput(currentId);
+
+      // flush to disk asynchronously
+      merger.doAsync(() -> {
+        try (TmpPostingWriter<K, V> writer = new TmpPostingWriter<>(cfg, output)) {
+          prev.write(writer);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        merger.addNewItem(currentId);
+      });
+    }
 
     merger.checkIfWeCanMergeItems();
   }

@@ -22,6 +22,12 @@ public class ASCII {
       this.length = length;
     }
 
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return String.class;
+    }
+
     @Override
     public boolean knowsOwnSize() {
       return true;
@@ -55,6 +61,12 @@ public class ASCII {
   }
 
   public static class NullTerminated extends Coder<String> {
+
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return String.class;
+    }
 
     @Override
     public boolean knowsOwnSize() {

@@ -12,14 +12,22 @@ import java.io.InputStream;
  * @author jfoley
  */
 public class MappingCoder<T, INNER> extends Coder<T> {
+  private final Class<?> targetClass;
   private final Coder<INNER> baseCoder;
   private final TransformFn<T, INNER> wrapFn;
   private final TransformFn<INNER, T> unwrapFn;
 
-  public MappingCoder(Coder<INNER> baseCoder, TransformFn<T,INNER> wrapFn, TransformFn<INNER,T> unwrapFn) {
+  public MappingCoder(Class<?> targetClass, Coder<INNER> baseCoder, TransformFn<T,INNER> wrapFn, TransformFn<INNER,T> unwrapFn) {
+    this.targetClass = targetClass;
     this.baseCoder = baseCoder;
     this.wrapFn = wrapFn;
     this.unwrapFn = unwrapFn;
+  }
+
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return targetClass;
   }
 
   @Override

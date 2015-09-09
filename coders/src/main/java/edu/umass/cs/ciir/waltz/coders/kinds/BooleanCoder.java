@@ -15,6 +15,13 @@ import java.io.InputStream;
 public class BooleanCoder extends Coder<Boolean> {
   public static final ByteArray TRUE = new ByteArray(new byte[] {1});
   public static final ByteArray FALSE = new ByteArray(new byte[] {0});
+
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Boolean.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

@@ -29,9 +29,13 @@ public class InterleavedSpans extends AChaiList<Span> implements SpanList {
     assert(extent.begin >= 0);
     assert(extent.end >= 0);
     assert(extent.begin < extent.end);
-    this.data.add(extent.begin);
-    this.data.add(extent.end);
+    this.data.push(extent.begin);
+    this.data.push(extent.end);
     return true;
+  }
+
+  public void clear() {
+    data.clear();
   }
 
   /**
@@ -44,8 +48,8 @@ public class InterleavedSpans extends AChaiList<Span> implements SpanList {
     assert(begin >= 0);
     assert(end >= 0);
     assert(begin < end);
-    this.data.add(begin);
-    this.data.add(end);
+    this.data.push(begin);
+    this.data.push(end);
   }
 
   @Nonnull

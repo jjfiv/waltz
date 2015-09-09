@@ -16,6 +16,12 @@ import java.nio.ByteBuffer;
  */
 public class FixedSize extends Module {
   public static final Coder<Integer> ints = new Coder<Integer>() {
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return Integer.class;
+    }
+
     @Override
     public boolean knowsOwnSize() {
       return true;
@@ -36,6 +42,12 @@ public class FixedSize extends Module {
     }
   };
   public static final Coder<Long> longs = new Coder<Long>() {
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return Long.class;
+    }
+
     @Override
     public boolean knowsOwnSize() {
       return true;

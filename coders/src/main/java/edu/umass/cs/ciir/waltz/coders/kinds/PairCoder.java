@@ -25,6 +25,12 @@ public class PairCoder<K, V> extends Coder<Pair<K, V>> {
     this.rhsCoder = rhsCoder;
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Pair.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

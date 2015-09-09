@@ -16,6 +16,9 @@ import java.nio.ByteBuffer;
  * @author jfoley
  */
 public abstract class Coder<T> {
+  @Nonnull
+  public abstract Class<?> getTargetClass();
+
   /** Reading from a byte[] in memory. */
   @Nonnull
   public T read(byte[] data) {

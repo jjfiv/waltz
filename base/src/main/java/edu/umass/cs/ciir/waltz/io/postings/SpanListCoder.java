@@ -27,6 +27,12 @@ public class SpanListCoder extends Coder<SpanList> {
     this.intCoder = intCoder;
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return SpanList.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

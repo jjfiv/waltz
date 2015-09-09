@@ -12,6 +12,13 @@ import java.io.InputStream;
  */
 public class DoubleCoder extends Coder<Double> {
   Coder<Long> bitCoder = FixedSize.longs;
+
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Double.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

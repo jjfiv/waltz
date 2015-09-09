@@ -28,6 +28,12 @@ public class ListCoder<T> extends Coder<List<T>> {
     this.itemCoder = itemCoder.lengthSafe();
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return List.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

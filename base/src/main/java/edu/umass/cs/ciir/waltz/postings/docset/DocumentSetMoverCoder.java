@@ -29,6 +29,12 @@ public class DocumentSetMoverCoder extends Coder<Mover> {
 
   @Nonnull
   @Override
+  public Class<?> getTargetClass() {
+    return Mover.class;
+  }
+
+  @Nonnull
+  @Override
   public Mover read(StaticStream streamFn) throws IOException {
     return new DeltaIntListStreamMover(streamFn, FixedSize.ints, VarUInt.instance);
   }

@@ -57,7 +57,12 @@ public final class PostingsConfig<K, V> {
     return new WaltzDiskMapReader<>(input, positions, this.keyCoder, new ReadOnlyPostingsCoder<>(this));
   }
 
-  public PIndexWriter<K> getWriter(Directory input, String baseName) throws IOException {
-    return new PIndexWriter<>(this.keyCoder, input, baseName);
+  public PIndexWriter<K,V> getWriter(Directory input, String baseName) throws IOException {
+    return new PIndexWriter<>(this, input, baseName);
+  }
+
+  @SuppressWarnings("unchecked")
+  public Class<K> getKeyClass() {
+    return (Class<K>) keyCoder.getTargetClass();
   }
 }

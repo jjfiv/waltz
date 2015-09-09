@@ -26,6 +26,12 @@ public class DocumentSetChunkCoder<K> extends Coder<DocumentSetChunk<K>> {
     this.listCoder = listCoder.lengthSafe();
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return DocumentSetChunk.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

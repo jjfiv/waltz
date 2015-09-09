@@ -22,6 +22,12 @@ public class LengthPrefixCoder<T> extends Coder<T> {
     this.payloadCoder = payloadCoder;
   }
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return payloadCoder.getTargetClass();
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

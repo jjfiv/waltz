@@ -19,6 +19,12 @@ import java.io.OutputStream;
 public class VarUInt extends Coder<Integer> {
   public static final VarUInt instance = new VarUInt();
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Integer.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

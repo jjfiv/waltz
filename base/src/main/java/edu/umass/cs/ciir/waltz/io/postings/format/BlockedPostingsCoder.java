@@ -42,6 +42,12 @@ public class BlockedPostingsCoder<V> extends AbstractPostingListCoder<V> {
 
   @Nonnull
   @Override
+  public Class<?> getTargetClass() {
+    return PostingMover.class;
+  }
+
+  @Nonnull
+  @Override
   public PostingMover<V> read(StaticStream streamFn) throws IOException {
     return new BlockPostingsMover<>(new BlockedPostingsReader<>(intsCoder, valCoder, streamFn));
   }

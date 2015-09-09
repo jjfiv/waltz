@@ -13,6 +13,12 @@ import java.io.InputStream;
 public class FloatCoder extends Coder<Float> {
   Coder<Integer> bitsCoder = FixedSize.ints;
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Float.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

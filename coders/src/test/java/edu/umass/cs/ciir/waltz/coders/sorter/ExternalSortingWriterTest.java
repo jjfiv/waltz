@@ -109,6 +109,12 @@ public class ExternalSortingWriterTest {
   }
 
   static class WordCountCoder extends Coder<WordCount> {
+    @Nonnull
+    @Override
+    public Class<?> getTargetClass() {
+      return WordCount.class;
+    }
+
     @Override public boolean knowsOwnSize() { return true; }
 
     @Nonnull

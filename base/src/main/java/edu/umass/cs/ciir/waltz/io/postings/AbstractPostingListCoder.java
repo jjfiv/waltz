@@ -21,6 +21,12 @@ public abstract class AbstractPostingListCoder<V> extends Coder<PostingMover<V>>
 
   @Nonnull
   @Override
+  public Class<?> getTargetClass() {
+    return PostingMover.class;
+  }
+
+  @Nonnull
+  @Override
   public abstract DataChunk writeImpl(PostingMover<V> obj) throws IOException;
 
   @Nonnull

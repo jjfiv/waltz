@@ -18,6 +18,12 @@ import java.io.InputStream;
 public class DataChunkPairCoder extends Coder<DataChunkPair> {
   public final Coder<Integer> sizeCoder = VarUInt.instance;
 
+  @Nonnull
+  @Override
+  public Class<DataChunkPair> getTargetClass() {
+    return DataChunkPair.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;

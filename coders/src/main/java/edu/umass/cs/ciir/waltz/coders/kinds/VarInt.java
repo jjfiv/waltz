@@ -17,6 +17,12 @@ import java.util.Arrays;
 public class VarInt extends Coder<Integer> {
   public static final VarInt instance = new VarInt();
 
+  @Nonnull
+  @Override
+  public Class<?> getTargetClass() {
+    return Integer.class;
+  }
+
   @Override
   public boolean knowsOwnSize() {
     return true;
