@@ -6,6 +6,7 @@ import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author jfoley
@@ -28,6 +29,10 @@ public class FloatCoder extends Coder<Float> {
   @Override
   public DataChunk writeImpl(@Nonnull Float obj) throws IOException {
     return bitsCoder.writeImpl(Float.floatToRawIntBits(obj));
+  }
+
+  public void write(OutputStream out, Float obj) {
+    bitsCoder.write(out, Float.floatToRawIntBits(obj));
   }
 
   @Nonnull

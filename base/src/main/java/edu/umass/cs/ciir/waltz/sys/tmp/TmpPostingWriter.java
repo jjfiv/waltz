@@ -39,10 +39,6 @@ public class TmpPostingWriter<K,V> implements PostingIndexWriter<K,V>, Closeable
         (lhs, rhs) -> cfg.keyCmp.compare(lhs.getKey(), rhs.getKey()),
         data
     );
-    /*Collections.sort(
-        data,
-        (lhs, rhs) -> cfg.keyCmp.compare(lhs.getKey(), rhs.getKey())
-    );*/
     writeSorted(totalDocuments, data);
   }
   public void writeSorted(int totalDocuments, List<Map.Entry<K,TemporaryPosting<V>>> data) throws IOException {

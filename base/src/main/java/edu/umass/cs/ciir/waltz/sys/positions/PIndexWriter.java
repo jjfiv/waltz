@@ -4,6 +4,7 @@ import ciir.jfoley.chai.io.Directory;
 import ciir.jfoley.chai.io.TemporaryDirectory;
 import edu.umass.cs.ciir.waltz.sys.PostingIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.PostingsConfig;
+import edu.umass.cs.ciir.waltz.sys.tmp.MemoryPostingIndex;
 import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 
 import java.io.Closeable;
@@ -35,5 +36,9 @@ public class PIndexWriter<K, V> implements Closeable {
     writer.close();
     tmpdir.close();
     finalWriter.close();
+  }
+
+  public void add(MemoryPostingIndex<K, V> mpi) {
+    writer.add(mpi);
   }
 }

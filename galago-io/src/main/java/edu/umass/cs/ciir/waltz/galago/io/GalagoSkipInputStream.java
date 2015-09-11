@@ -1,7 +1,7 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
 import edu.umass.cs.ciir.waltz.coders.streams.SkipInputStream;
-import org.lemurproject.galago.utility.buffer.DataStream;
+import org.lemurproject.galago.utility.buffer.CachedBufferDataStream;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import java.io.IOException;
  * @author jfoley
  */
 public class GalagoSkipInputStream extends SkipInputStream {
-  private final DataStream inner;
+  private final CachedBufferDataStream inner;
 
-  public GalagoSkipInputStream(DataStream inner) {
+  public GalagoSkipInputStream(CachedBufferDataStream inner) {
     this.inner = inner;
   }
 

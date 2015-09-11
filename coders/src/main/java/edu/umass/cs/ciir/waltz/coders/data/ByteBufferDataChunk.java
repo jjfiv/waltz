@@ -60,6 +60,7 @@ public class ByteBufferDataChunk implements DataChunk {
   }
 
   public static ByteBufferDataChunk of(ByteBuffer buf) {
+    buf.rewind();
     return new ByteBufferDataChunk(buf);
   }
   public static ByteBufferDataChunk of(byte[] data) {

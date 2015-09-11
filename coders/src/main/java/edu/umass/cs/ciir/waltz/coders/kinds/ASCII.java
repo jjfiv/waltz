@@ -6,7 +6,6 @@ import edu.umass.cs.ciir.waltz.coders.data.ByteArray;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,14 +75,14 @@ public class ASCII {
     @Nonnull
     @Override
     public DataChunk writeImpl(String obj) throws IOException {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      byte[] data = new byte[obj.length()+1];
       for (int i = 0; i < obj.length(); i++) {
         char c = obj.charAt(i);
         assert(c < 255 && c > 0);
-        baos.write(c);
+        data[i] = (byte) (c & 0xff);
       }
-      baos.write('\0');
-      return new ByteArray(baos.toByteArray());
+      data[obj.length()] = 0;
+      return new ByteArray(data);
     }
 
     @Nonnull

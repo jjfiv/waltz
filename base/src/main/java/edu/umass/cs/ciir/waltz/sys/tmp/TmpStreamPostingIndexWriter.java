@@ -42,6 +42,22 @@ public final class TmpStreamPostingIndexWriter<K, V> implements Flushable, Close
     return totalDocuments++;
   }
 
+  public synchronized void add(MemoryPostingIndex<K,V> memIndex) {
+    int currentId = merger.allocate();
+    File output = getOutput(currentId);
+
+    // flush to disk asynchronously
+    merger.doAsync(() -> {
+      try (TmpPostingWriter<K, V> writer = new TmpPostingWriter<>(cfg, output)) {
+        memIndex.write(writer);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      merger.addNewItem(currentId);
+    });
+  }
+
+
   public synchronized void add(K key, int document, V payload) {
     tmpIndex.add(key, document, payload);
 

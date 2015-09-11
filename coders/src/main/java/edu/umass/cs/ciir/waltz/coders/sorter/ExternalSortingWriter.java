@@ -31,7 +31,7 @@ import java.util.List;
  * @author jfoley.
  */
 public class ExternalSortingWriter<T> implements Flushable, Closeable, SinkFn<T> {
-  public static final int DEFAULT_MAX_ITEMS_IN_MEMORY = 64*1024;
+  public static final int DEFAULT_MAX_ITEMS_IN_MEMORY = 64*1024*1024;
   private final File dir;
   final Coder<Long> countCoder;
   final Coder<T> objCoder;

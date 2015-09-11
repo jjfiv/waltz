@@ -26,6 +26,8 @@ public class VocabEntry<K> implements Comparable<VocabEntry<K>> {
     this.cmp = keyCmp;
   }
 
+  public K getKey() { return key; }
+
   @Override
   public String toString() {
     return "<" + key + ":" + offset + "+" + size + ">";

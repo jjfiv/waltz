@@ -3,12 +3,14 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 import ciir.jfoley.chai.io.StreamFns;
 import ciir.jfoley.chai.lang.Module;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBufferDataChunk;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -33,6 +35,17 @@ public class FixedSize extends Module {
       ByteBuffer ofInt = ByteBuffer.allocate(4);
       ofInt.putInt(0, obj);
       return ByteBufferDataChunk.of(ofInt);
+    }
+
+    public void write(OutputStream out, Integer obj) {
+      byte[] data = new byte[4];
+      ByteBuffer ofInt = ByteBuffer.wrap(data);
+      ofInt.putInt(0, obj);
+      try {
+        out.write(data);
+      } catch (IOException e) {
+        throw new CoderException(e, this.getClass());
+      }
     }
 
     @Nonnull
