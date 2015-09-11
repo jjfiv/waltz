@@ -10,6 +10,7 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author jfoley
@@ -41,8 +42,9 @@ public class ListIndexTest {
 
     ListIndex<VocabEntry<Integer>, Integer> hashed = ListIndex.create("hashall", data, VocabEntry::getKey);
 
-    System.err.println("None: "+computeTiming(sizes, offsets, N, index));
     System.err.println("HashAll: "+computeTiming(sizes, offsets, N, hashed));
+    System.err.println("TwoLevel: "+computeTiming(sizes, offsets, N, ListIndex.create("TwoLevel", data, VocabEntry::getKey)));
+    System.err.println("None: "+computeTiming(sizes, offsets, N, index));
 
   }
 
@@ -59,6 +61,13 @@ public class ListIndexTest {
       assertEquals(i, found.key.intValue());
       assertEquals(sizes.get(i).intValue(), found.size);
       assertEquals(offsets.get(i).longValue(), found.offset);
+    }
+    for (int i = n; i < n+400; i++) {
+      startTime = System.nanoTime();
+      VocabEntry<Integer> found = index.find(i);
+      endTime = System.nanoTime();
+      assertNull(found);
+      lookupTime.push((endTime - startTime) / 1e9);
     }
     return lookupTime;
   }
