@@ -126,7 +126,7 @@ public interface ListIndex<T,K> {
 
   class ThreeLevelIndex<T,K> implements ListIndex<T,K> {
     public final int LinearSize = 32;
-    public final int TopMostLevel = 4096;
+    public final int TopMostLevel = 1024;
     public final ArrayList<K> secondLevel;
     public final ArrayList<T> inner;
     public final TransformFn<T,K> keyFn;
