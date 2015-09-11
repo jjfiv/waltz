@@ -22,7 +22,7 @@ public class ListIndexTest {
     HashMap<Integer,Integer> sizes = new HashMap<>();
     HashMap<Integer,Long> offsets = new HashMap<>();
 
-    int N = 50000;
+    int N = 500000;
     Random rand = new Random(13);
     List<VocabEntry<Integer>> data = new ArrayList<>(N);
     for (int i = 0; i < N; i++) {
@@ -43,8 +43,9 @@ public class ListIndexTest {
     ListIndex<VocabEntry<Integer>, Integer> hashed = ListIndex.create("hashall", data, VocabEntry::getKey);
 
     System.err.println("HashAll: "+computeTiming(sizes, offsets, N, hashed));
+    System.err.println("ThreeLevel: "+computeTiming(sizes, offsets, N, ListIndex.create("ThreeLevel", data, VocabEntry::getKey)));
     System.err.println("TwoLevel: "+computeTiming(sizes, offsets, N, ListIndex.create("TwoLevel", data, VocabEntry::getKey)));
-    System.err.println("None: "+computeTiming(sizes, offsets, N, index));
+    //System.err.println("None: "+computeTiming(sizes, offsets, N, index));
 
   }
 
@@ -56,7 +57,7 @@ public class ListIndexTest {
       startTime = System.nanoTime();
       VocabEntry<Integer> found = index.find(i);
       endTime = System.nanoTime();
-      assertNotNull(found);
+      assertNotNull("Looking for: "+i, found);
       lookupTime.push((endTime - startTime) / 1e9);
       assertEquals(i, found.key.intValue());
       assertEquals(sizes.get(i).intValue(), found.size);
