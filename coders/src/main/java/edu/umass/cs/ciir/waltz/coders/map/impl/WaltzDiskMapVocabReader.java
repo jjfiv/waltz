@@ -26,5 +26,5 @@ public interface WaltzDiskMapVocabReader<K> extends Closeable {
 
   List<Pair<K,FileSlice>> findInBulk(List<K> keys);
 
-  List<Pair<K,FileSlice>> slices();
+  Iterable<Pair<K,FileSlice>> slices();
 }

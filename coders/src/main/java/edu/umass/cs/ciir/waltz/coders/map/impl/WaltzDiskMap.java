@@ -8,6 +8,7 @@ import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.kinds.ASCII;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.NaiveVocabReader;
+import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.SamplingNaiveVocabReader;
 import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.VocabConfig;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class WaltzDiskMap {
     if(count < Integer.MAX_VALUE && count >= 0) {
       return new NaiveVocabReader<>(IntMath.fromLong(count), cfg, stream.sourceAtCurrentPosition());
     } else {
-      throw new UnsupportedOperationException();
+      return new SamplingNaiveVocabReader<>(count, cfg, stream.sourceAtCurrentPosition());
     }
   }
 

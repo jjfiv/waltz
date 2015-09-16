@@ -2,7 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.map.impl;
 
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.util.Comparing;
-import ciir.jfoley.chai.collections.util.ListFns;
+import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.io.Directory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
@@ -19,9 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMap.getKeyFileName;
-import static edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMap.getKeySortDirectory;
-import static edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMap.getValueFileName;
+import static edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMap.*;
 
 /**
  * @author jfoley
@@ -101,7 +99,7 @@ public class WaltzDiskMapReader<K, V> implements IOMap<K, V> {
   @Nonnull
   @Override
   public Iterable<Pair<K, V>> items() throws IOException {
-    return ListFns.lazyMap(vocab.slices(), (kv) -> {
+    return IterableFns.map(vocab.slices(), (kv) -> {
       try {
         return Pair.of(kv.left, get(kv.right));
       } catch (IOException e) {

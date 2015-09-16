@@ -9,6 +9,7 @@ import edu.umass.cs.ciir.waltz.coders.streams.StaticStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +65,11 @@ public class IOMapImpl<K,V> implements IOMap<K,V> {
       K key = null;
       V val = null;
       try {
+        StaticStream valueStream = kv.getValue();
         key = keyCoder.read(kv.getKey());
-        val = valCoder.read(kv.getValue());
+        val = valCoder.read(valueStream);
         output.add(Pair.of(key,val));
-      } catch (CoderException ex) {
+      } catch (CoderException|EOFException ex) {
         // Use try catch to return as many results as possible:
         System.err.println("Couldn't decode either key or value: "+Pair.of(key,val));
         throw ex;
