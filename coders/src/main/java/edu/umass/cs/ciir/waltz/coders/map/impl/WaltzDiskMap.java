@@ -37,7 +37,7 @@ public class WaltzDiskMap {
     }
 
     // TODO dispatch better on type/count
-    if(count < Integer.MAX_VALUE) {
+    if(count < Integer.MAX_VALUE && count >= 0) {
       return new NaiveVocabReader<>(IntMath.fromLong(count), cfg, stream.sourceAtCurrentPosition());
     } else {
       throw new UnsupportedOperationException();

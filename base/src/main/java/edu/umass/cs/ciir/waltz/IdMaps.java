@@ -101,6 +101,10 @@ public class IdMaps {
     public Iterable<V> values() throws IOException {
       return reverseReader.keys();
     }
+
+    public long size() {
+      return forwardReader.keyCount();
+    }
   }
 
   public static class CachedIdReader<V> implements IdReader<V> {
