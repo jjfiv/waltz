@@ -38,7 +38,12 @@ public class GeometricItemMerger {
     liveJobs.incrementAndGet();
     if(useThreads) {
       asyncExec.submit(() -> {
-        r.run();
+        try {
+          r.run();
+        } catch (Throwable err) {
+          System.err.println("Error on live-job:");
+          err.printStackTrace(System.err);
+        }
         liveJobs.decrementAndGet();
       });
     } else {
