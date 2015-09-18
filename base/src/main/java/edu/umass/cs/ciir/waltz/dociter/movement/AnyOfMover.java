@@ -19,11 +19,12 @@ public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
 		return new AnyOfMover<>(Arrays.asList(childs));
 	}
 
-	protected IKeyBlock loadKeysFromChildren() {
+	protected IKeyBlock loadKeysFromChildren(int lastKey) {
 		IntList ids = new IntList();
 		while(true) {
 			int minimumChildKey = findMinimumKey();
 			if(minimumChildKey == DONE_ID) {
+				// If the minimum key is the EOF marker, that means every child is done.
 				return null;
 			}
 

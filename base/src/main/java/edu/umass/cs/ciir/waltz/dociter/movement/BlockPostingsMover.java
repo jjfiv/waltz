@@ -53,6 +53,10 @@ public class BlockPostingsMover<X> extends AMover implements PostingMover<X> {
     return iterator.totalKeys();
   }
 
+  @Override
+  public String toString() {
+    return "BlockPostingsMover("+this.currentBlock+" "+this.valueBlock+" "+this.index+")";
+  }
 
   public static <Z> BlockPostingsMover<Z> ofIterable(Iterable<? extends Posting<Z>> coll) {
     return new BlockPostingsMover<>(new IterableBlockPostingsIterator<>(coll));

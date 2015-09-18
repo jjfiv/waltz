@@ -32,8 +32,10 @@ public interface Mover {
 		}
 		while(isDoneWithBlock()) {
 			if (isDone()) return;
+			assert(!isDone());
 			nextBlock();
 		}
+		assert(!isDoneWithBlock());
 	}
 
 	/** returns true if we've consumed all of the current block */
@@ -82,6 +84,7 @@ public interface Mover {
 	}
 
 	default void start() {
+		if(isDone() || isDone()) return;
 		while(isDoneWithBlock()) {
 			next();
 		}

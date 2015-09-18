@@ -69,7 +69,7 @@ public abstract class AMover implements Mover {
 	public void movePast(int key) {
 		if(isDoneWithBlock()) return;
 		moveTo(key+1);
-		assert(currentKey() > key);
+		assert(isDoneWithBlock() || currentKey() > key);
 	}
 
   @Override

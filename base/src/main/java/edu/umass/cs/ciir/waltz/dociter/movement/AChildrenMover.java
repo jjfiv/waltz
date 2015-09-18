@@ -57,6 +57,7 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 
 	@Override
 	public void nextBlock() {
+		if(lastKey == DONE_ID) return;
 		for (Mover child : children) {
 			child.movePast(lastKey);
 			assert (child.isDoneWithBlock() || child.currentKey() > lastKey);
@@ -73,22 +74,31 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 		this.index = 0;
 		this.lastKey = DONE_ID;
 
-		// find the first of any child's keys.
-		int lastKey = findLowestMax();
-		if(lastKey == DONE_ID) {
-			return;
-		}
+		while(true) {
+			// find the first of any child's maximum keys.
+			int lastKey = findLowestMax();
+			if (lastKey == DONE_ID) {
+				return;
+			}
 
-		int originalMinimum = findMinimumKey();
-		this.lastKey = lastKey;
-		this.currentBlock = loadKeysFromChildren();
-
-		for (Mover child : children) {
-			//assert(child.isDoneWithBlock() || child.currentKey() > lastKey);
-			child.rewindBlock(originalMinimum); // reset this child so it can be used in another subtree!
+			this.lastKey = lastKey;
+			this.currentBlock = loadKeysFromChildren(lastKey);
+			if(this.currentBlock == null || !this.currentBlock.isEmpty()) {
+				break;
+			}
+			for (T child : this.children) {
+				if(child.isDoneWithBlock()) {
+					child.nextBlock();
+				}
+			}
 		}
 	}
 
-	protected abstract IKeyBlock loadKeysFromChildren();
+	/**
+	 * Select matching from child blocks
+	 * @param lastKey is the min(x.maxKey for x in children); the upper bound of current block.
+	 * @return a block filled with matches between here and lastKey inclusive.
+	 */
+	protected abstract IKeyBlock loadKeysFromChildren(int lastKey);
 
 }

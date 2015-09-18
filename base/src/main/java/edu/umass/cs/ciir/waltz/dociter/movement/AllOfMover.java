@@ -40,32 +40,38 @@ public class AllOfMover<T extends Mover> extends AChildrenMover<T> {
 	}
 
 	@Override
-	protected IKeyBlock loadKeysFromChildren() {
+	protected IKeyBlock loadKeysFromChildren(int lastKey) {
+		// remember, lastKey is the farthest we know we've loaded for all of the children:
 		IntList ids = new IntList();
 		while(true) {
-			int targetKey = findMaxCurrentKey();
-			if(targetKey == DONE_ID) {
-				return null;
-			} else if(targetKey > lastKey) {
+			int firstPossibleMatch = findMaxCurrentKey();
+			//System.out.println(Arrays.asList("firstPossibleMatch", firstPossibleMatch, "lastPossibleMatch", lastKey));
+			if(firstPossibleMatch == DONE_ID) {
+				// if we have some matches, return them for now; otherwise, done for good.
+				if(ids.isEmpty()) return null; else break;
+			} else if (firstPossibleMatch > lastKey) {
+				for (Mover child : children) {
+					child.moveTo(firstPossibleMatch);
+					assert(child.isDoneWithBlock() || child.currentKey() >= firstPossibleMatch);
+				}
 				break;
 			}
 
-			if(isMatch(targetKey)) {
-				ids.add(targetKey);
-			}
-
 			// Add and move past the current key.
-			for (Mover child : children) {
-				child.movePast(targetKey);
-				assert(child.isDoneWithBlock() || child.currentKey() > targetKey);
+			if(isMatch(firstPossibleMatch)) {
+				ids.add(firstPossibleMatch);
 			}
 
-			if(targetKey >= lastKey) {
+			for (Mover child : children) {
+				child.movePast(firstPossibleMatch);
+				assert(child.isDoneWithBlock() || child.currentKey() > firstPossibleMatch);
+			}
+
+			if(firstPossibleMatch >= lastKey) {
 				break;
 			}
 		}
 
-		//System.out.println(ids+"\t"+lastKey);
 		return new FastKeyBlock(ids.unsafeArray(), ids.size());
 	}
 
