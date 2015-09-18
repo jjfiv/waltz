@@ -8,6 +8,8 @@ import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapReader;
 import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapWriter;
 import edu.umass.cs.ciir.waltz.dociter.movement.PostingMover;
+import edu.umass.cs.ciir.waltz.postings.positions.PositionsList;
+import edu.umass.cs.ciir.waltz.sys.positions.AccumulatingPositionsWriter;
 import edu.umass.cs.ciir.waltz.sys.positions.PIndexWriter;
 import edu.umass.cs.ciir.waltz.sys.tmp.TmpStreamPostingIndexWriter;
 
@@ -59,6 +61,20 @@ public final class PostingsConfig<K, V> {
 
   public PIndexWriter<K,V> getWriter(Directory input, String baseName) throws IOException {
     return new PIndexWriter<>(this, input, baseName);
+  }
+
+  /**
+   * Return a helper wrapper which accumulates [word,doc,pos] tuples and flushes when doc changes.
+   * @param input the directory containing all index parts.
+   * @param baseName the base name of this index part (may make multiple files [.keys, .values etc])
+   * @return A closeable writer: {@link AccumulatingPositionsWriter}
+   * @throws IOException
+   */
+  @SuppressWarnings("unchecked")
+  public AccumulatingPositionsWriter<K> getPositionsWriter(Directory input, String baseName) throws IOException {
+    assert(PositionsList.class.isAssignableFrom(this.valCoder.getTargetClass()));
+    PostingsConfig<K,PositionsList> self = (PostingsConfig<K,PositionsList>) this;
+    return new AccumulatingPositionsWriter<>(new PIndexWriter<>(self, input, baseName));
   }
 
   @SuppressWarnings("unchecked")
