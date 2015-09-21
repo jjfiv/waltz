@@ -5,6 +5,7 @@ import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jfoley.
@@ -17,6 +18,9 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 		this.children = ListFns.ensureRandomAccess(children);
 		assert(children.size() > 1);
 		assert(children.size() == new HashSet<>(children).size());
+		for (T child : children) {
+			Objects.requireNonNull(child, "All children of movers must be non-null.");
+		}
 		loadNewCurrentBlock();
 	}
 

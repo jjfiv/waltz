@@ -8,6 +8,8 @@ import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jfoley
@@ -74,5 +76,15 @@ public class PositionsCountMetadata implements KeyMetadata<PositionsList> {
     m.totalCount = VarUInt.instance.readImpl(input);
     m.highestPosition = VarUInt.instance.readImpl(input);
     return m;
+  }
+
+  public Map<String,?> toMap() {
+    HashMap<String, Object> data = new HashMap<>();
+    data.put("totalDocs", totalDocs);
+    data.put("totalCount", totalCount);
+    data.put("maxCount", maxCount);
+    data.put("maxDoc", maxDoc);
+    data.put("highestPosition", highestPosition);
+    return data;
   }
 }

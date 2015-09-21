@@ -44,4 +44,16 @@ public final class Span {
   public boolean contains(int pos) {
     return pos >= begin && pos < end;
   }
+
+
+  public boolean overlaps(Span other) {
+    return overlaps(other.begin, other.end);
+  }
+  public boolean overlaps(int begin, int end) {
+    int al = this.begin;
+    int bl = begin;
+    int ar = this.end-1;
+    int br = end-1;
+    return ar >= bl && br >= al;
+  }
 }
