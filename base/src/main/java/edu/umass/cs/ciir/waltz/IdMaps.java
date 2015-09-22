@@ -1,13 +1,20 @@
 package edu.umass.cs.ciir.waltz;
 
 import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.util.IterableFns;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import edu.umass.cs.ciir.waltz.coders.map.IOMap;
 import edu.umass.cs.ciir.waltz.coders.map.IOMapWriter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author jfoley.
@@ -43,19 +50,43 @@ public class IdMaps {
 
   public interface IdReader<V> extends Closeable {
 
+    @Nonnull
     Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException;
+    @Nonnull
+    default Map<Integer,V> getForwardMap(List<Integer> bulk) throws IOException {
+      HashMap<Integer,V> mapping = new HashMap<>();
+      for (Pair<Integer, V> item : getForward(bulk)) {
+        mapping.put(item.getKey(), item.getValue());
+      }
+      return mapping;
+    }
 
+    @Nullable
     V getForward(int id) throws IOException;
 
+    @Nonnull
     Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException;
 
+    @Nullable
     Integer getReverse(V item) throws IOException;
+    @Nonnull default Map<V,Integer> getReverseMap(List<V> bulk) throws IOException {
+      HashMap<V,Integer> mapping = new HashMap<>();
+      for (Pair<V,Integer> item : getReverse(bulk)) {
+        mapping.put(item.getKey(), item.getValue());
+      }
+      return mapping;
+    }
 
-    Iterable<Pair<Integer, V>> items() throws IOException;
+    @Nonnull Iterable<Pair<Integer, V>> items() throws IOException;
 
-    Iterable<Integer> ids() throws IOException;
+    @Nonnull Iterable<Integer> ids() throws IOException;
 
-    Iterable<V> values() throws IOException;
+    @Nonnull Iterable<V> values() throws IOException;
+
+    IdReader<V> getCached(long count);
+    default IdReader<V> getCached() {
+      return getCached(100_000);
+    }
   }
 
   public static class Reader<V> implements IdReader<V> {
@@ -73,6 +104,7 @@ public class IdMaps {
       this.reverseReader.close();
     }
 
+    @Nonnull
     @Override
     public Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException {
       return forwardReader.getInBulk(bulk);
@@ -81,6 +113,7 @@ public class IdMaps {
     public V getForward(int id) throws IOException {
       return forwardReader.get(id);
     }
+    @Nonnull
     @Override
     public Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException {
       return reverseReader.getInBulk(bulk);
@@ -89,17 +122,25 @@ public class IdMaps {
     public Integer getReverse(V item) throws IOException {
       return reverseReader.get(item);
     }
+    @Nonnull
     @Override
     public Iterable<Pair<Integer, V>> items() throws IOException {
       return forwardReader.items();
     }
+    @Nonnull
     @Override
     public Iterable<Integer> ids() throws IOException {
       return forwardReader.keys();
     }
+    @Nonnull
     @Override
     public Iterable<V> values() throws IOException {
       return reverseReader.keys();
+    }
+
+    @Override
+    public IdReader<V> getCached(long count) {
+      return new CachedIdReader<>(this, count);
     }
 
     public long size() {
@@ -109,49 +150,75 @@ public class IdMaps {
 
   public static class CachedIdReader<V> implements IdReader<V> {
     final IdReader<V> inner;
+    final LoadingCache<Integer,V> forwardCache;
+    final LoadingCache<V,Integer> reverseCache;
 
-    public CachedIdReader(IdReader<V> inner) {
+    public CachedIdReader(Reader<V> inner, long count) {
       this.inner = inner;
+      this.forwardCache = Caffeine.newBuilder().maximumSize(count).build(inner.forwardReader);
+      this.reverseCache = Caffeine.newBuilder().maximumSize(count).build(inner.reverseReader);
     }
 
+    @Nonnull
     @Override
-    public Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException {
-      return null;
+    public Iterable<Pair<Integer, V>> getForward(@Nonnull List<Integer> bulk) throws IOException {
+      return IterableFns.map(getForwardMap(bulk).entrySet(), Pair::new);
+    }
+
+    @Nonnull
+    @Override
+    public Map<Integer,V> getForwardMap(@Nonnull List<Integer> bulk) {
+      return forwardCache.getAll(bulk);
     }
 
     @Override
     public V getForward(int id) throws IOException {
-      return null;
+      return forwardCache.get(id);
     }
 
+    @Nonnull
     @Override
-    public Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException {
-      return null;
+    public Iterable<Pair<V, Integer>> getReverse(@Nonnull List<V> bulk) throws IOException {
+      return IterableFns.map(getReverseMap(bulk).entrySet(), Pair::new);
+    }
+
+    @Nonnull
+    @Override
+    public Map<V,Integer> getReverseMap(List<V> bulk) {
+      return reverseCache.getAll(bulk);
     }
 
     @Override
     public Integer getReverse(V item) throws IOException {
-      return null;
+      return reverseCache.get(item);
     }
 
+    @Nonnull
     @Override
     public Iterable<Pair<Integer, V>> items() throws IOException {
-      return null;
+      return inner.items();
     }
 
+    @Nonnull
     @Override
     public Iterable<Integer> ids() throws IOException {
-      return null;
+      return inner.ids();
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<V> values() throws IOException {
+      return inner.values();
     }
 
     @Override
-    public Iterable<V> values() throws IOException {
-      return null;
+    public IdReader<V> getCached(long count) {
+      return this;
     }
 
     @Override
     public void close() throws IOException {
-
+      inner.close();
     }
   }
 
