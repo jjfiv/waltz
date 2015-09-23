@@ -87,14 +87,25 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 
 			this.lastKey = lastKey;
 			this.currentBlock = loadKeysFromChildren(lastKey);
-			if(this.currentBlock == null || !this.currentBlock.isEmpty()) {
+			if(this.currentBlock == null) {
+				return; // End of List
+			}
+			if(!this.currentBlock.isEmpty()) {
 				break;
 			}
+
+			// No matches
 			for (T child : this.children) {
 				if(child.isDoneWithBlock()) {
 					child.nextBlock();
 				}
 			}
+		}
+
+		// rewind so values can be stepped through.
+		for (T child : children) {
+			int here = this.currentKey();
+			child.rewindBlock(here);
 		}
 	}
 

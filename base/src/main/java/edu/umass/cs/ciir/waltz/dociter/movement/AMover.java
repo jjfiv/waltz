@@ -74,6 +74,7 @@ public abstract class AMover implements Mover {
 
   @Override
   public boolean matches(int key) {
+    moveTo(key);
     return currentKey() == key;
   }
 
@@ -100,8 +101,10 @@ public abstract class AMover implements Mover {
     if(key < currentKey()) {
       // TODO log a warning about slow resets needed.
       reset();
-      moveTo(key);
-    }
+			moveToAbsolute(key);
+    } else {
+			moveTo(key);
+		}
   }
 
 	@Override
