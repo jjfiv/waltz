@@ -101,7 +101,12 @@ public abstract class AMover implements Mover {
     if(key < currentKey()) {
       // TODO log a warning about slow resets needed.
       reset();
-			moveToAbsolute(key);
+			// skipBlocksTo:
+			while(!isDone()) {
+				moveTo(key);
+				if(!isDoneWithBlock() && key <= currentKey()) { break; }
+				nextBlock();
+			};
     } else {
 			moveTo(key);
 		}
