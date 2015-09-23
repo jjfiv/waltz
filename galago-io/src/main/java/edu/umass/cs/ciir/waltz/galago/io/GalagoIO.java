@@ -1,10 +1,12 @@
 package edu.umass.cs.ciir.waltz.galago.io;
 
+import ciir.jfoley.chai.io.Directory;
 import edu.umass.cs.ciir.waltz.IdMaps;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.map.*;
 import org.lemurproject.galago.utility.Parameters;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -45,7 +47,17 @@ public class GalagoIO {
   public static <V> IdMaps.Reader<V> openIdMapsReader(String baseName, Coder<Integer> keyCoder, Coder<V> valCoder) throws IOException {
     return new IdMaps.Reader<>(
         openIOMap(keyCoder, valCoder, baseName + ".fwd"),
-        openIOMap(valCoder, keyCoder, baseName+".rev")
+        openIOMap(valCoder, keyCoder, baseName + ".rev")
     );
+  }
+
+  @Nonnull
+  public static <K,V> IOMapWriter<K, V> getIOMapWriter(Directory outputDir, String baseName, Coder<K> keyCoder, Coder<V> valCoder) throws IOException {
+    return getIOMapWriter(keyCoder, valCoder, outputDir.childPath(baseName));
+  }
+
+  @Nonnull
+  public static <K,V> IOMap<K, V> openIOMap(Directory input, String baseName, Coder<K> keyCoder, Coder<V> valCoder) throws IOException {
+    return openIOMap(keyCoder, valCoder, input.childPath(baseName));
   }
 }

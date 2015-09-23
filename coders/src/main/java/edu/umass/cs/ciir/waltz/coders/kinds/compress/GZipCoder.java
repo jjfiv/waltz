@@ -1,18 +1,16 @@
-package edu.umass.cs.ciir.waltz.coders.kinds;
+package edu.umass.cs.ciir.waltz.coders.kinds.compress;
 
 import ciir.jfoley.chai.io.StreamFns;
-import com.ning.compress.lzf.LZFDecoder;
-import com.ning.compress.lzf.LZFOutputStream;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
+import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * LZF is one of the fastest pure-java compression libraries.
@@ -20,11 +18,11 @@ import java.io.OutputStream;
  * Note that this *does* length-prefix so its size is known.
  * @author jfoley
  */
-public class LZFCoder<T> extends Coder<T> {
+public class GZipCoder<T> extends Coder<T> {
   final Coder<T> innerCoder;
   final Coder<Integer> sizeCoder = VarUInt.instance;
 
-  public LZFCoder(Coder<T> innerCoder) {
+  public GZipCoder(Coder<T> innerCoder) {
     this.innerCoder = innerCoder;
   }
 
@@ -44,7 +42,7 @@ public class LZFCoder<T> extends Coder<T> {
   public DataChunk writeImpl(T obj) throws IOException {
     // compress:
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    try (LZFOutputStream lzfo = new LZFOutputStream(baos)) {
+    try (GZIPOutputStream lzfo = new GZIPOutputStream(baos)) {
       innerCoder.write(lzfo, obj);
     }
 
@@ -60,7 +58,7 @@ public class LZFCoder<T> extends Coder<T> {
     try {
       // compress:
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      try (LZFOutputStream lzfo = new LZFOutputStream(baos)) {
+      try (GZIPOutputStream lzfo = new GZIPOutputStream(baos)) {
         innerCoder.write(lzfo, elem);
       }
 
@@ -77,7 +75,8 @@ public class LZFCoder<T> extends Coder<T> {
   public T readImpl(InputStream inputStream) throws IOException {
     int compressedSize = sizeCoder.readImpl(inputStream);
     return innerCoder.read(
-        LZFDecoder.decode(
-            StreamFns.readBytes(inputStream, compressedSize)));
+        new GZIPInputStream(new ByteArrayInputStream(
+            StreamFns.readBytes(inputStream, compressedSize))));
   }
 }
+

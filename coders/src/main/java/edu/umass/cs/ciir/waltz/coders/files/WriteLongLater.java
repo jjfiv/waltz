@@ -14,7 +14,7 @@ public class WriteLongLater {
   public WriteLongLater(DataSink file) throws IOException {
     this.file = file;
     this.offset = file.tell();
-    file.write(FixedSize.longs, 0xdeadbeefdeadbeefL);
+    file.write(FixedSize.longs, 0L);
   }
 
   public void write(long value) throws IOException {

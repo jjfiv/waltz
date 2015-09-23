@@ -2,6 +2,7 @@ package edu.umass.cs.ciir.waltz.coders.kinds;
 
 import ciir.jfoley.chai.random.Sample;
 import edu.umass.cs.ciir.waltz.coders.Coder;
+import edu.umass.cs.ciir.waltz.coders.kinds.compress.LZFCoder;
 import org.junit.Test;
 
 import java.util.Random;
