@@ -43,7 +43,6 @@
       <type>jar</type>
     </dependency>
 
-
     <dependency>
       <groupId>edu.umass.cs.ciir.jfoley</groupId>
       <artifactId>chai-core</artifactId>
@@ -56,6 +55,14 @@
       <artifactId>compress-lzf</artifactId>
       <version>1.0.3</version>
     </dependency>
+
+    <!-- https://github.com/ben-manes/caffeine -->
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
   </dependencies>
 
   <build>

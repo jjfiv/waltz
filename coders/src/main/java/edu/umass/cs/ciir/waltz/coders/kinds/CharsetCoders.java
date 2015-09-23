@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * @author jfoley
  */
 public class CharsetCoders extends Module {
-  public static final Charset charset = Charset.forName("UTF-8");
+  public static final Charset utf8Charset = Charset.forName("UTF-8");
 
   /**
    * This is a UTF-8 string coder. If you want a length-prefixed version, call .lengthSafe() on it.
@@ -26,13 +26,13 @@ public class CharsetCoders extends Module {
     @Nonnull
     @Override
     public DataChunk writeImpl(String obj) throws IOException {
-      return ByteBufferDataChunk.of(obj.getBytes(charset));
+      return ByteBufferDataChunk.of(obj.getBytes(utf8Charset));
     }
 
     @Nonnull
     @Override
     public String readImpl(InputStream inputStream) throws IOException {
-      InputStreamReader reader = new InputStreamReader(inputStream, charset);
+      InputStreamReader reader = new InputStreamReader(inputStream, utf8Charset);
       return IO.readAll(reader);
     }
 
@@ -45,7 +45,7 @@ public class CharsetCoders extends Module {
     @Nonnull
     @Override
     public String read(ByteBuffer buf) {
-      return new String(buf.array(), buf.arrayOffset(), buf.limit(), charset);
+      return new String(buf.array(), buf.arrayOffset(), buf.limit(), utf8Charset);
     }
 
     @Override
