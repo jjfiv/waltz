@@ -15,4 +15,12 @@ public interface SpanIterator {
   int currentBegin();
   /** return the end of this extent -- if it's a position, this is always currentBegin()+1 */
   int currentEnd();
+
+  default String asString() {
+    if(isDone()) {
+      return "DONE";
+    }
+    //return "["+currentBegin()+","+currentEnd()+")";
+    return Integer.toString(currentBegin());
+  }
 }

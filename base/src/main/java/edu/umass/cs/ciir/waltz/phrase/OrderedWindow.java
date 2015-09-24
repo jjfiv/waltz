@@ -116,5 +116,32 @@ public class OrderedWindow {
     return hits;
   }
 
+  public static IntList findOr(List<? extends SpanIterator> arrayIterators) {
+    IntList hits = new IntList();
+    int lastMin = -1;
+    while(true) {
+      // find minimum
+      int min = Integer.MAX_VALUE;
+      for (SpanIterator iter : arrayIterators) {
+        while (!iter.isDone() && iter.currentBegin() <= lastMin) {
+          iter.next();
+        }
+        if (iter.isDone()) continue;
+        int begin = iter.currentBegin();
+        if (begin < min) {
+          min = begin;
+        }
+      }
+      if(min == Integer.MAX_VALUE) break;
+
+      // add min:
+      hits.add(min);
+      lastMin = min;
+    }
+
+    return hits;
+  }
+
+
 
 }
