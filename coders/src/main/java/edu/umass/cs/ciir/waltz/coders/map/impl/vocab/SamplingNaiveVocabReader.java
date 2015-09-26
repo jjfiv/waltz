@@ -43,7 +43,7 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
       }
     }
     if(sampleRate == 0) throw new RuntimeException("Couldn't downsample the keyspace enough :(");
-    int sampledKeyCount = IntMath.fromLong(count / sampleRate);
+    int sampledKeyCount = IntMath.fromLong((long) Math.ceil(count / (double) sampleRate));
 
     sampledKeyPosition = new long[sampledKeyCount];
     sampledKeys = new ArrayList<>(sampledKeyCount);
