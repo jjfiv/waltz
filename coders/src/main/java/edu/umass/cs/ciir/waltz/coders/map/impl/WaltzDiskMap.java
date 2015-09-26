@@ -37,8 +37,10 @@ public class WaltzDiskMap {
         throw new IOException("Unsupported keys format: "+magic);
     }
 
+    System.out.println("NaiveVocabReader.count="+count);
+
     // TODO dispatch better on type/count
-    if(count < Integer.MAX_VALUE && count >= 0) {
+    if(count < 1_000_000 && count >= 0) {
       return new NaiveVocabReader<>(IntMath.fromLong(count), cfg, stream.sourceAtCurrentPosition());
     } else {
       return new SamplingNaiveVocabReader<>(count, cfg, stream.sourceAtCurrentPosition());

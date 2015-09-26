@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.phrase;
 
+import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
 import edu.umass.cs.ciir.waltz.postings.extents.SpanIterable;
 import edu.umass.cs.ciir.waltz.postings.extents.Span;
@@ -93,4 +94,37 @@ public class UnorderedWindow {
     }
   }
 
+  public static IntList findIter(ArrayList<SpanIterator> iters, int width) {
+    IntList hits = new IntList();
+
+    int max = iters.get(0).currentEnd();
+    int min = iters.get(0).currentBegin();
+    for (int i = 1; i < iters.size(); i++) {
+      max = Math.max(max, iters.get(i).currentEnd());
+      min = Math.min(min, iters.get(i).currentBegin());
+    }
+
+    while(true) {
+      boolean match = (max - min <= width) || (width == -1);
+      if (match) {
+        hits.push(min);
+      }
+
+      int oldMin = min;
+      // now, reset bounds
+      max = Integer.MIN_VALUE;
+      min = Integer.MAX_VALUE;
+      for (SpanIterator iter : iters) {
+        if (iter.currentBegin() == oldMin) {
+          boolean notDone = iter.next();
+          if (!notDone) {
+            return hits;
+          }
+          assert(iter.currentBegin() > oldMin);
+        }
+        max = Math.max(max, iter.currentEnd());
+        min = Math.min(min, iter.currentBegin());
+      }
+    }
+  }
 }

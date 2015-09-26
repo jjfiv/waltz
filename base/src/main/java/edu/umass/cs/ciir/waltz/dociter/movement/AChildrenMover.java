@@ -32,7 +32,7 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
     loadNewCurrentBlock();
   }
 
-	protected int findLowestMax() {
+	protected final int findLowestMax() {
 		int lastKey = children.get(0).maxKey();
 		for (int i = 1; i < children.size(); i++) {
 			Mover child = children.get(i);
@@ -41,7 +41,7 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 		return lastKey;
 	}
 
-	protected int findMinimumKey() {
+	protected final int findMinimumKey() {
 		int minimumChildKey = children.get(0).currentKey();
 		for (int i = 1; i < children.size(); i++) {
 			Mover child = children.get(i);
@@ -50,7 +50,7 @@ public abstract class AChildrenMover<T extends Mover> extends AMover {
 		return minimumChildKey;
 	}
 
-	protected int findHighestMinimum() {
+	protected final int findHighestMinimum() {
 		int highMin = children.get(0).currentKey();
 		for (int i = 1; i < children.size(); i++) {
 			Mover child = children.get(i);

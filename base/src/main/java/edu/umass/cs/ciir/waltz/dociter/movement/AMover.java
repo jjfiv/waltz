@@ -1,5 +1,6 @@
 package edu.umass.cs.ciir.waltz.dociter.movement;
 
+import ciir.jfoley.chai.fn.SinkFn;
 import edu.umass.cs.ciir.waltz.dociter.IKeyBlock;
 import edu.umass.cs.ciir.waltz.sys.KeyMetadata;
 
@@ -21,6 +22,16 @@ public abstract class AMover implements Mover {
 	@Override
 	public boolean isDoneWithBlock() {
 		return isDone() || index >= currentBlock.size();
+	}
+
+	@Override
+	public void execute(SinkFn<Integer> documentHandler) {
+		for( ; !isDone(); nextBlock()) {
+			int bs = currentBlock.size();
+			for( ; index < bs; index++) {
+				documentHandler.process(currentKey());
+			}
+		}
 	}
 
 	@Override
@@ -48,7 +59,7 @@ public abstract class AMover implements Mover {
 	}
 
 	@Override
-	public void moveTo(int key) {
+	public final void moveTo(int key) {
 		if(isDoneWithBlock()) return;
 		if(key > maxKey()) {
 			index = currentBlock.size();
@@ -57,7 +68,7 @@ public abstract class AMover implements Mover {
 		findInCurrentBlock(key);
 	}
 
-	private void findInCurrentBlock(int key) {
+	public final void findInCurrentBlock(int key) {
 		for(; index < currentBlock.size(); index++) {
 			int current = currentBlock.getKey(index);
 			if(current >= key) break;
@@ -66,10 +77,8 @@ public abstract class AMover implements Mover {
 	}
 
 	@Override
-	public void movePast(int key) {
-		if(isDoneWithBlock()) return;
+	public final void movePast(int key) {
 		moveTo(key+1);
-		assert(isDoneWithBlock() || currentKey() > key);
 	}
 
   @Override

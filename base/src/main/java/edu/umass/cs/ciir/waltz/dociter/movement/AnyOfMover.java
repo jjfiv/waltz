@@ -21,21 +21,34 @@ public class AnyOfMover<T extends Mover> extends AChildrenMover<T> {
 
 	protected IKeyBlock loadKeysFromChildren(int lastKey) {
 		IntList ids = new IntList();
+		int NC = children.size();
+
+		int minimumChildKey = DONE_ID;
+		for (int i = 0; i < NC; i++) {
+			Mover child = children.get(i);
+			minimumChildKey = Math.min(minimumChildKey, child.currentKey());
+		}
+
 		while(true) {
-			int minimumChildKey = findMinimumKey();
+			//int minimumChildKey = findMinimumKey();
 			if(minimumChildKey == DONE_ID) {
 				// If the minimum key is the EOF marker, that means every child is done.
-				return null;
+				if(ids.isEmpty()) return null;
+				break;
 			}
 
+			int currentKey = minimumChildKey;
 			// Add and move past the current key.
-			ids.add(minimumChildKey);
-			for (Mover child : children) {
-				child.movePast(minimumChildKey);
-				assert(child.isDoneWithBlock() || child.currentKey() > minimumChildKey);
+			ids.add(currentKey);
+			minimumChildKey = DONE_ID;
+			for (int i = 0; i < NC; i++) {
+				Mover child = children.get(i);
+				child.movePast(currentKey);
+				minimumChildKey = Math.min(minimumChildKey, child.currentKey());
+				assert (child.isDoneWithBlock() || child.currentKey() > currentKey);
 			}
 
-			if(minimumChildKey == lastKey) {
+			if(currentKey >= lastKey) {
 				break;
 			}
 		}
