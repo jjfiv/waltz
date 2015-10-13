@@ -80,6 +80,7 @@ public class WaltzDiskMapWriter<K, V> implements IOMapWriter<K, V> {
 
   @Override
   public void close() throws IOException {
+    System.err.println("WaltzDiskMapWriter::close");
     this.valuesFile.close();
     vocabWriter.close();
   }

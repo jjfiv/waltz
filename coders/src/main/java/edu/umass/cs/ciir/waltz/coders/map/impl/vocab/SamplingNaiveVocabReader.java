@@ -4,6 +4,7 @@ import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.collections.util.MapFns;
+import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
 import edu.umass.cs.ciir.waltz.coders.files.FileSlice;
@@ -110,15 +111,24 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
       int found = 0;
       DataSourceSkipInputStream is = streamForBlock(block);
 
+      long startPosition = sampleRate*block;
+      long amountLeft = count - startPosition;
+      int itemsInBlock = (int) Math.min(amountLeft, sampleRate);
+
       // for key in block
-      for (int i = 0; i < sampleRate && found < toFind.size(); i++) {
-        K candidate = cfg.keyCoder.read(is);
-        long start = FixedSize.longs.read(is);
-        int size = VarUInt.instance.read(is);
-        int cmp = cfg.cmp.compare(toFind.get(found), candidate);
-        if(cmp == 0) {
-          data.add(Pair.of(toFind.get(found++), new FileSlice(start, start+size)));
-        } else if(cmp < 0) break;
+      for (int i = 0; i < itemsInBlock && found < toFind.size(); i++) {
+        try {
+          K candidate = cfg.keyCoder.read(is);
+          long start = FixedSize.longs.read(is);
+          int size = VarUInt.instance.read(is);
+          int cmp = cfg.cmp.compare(toFind.get(found), candidate);
+          if (cmp == 0) {
+            data.add(Pair.of(toFind.get(found++), new FileSlice(start, start + size)));
+          } else if (cmp < 0) break;
+        } catch (CoderException err) {
+          System.err.println("i: "+i+" sampleRate: "+sampleRate+" found: "+found+" toFind.get(found): "+toFind.get(found)+" :"+toFind);
+          throw err;
+        }
       }
       //missing: found..toFind.size();
     }
@@ -159,7 +169,8 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
   private int findSampledBlock(K key) {
     int off = Collections.binarySearch(this.sampledKeys, key, cfg.cmp);
     if(off >= 0) return off;
-    return (((off+1) * -1) -1);
+    int index = (((off+1) * -1) -1);
+    return index;
   }
 
   @Nullable
@@ -167,8 +178,13 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
     int block = findSampledBlock(key);
     DataSourceSkipInputStream is = file.stream(this.sampledKeyPosition[block]);
 
+
+    long startPosition = sampleRate*block;
+    long amountLeft = count - startPosition;
+    int itemsInBlock = (int) Math.min(amountLeft, sampleRate);
+
     // todo cache block?
-    for (int i = 0; i < sampleRate; i++) {
+    for (int i = 0; i < itemsInBlock; i++) {
       K candidate = cfg.keyCoder.read(is);
       long start = FixedSize.longs.read(is);
       int size = VarUInt.instance.read(is);

@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz.coders.tuple;
 
 import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.util.Comparing;
 import edu.umass.cs.ciir.waltz.coders.Coder;
 import edu.umass.cs.ciir.waltz.coders.data.ByteBuilder;
 import edu.umass.cs.ciir.waltz.coders.data.DataChunk;
@@ -13,7 +14,7 @@ import java.util.Comparator;
 /**
  * @author jfoley
  */
-public class DiskMapAtom<K, V> extends Pair<K,V> {
+public class DiskMapAtom<K, V> extends Pair<K,V> implements Comparable<DiskMapAtom<K,V>> {
   public DiskMapAtom(K left, V right) {
     super(left, right);
   }
@@ -24,6 +25,11 @@ public class DiskMapAtom<K, V> extends Pair<K,V> {
 
   public static <K, V> Coder<DiskMapAtom<K, V>> getCoder(Coder<K> keyCoder, Coder<V> valCoder) {
     return new DiskMapAtomCoder<>(keyCoder, valCoder);
+  }
+
+  @Override
+  public int compareTo(@Nonnull DiskMapAtom<K, V> o) {
+    return Comparing.defaultComparator().compare(this.left, o.left);
   }
 
   private static class DiskMapAtomCoder<K, V> extends Coder<DiskMapAtom<K, V>> {
