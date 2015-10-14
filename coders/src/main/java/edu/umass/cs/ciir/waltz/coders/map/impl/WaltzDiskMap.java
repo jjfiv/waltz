@@ -3,8 +3,8 @@ package edu.umass.cs.ciir.waltz.coders.map.impl;
 import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.io.Directory;
 import edu.umass.cs.ciir.waltz.coders.Coder;
-import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.kinds.ASCII;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.map.impl.vocab.NaiveVocabReader;
@@ -22,9 +22,12 @@ public class WaltzDiskMap {
   public static final int MagicLength = 128;
   public static final Coder<String> MagicCoder = new ASCII.FixedLength(MagicLength);
 
-  public static <K> WaltzDiskMapVocabReader<K> createVocabReader(DataSource keys, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
+  public static <K> WaltzDiskMapVocabReader<K> createVocabReader(Directory baseDir, String baseName, Coder<K> keyCoder, Comparator<K> cmp) throws IOException {
     VocabConfig<K> cfg = new VocabConfig<>(keyCoder, cmp);
+
+    FileChannelSource keys = new FileChannelSource(getKeyFileName(baseDir, baseName));
     DataSourceSkipInputStream stream = keys.stream();
+
     String magic = MagicCoder.read(stream);
     long count;
 
@@ -43,7 +46,7 @@ public class WaltzDiskMap {
     if(count < 1_000_000 && count >= 0) {
       return new NaiveVocabReader<>(IntMath.fromLong(count), cfg, stream.sourceAtCurrentPosition());
     } else {
-      return new SamplingNaiveVocabReader<>(count, cfg, stream.sourceAtCurrentPosition());
+      return new SamplingNaiveVocabReader<>(baseDir, baseName, count, cfg, stream.sourceAtCurrentPosition());
     }
   }
 

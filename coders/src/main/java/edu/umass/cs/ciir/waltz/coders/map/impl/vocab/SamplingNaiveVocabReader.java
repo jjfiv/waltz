@@ -4,9 +4,13 @@ import ciir.jfoley.chai.IntMath;
 import ciir.jfoley.chai.collections.Pair;
 import ciir.jfoley.chai.collections.util.IterableFns;
 import ciir.jfoley.chai.collections.util.MapFns;
+import ciir.jfoley.chai.io.Directory;
+import ciir.jfoley.chai.io.IO;
+import ciir.jfoley.chai.io.StreamFns;
 import edu.umass.cs.ciir.waltz.coders.CoderException;
 import edu.umass.cs.ciir.waltz.coders.files.DataSource;
 import edu.umass.cs.ciir.waltz.coders.files.DataSourceSkipInputStream;
+import edu.umass.cs.ciir.waltz.coders.files.FileChannelSource;
 import edu.umass.cs.ciir.waltz.coders.files.FileSlice;
 import edu.umass.cs.ciir.waltz.coders.kinds.FixedSize;
 import edu.umass.cs.ciir.waltz.coders.kinds.VarUInt;
@@ -14,7 +18,10 @@ import edu.umass.cs.ciir.waltz.coders.map.impl.WaltzDiskMapVocabReader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.*;
 
 /**
@@ -33,10 +40,33 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
     return val >= 0 && val <= Integer.MAX_VALUE;
   }
 
-  public SamplingNaiveVocabReader(long count, VocabConfig<K> cfg, DataSource dataSource) throws IOException {
+  public SamplingNaiveVocabReader(Directory baseDir, String baseName, long count, VocabConfig<K> cfg, DataSource dataSource) throws IOException {
     this.count = count;
     this.cfg = cfg;
     this.file = dataSource;
+
+    File sampledKeysFile = baseDir.child(baseName+".sampled_keys");
+
+    // fast, cached to file
+    if(sampledKeysFile.exists()) {
+      FileChannelSource skeys = new FileChannelSource(sampledKeysFile.getPath());
+      DataSourceSkipInputStream stream = skeys.stream();
+      sampleRate = FixedSize.ints.read(stream);
+      int sampledKeyCount = FixedSize.ints.read(stream);
+
+      sampledKeyPosition = new long[sampledKeyCount];
+      ByteBuffer buf = ByteBuffer.wrap(StreamFns.readBytes(stream, sampledKeyCount * 8));
+      for (int i = 0; i < sampledKeyCount; i++) {
+        sampledKeyPosition[i] = buf.getLong(i*8);
+      }
+
+      sampledKeys = new ArrayList<>(sampledKeyCount);
+      for (int i = 0; i < sampledKeyCount; i++) {
+        sampledKeys.add(cfg.keyCoder.read(stream));
+      }
+
+      return;
+    }
 
     for (int i = 5; i < 13; i++) {
       if(isUint(count >>> i)) {
@@ -50,6 +80,20 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
     sampledKeys = new ArrayList<>(sampledKeyCount);
 
     readAllKeys();
+    saveSampledKeys(sampledKeysFile, sampledKeyCount);
+  }
+
+  private void saveSampledKeys(File sampledKeysFile, int sampledKeyCount) throws IOException {
+    try (OutputStream out = IO.openOutputStream(sampledKeysFile)) {
+      FixedSize.ints.write(out, sampleRate);
+      FixedSize.ints.write(out, sampledKeyCount);
+      for (long l : sampledKeyPosition) {
+        FixedSize.longs.write(out, l);
+      }
+      for (K sampledKey : sampledKeys) {
+        cfg.keyCoder.write(out, sampledKey);
+      }
+    }
   }
 
   private void readAllKeys() throws IOException {

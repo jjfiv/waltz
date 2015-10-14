@@ -2,8 +2,8 @@ package edu.umass.cs.ciir.waltz.phrase;
 
 import ciir.jfoley.chai.collections.list.IntList;
 import edu.umass.cs.ciir.waltz.postings.extents.InterleavedSpans;
-import edu.umass.cs.ciir.waltz.postings.extents.SpanIterable;
 import edu.umass.cs.ciir.waltz.postings.extents.Span;
+import edu.umass.cs.ciir.waltz.postings.extents.SpanIterable;
 import edu.umass.cs.ciir.waltz.postings.extents.SpanIterator;
 
 import java.util.ArrayList;
@@ -93,6 +93,7 @@ public class UnorderedWindow {
       }
     }
   }
+
 
   public static IntList findIter(ArrayList<SpanIterator> iters, int width) {
     IntList hits = new IntList();
