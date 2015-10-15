@@ -168,7 +168,9 @@ public class SamplingNaiveVocabReader<K> implements WaltzDiskMapVocabReader<K> {
           int cmp = cfg.cmp.compare(toFind.get(found), candidate);
           if (cmp == 0) {
             data.add(Pair.of(toFind.get(found++), new FileSlice(start, start + size)));
-          } else if (cmp < 0) break;
+          } else if (cmp < 0) {
+            found++;
+          }
         } catch (CoderException err) {
           System.err.println("i: "+i+" sampleRate: "+sampleRate+" found: "+found+" toFind.get(found): "+toFind.get(found)+" :"+toFind);
           throw err;
