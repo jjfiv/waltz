@@ -52,7 +52,7 @@ public class BlockedPostingsReader<V> extends StaticStreamPostingsIterator<V> {
 
     long remaining = streamSource.length() - stream.tell();
     // should be at least 1 byte left for each key:
-    assert(remaining >= totalKeys);
+    assert(remaining >= totalKeys) : "totalKeys: "+totalKeys+" bytes remaining: "+remaining;
     usedKeys = 0;
   }
 
