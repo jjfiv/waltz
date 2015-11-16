@@ -1,6 +1,7 @@
 package edu.umass.cs.ciir.waltz;
 
 import ciir.jfoley.chai.collections.Pair;
+import ciir.jfoley.chai.collections.list.IntList;
 import ciir.jfoley.chai.collections.util.IterableFns;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
@@ -12,6 +13,7 @@ import javax.annotation.Nullable;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,23 @@ public class IdMaps {
     IdReader<V> getCached(long count);
     default IdReader<V> getCached() {
       return getCached(100_000);
+    }
+
+    default IntList translateReverse(List<V> objs, int missing) throws IOException {
+      Map<V, Integer> reverseMap = this.getReverseMap(objs);
+      IntList output = new IntList(objs.size());
+      for (V obj : objs) {
+        output.push(reverseMap.getOrDefault(obj, missing));
+      }
+      return output;
+    }
+    default List<V> translateForward(IntList ids, V missing) throws IOException {
+      Map<Integer, V> fwdMap = this.getForwardMap(ids);
+      List<V> output = new ArrayList<>(ids.size());
+      for (int id : ids) {
+        output.add(fwdMap.getOrDefault(id, missing));
+      }
+      return output;
     }
   }
 
