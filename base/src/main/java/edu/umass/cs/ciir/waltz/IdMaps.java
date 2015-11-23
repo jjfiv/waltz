@@ -106,6 +106,8 @@ public class IdMaps {
       }
       return output;
     }
+
+    long size();
   }
 
   public static class Reader<V> implements IdReader<V> {
@@ -233,6 +235,11 @@ public class IdMaps {
     @Override
     public IdReader<V> getCached(long count) {
       return this;
+    }
+
+    @Override
+    public long size() {
+      return inner.size();
     }
 
     @Override
