@@ -49,7 +49,6 @@ public class IdMaps {
     }
 
   }
-
   public interface IdReader<V> extends Closeable {
 
     @Nonnull
@@ -108,6 +107,84 @@ public class IdMaps {
     }
 
     long size();
+
+    IOMap<V,Integer> getReverseReader();
+    IOMap<Integer,V> getForwardReader();
+  }
+
+  public class HashedReader<V> implements IdReader<V> {
+    private final IOMap<Integer, V> forwardReader;
+
+    public HashedReader(IOMap<Integer, V> forwardReader) {
+      this.forwardReader = forwardReader;
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Pair<Integer, V>> getForward(List<Integer> bulk) throws IOException {
+      return forwardReader.getInBulk(bulk);
+    }
+
+    @Nullable
+    @Override
+    public V getForward(int id) throws IOException {
+      return forwardReader.get(id);
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Pair<V, Integer>> getReverse(List<V> bulk) throws IOException {
+      return IterableFns.map(bulk, str -> Pair.of(str, str.hashCode()));
+    }
+
+    @Nullable
+    @Override
+    public Integer getReverse(V item) throws IOException {
+      return item.hashCode();
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Pair<Integer, V>> items() throws IOException {
+      return forwardReader.items();
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<Integer> ids() throws IOException {
+      return forwardReader.keys();
+    }
+
+    @Nonnull
+    @Override
+    public Iterable<V> values() throws IOException {
+      return IterableFns.map(forwardReader.items(), pr -> pr.right);
+    }
+
+    @Override
+    public IdReader<V> getCached(long count) {
+      return new CachedIdReader<V>(this, count, 0);
+    }
+
+    @Override
+    public long size() {
+      return 0;
+    }
+
+    @Override
+    public IOMap<V, Integer> getReverseReader() {
+      return null;
+    }
+
+    @Override
+    public IOMap<Integer, V> getForwardReader() {
+      return forwardReader;
+    }
+
+    @Override
+    public void close() throws IOException {
+
+    }
   }
 
   public static class Reader<V> implements IdReader<V> {
@@ -167,17 +244,32 @@ public class IdMaps {
     public long size() {
       return forwardReader.keyCount();
     }
+
+    @Override
+    public IOMap<V, Integer> getReverseReader() {
+      return reverseReader;
+    }
+
+    @Override
+    public IOMap<Integer, V> getForwardReader() {
+      return forwardReader;
+    }
   }
 
   public static class CachedIdReader<V> implements IdReader<V> {
     final IdReader<V> inner;
+    @Nullable
     final LoadingCache<Integer,V> forwardCache;
+    @Nullable
     final LoadingCache<V,Integer> reverseCache;
 
-    public CachedIdReader(Reader<V> inner, long count) {
+    public CachedIdReader(IdReader<V> inner, long count) {
+      this(inner, count, count);
+    }
+    public CachedIdReader(IdReader<V> inner, long forwardCount, long reverseCount) {
       this.inner = inner;
-      this.forwardCache = Caffeine.newBuilder().maximumSize(count).build(inner.forwardReader);
-      this.reverseCache = Caffeine.newBuilder().maximumSize(count).build(inner.reverseReader);
+      this.forwardCache = forwardCount > 0 ? Caffeine.newBuilder().maximumSize(forwardCount).build(inner.getForwardReader()) : null;
+      this.reverseCache = reverseCount > 0 ? Caffeine.newBuilder().maximumSize(reverseCount).build(inner.getReverseReader()) : null;
     }
 
     @Nonnull
@@ -188,12 +280,18 @@ public class IdMaps {
 
     @Nonnull
     @Override
-    public Map<Integer,V> getForwardMap(@Nonnull List<Integer> bulk) {
+    public Map<Integer,V> getForwardMap(@Nonnull List<Integer> bulk) throws IOException {
+      if(forwardCache == null) {
+        return inner.getForwardMap(bulk);
+      }
       return forwardCache.getAll(bulk);
     }
 
     @Override
     public V getForward(int id) throws IOException {
+      if(forwardCache == null) {
+        return inner.getForward(id);
+      }
       return forwardCache.get(id);
     }
 
@@ -205,12 +303,18 @@ public class IdMaps {
 
     @Nonnull
     @Override
-    public Map<V,Integer> getReverseMap(List<V> bulk) {
+    public Map<V,Integer> getReverseMap(List<V> bulk) throws IOException {
+      if(reverseCache == null) {
+        return inner.getReverseMap(bulk);
+      }
       return reverseCache.getAll(bulk);
     }
 
     @Override
     public Integer getReverse(V item) throws IOException {
+      if(reverseCache == null) {
+        return inner.getReverse(item);
+      }
       return reverseCache.get(item);
     }
 
@@ -240,6 +344,16 @@ public class IdMaps {
     @Override
     public long size() {
       return inner.size();
+    }
+
+    @Override
+    public IOMap<V, Integer> getReverseReader() {
+      return inner.getReverseReader();
+    }
+
+    @Override
+    public IOMap<Integer, V> getForwardReader() {
+      return inner.getForwardReader();
     }
 
     @Override

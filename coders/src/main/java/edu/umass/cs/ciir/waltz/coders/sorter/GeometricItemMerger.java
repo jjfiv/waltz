@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class GeometricItemMerger {
   public static final ExecutorService asyncExec = ForkJoinPool.commonPool();
   public static final int DEFAULT_MERGE_FACTOR = 10;
-  public static final boolean useThreads = true; // almost 2x slower building positions on robust without this
+  public static final boolean useThreads = false; // almost 2x slower building positions on robust without this
 
   final MergeFn mergeFn;
   // Logical size only: 0: [...], 1: [...] ... whenever we get 10 level 0s we upgrade them to a level 1... etc.

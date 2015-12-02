@@ -5,7 +5,6 @@ import org.lemurproject.galago.core.retrieval.iterator.BaseIterator;
 import org.lemurproject.galago.core.retrieval.processing.ScoringContext;
 import org.lemurproject.galago.core.retrieval.query.AnnotatedNode;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -72,11 +71,6 @@ public class AGalagoIterator<MoverKind extends Mover> implements BaseIterator {
   @Override
   public AnnotatedNode getAnnotatedNode(ScoringContext sc) throws IOException {
     throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public int compareTo(@Nonnull BaseIterator o) {
-    return Long.compare(this.currentCandidate(), o.currentCandidate());
   }
 }
 
