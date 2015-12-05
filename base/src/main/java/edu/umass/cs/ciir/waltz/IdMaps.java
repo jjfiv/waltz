@@ -112,7 +112,7 @@ public class IdMaps {
     IOMap<Integer,V> getForwardReader();
   }
 
-  public class HashedReader<V> implements IdReader<V> {
+  public static class HashedReader<V> implements IdReader<V> {
     private final IOMap<Integer, V> forwardReader;
 
     public HashedReader(IOMap<Integer, V> forwardReader) {
@@ -140,7 +140,11 @@ public class IdMaps {
     @Nullable
     @Override
     public Integer getReverse(V item) throws IOException {
-      return item.hashCode();
+      int hash = item.hashCode();
+      if(forwardReader.get(hash) != null) {
+        return hash;
+      }
+      return null;
     }
 
     @Nonnull

@@ -10,6 +10,7 @@ import org.lemurproject.galago.utility.btree.BTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeIterator;
 import org.lemurproject.galago.utility.btree.disk.DiskBTreeReader;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.*;
 
@@ -74,7 +75,7 @@ public class RawGalagoDiskMap implements RawIOMap {
 
   private static class KeyIterator implements Iterator<DataChunk> {
     private final BTreeIterator iter;
-    private KeyIterator(BTreeIterator iter) {
+    private KeyIterator(@Nonnull BTreeIterator iter) {
       this.iter = iter;
     }
 
@@ -102,7 +103,9 @@ public class RawGalagoDiskMap implements RawIOMap {
   public Iterable<DataChunk> keys() throws IOException {
     return () -> {
       try {
-        return new KeyIterator(reader.getIterator());
+        DiskBTreeIterator iterator = reader.getIterator();
+        if(iterator == null) return Collections.<DataChunk>emptyList().iterator();
+        return new KeyIterator(iterator);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
