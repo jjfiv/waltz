@@ -29,7 +29,7 @@ public interface IOMap<K, V> extends Closeable, CacheLoader<K,V> {
   default V load(@Nonnull K key) {
     try {
       return get(key);
-    } catch (IOException e) {
+    } catch (NullPointerException | IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -42,7 +42,7 @@ public interface IOMap<K, V> extends Closeable, CacheLoader<K,V> {
         found.put(kv.left, kv.right);
       }
       return found;
-    } catch (IOException e) {
+    } catch (NullPointerException | IOException e) {
       throw new RuntimeException(e);
     }
   }
