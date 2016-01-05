@@ -4,12 +4,12 @@
 
   <groupId>jfoley.waltz</groupId>
   <artifactId>waltz-galago-compat</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javaVersion>1.8</javaVersion>
-    <galagoVersion>3.9-SNAPSHOT</galagoVersion>
+    <galagoVersion>3.9</galagoVersion>
   </properties>
 
   <distributionManagement>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>jfoley.waltz</groupId>
       <artifactId>waltz-base</artifactId>
-      <version>0.4-SNAPSHOT</version>
+      <version>0.4</version>
     </dependency>
 
     <dependency>
